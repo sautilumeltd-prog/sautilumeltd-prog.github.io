@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SautiLume — Your Private Health Assistant</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --text:#f0f6fc; --dim:#9da7b3;
+    --accent:#4fc3f7; --accent2:#81d4fa; --danger:#ef5350; --ok:#66bb6a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'Segoe UI',Roboto,'Noto Sans',sans-serif;
+    font-size:19px; line-height:1.5; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  header{
+    width:100%; max-width:520px; padding:18px 16px 8px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{font-size:26px; font-weight:800; letter-spacing:.5px;}
+  .logo span{color:var(--accent);}
+  main{width:100%; max-width:520px; padding:8px 16px 140px; flex:1;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  h1{font-size:24px; margin:14px 0 10px; font-weight:700;}
+  p.lead{color:var(--dim); margin-bottom:18px; font-size:18px;}
+  button{
+    font-family:inherit; cursor:pointer; border:none; border-radius:16px;
+    font-weight:700; color:var(--text);
+  }
+  button:focus-visible{outline:4px solid var(--accent2); outline-offset:3px;}
+  .big-btn{
+    display:block; width:100%; padding:22px; margin:12px 0;
+    font-size:22px; background:var(--panel); border:2px solid #30363d;
+  }
+  .big-btn.primary{background:#0d47a1; border-color:#1565c0;}
+  .big-btn.danger{background:#7f1d1d; border-color:#b91c1c;}
+  .big-btn.call{background:#14532d; border-color:#166534; font-size:20px; text-align:left;}
+  .mic-wrap{position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:center;
+    padding:14px 0 22px; background:linear-gradient(transparent, var(--bg) 40%);}
+  #micBtn{
+    width:130px; height:130px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #1976d2, #0d47a1);
+    border:5px solid var(--accent); font-size:17px; font-weight:800;
+    box-shadow:0 0 30px rgba(79,195,247,.35);
+  }
+  #micBtn.listening{background:radial-gradient(circle at 35% 30%, #e53935, #7f1d1d);
+    border-color:var(--danger); animation:pulse 1s infinite;}
+  #micBtn.thinking{background:radial-gradient(circle at 35% 30%, #6d4c41, #3e2723);
+    border-color:#ffb74d; animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%{transform:scale(1)} 50%{transform:scale(1.06)} 100%{transform:scale(1)}}
+  #status{
+    text-align:center; font-size:20px; font-weight:700; min-height:32px;
+    color:var(--accent2); margin:10px 0;
+  }
+  .bubble{
+    background:var(--panel); border:1px solid #30363d; border-radius:16px;
+    padding:16px; margin:10px 0; font-size:20px;
+  }
+  .bubble.user{border-color:#1565c0;}
+  .bubble.user::before{content:"You asked:"; display:block; font-size:15px; color:var(--dim); margin-bottom:6px;}
+  .bubble.app::before{content:"SautiLume:"; display:block; font-size:15px; color:var(--accent); margin-bottom:6px;}
+  .row{display:flex; gap:10px;}
+  .row .big-btn{flex:1;}
+  .topbar-btn{
+    background:var(--panel); border:2px solid #30363d; border-radius:12px;
+    padding:10px 14px; font-size:16px; margin-left:8px;
+  }
+  .emg{background:#7f1d1d !important; border-color:#ef5350 !important;}
+  label{display:block; margin:14px 0 6px; font-weight:700;}
+  input[type=text], input[type=password]{
+    width:100%; padding:14px; font-size:18px; border-radius:12px;
+    border:2px solid #30363d; background:var(--panel); color:var(--text);
+  }
+  .note{font-size:15px; color:var(--dim); margin-top:6px;}
+  .privacy{
+    border-left:4px solid var(--ok); padding:10px 14px; margin:16px 0;
+    background:var(--panel); border-radius:0 12px 12px 0; font-size:16px; color:var(--dim);
+  }
+  a.plain{color:var(--accent);}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-label="SautiLume">Sauti<span>Lume</span></div>
+  <div>
+    <button class="topbar-btn emg" id="emgTop" aria-label="Emergency help. Opens emergency support options.">🆘 Emergency</button>
+    <button class="topbar-btn" id="settingsTop" aria-label="Settings">⚙</button>
+    <button class="topbar-btn" id="exitTop" aria-label="Quick exit. Clears everything immediately.">✕ Exit</button>
+  </div>
+</header>
+
+<main>
+  <!-- ONBOARDING -->
+  <section class="screen active" id="scrLang" aria-label="Language selection">
+    <h1>Karibu · Welcome</h1>
+    <p class="lead">I am your private health assistant. Everything you share with me is confidential. Choose your language — Chagua lugha yako.</p>
+    <button class="big-btn primary" id="btnEN">English</button>
+    <button class="big-btn primary" id="btnSW">Kiswahili</button>
+    <div class="privacy" id="privacyNote">
+      🔒 SautiLume does not store your name, your voice, or anything you say. Every conversation disappears when you leave.
+    </div>
+  </section>
+
+  <!-- MAIN CONVERSATION -->
+  <section class="screen" id="scrMain" aria-label="Conversation">
+    <div id="status" role="status" aria-live="assertive"></div>
+    <div id="chat" aria-live="polite"></div>
+  </section>
+
+  <!-- EMERGENCY -->
+  <section class="screen" id="scrEmg" aria-label="Emergency help">
+    <h1 id="emgTitle">Emergency Help</h1>
+    <p class="lead" id="emgLead">I can connect you to someone who can help right now. Choose who to call. The call is free and confidential.</p>
+    <a href="tel:1195" class="plain"><button class="big-btn call">📞 GBV Helpline — 1195 (free, 24 hours)</button></a>
+    <a href="tel:0800723253" class="plain"><button class="big-btn call">📞 Befrienders Kenya (mental health) — 0800 723 253</button></a>
+    <a href="tel:0719638006" class="plain"><button class="big-btn call">📞 Gender Violence Recovery Centre — 0719 638 006</button></a>
+    <button class="big-btn" id="emgBack">← Back</button>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="screen" id="scrSettings" aria-label="Settings">
+    <h1>Settings</h1>
+    <label>Language / Lugha</label>
+    <div class="row">
+      <button class="big-btn" id="setEN">English</button>
+      <button class="big-btn" id="setSW">Kiswahili</button>
+    </div>
+    <label for="hfToken">Hugging Face token (optional — connects the Gemma AI brain)</label>
+    <input type="password" id="hfToken" placeholder="hf_...">
+    <p class="note">Without a token, SautiLume answers from its built-in verified health library. With a token, it uses the Gemma AI model. The token stays on this device only.</p>
+    <button class="big-btn primary" id="saveSettings">Save</button>
+    <button class="big-btn" id="settingsBack">← Back</button>
+  </section>
+</main>
+
+<div class="mic-wrap" id="micWrap" style="display:none">
+  <button id="micBtn" aria-label="Press to ask your question by voice">PRESS<br>TO ASK</button>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   SautiLume Voice Demo — Milestone 0
+   Built from SautiLume Technical Specification v1.0 (2026)
+   PRIVACY: No names, no audio, no transcripts are ever stored.
+   Only the language choice (and optional HF token) stay on-device.
+   ============================================================ */
+
+const $ = id => document.getElementById(id);
+let LANG = localStorage.getItem("sl_lang") || null;   // 'en' | 'sw'
+let HF_TOKEN = localStorage.getItem("sl_hf") || "";
+/* AI models, tried in order. MedGemma = Google's medically-trained Gemma.
+   If one is unavailable on the free tier, the next is tried automatically. */
+const MODELS = ["google/medgemma-4b-it", "google/gemma-3-4b-it", "google/gemma-2-2b-it"];
+let activeModel = null;      // remembered for this session only
+let history = [];            // conversation memory — RAM only, wiped on Exit
+
+/* ---------- UI strings ---------- */
+const T = {
+  en: {
+    welcome: "Welcome to SautiLume. I am your private health assistant. Everything you share with me is confidential. No one else can hear our conversation. Press the big circle button and ask me anything about your health.",
+    listening: "I am listening...",
+    thinking: "Please wait, I am finding the answer...",
+    again: "You can ask another question when you are ready.",
+    micIdle: "PRESS<br>TO ASK",
+    micStop: "TAP TO<br>STOP",
+    noSpeech: "I did not hear you. Please press the big button and ask again.",
+    emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. The call is free and confidential.",
+    sgbv: "I hear you. You are not alone, and what happened to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free and open day and night. I have opened the emergency screen so you can call with one touch.",
+    noSR: "Voice input is not available in this browser. Please open SautiLume using Google Chrome.",
+    error: "Sorry, something went wrong. Please try again."
+  },
+  sw: {
+    welcome: "Karibu SautiLume. Mimi ni msaidizi wako wa siri wa afya. Kila kitu unachoshiriki nami ni siri. Hakuna mtu mwingine anayeweza kusikia mazungumzo yetu. Bonyeza kitufe kikubwa cha duara na uniulize chochote kuhusu afya yako.",
+    listening: "Nasikiliza...",
+    thinking: "Tafadhali subiri, natafuta jibu...",
+    again: "Unaweza kuuliza swali lingine ukiwa tayari.",
+    micIdle: "BONYEZA<br>KUULIZA",
+    micStop: "GUSA<br>KUSIMAMISHA",
+    noSpeech: "Sikukusikia. Tafadhali bonyeza kitufe kikubwa na uulize tena.",
+    emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu ni bure na ni ya siri.",
+    sgbv: "Nakusikia. Hauko peke yako, na kilichokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
+    noSR: "Sauti haipatikani kwenye kivinjari hiki. Tafadhali fungua SautiLume kwa kutumia Google Chrome.",
+    error: "Samahani, kuna hitilafu. Tafadhali jaribu tena."
+  }
+};
+
+/* ---------- Verified health answer library (fallback brain) ----------
+   Sources: Kenya MoH adolescent guidelines, AMREF, UNFPA Kenya, WHO AFRO,
+   Befrienders Kenya. All answers < 120 words, plain language.            */
+const KB = [
+  {
+    keys:["period","menstru","hedhi","damu ya mwezi","monthly bleeding"],
+    en:"A period is normal monthly bleeding that shows your body is healthy and growing. It usually lasts three to seven days and comes about once a month. Use a clean pad, and change it every four to six hours. Wash your hands before and after changing. If you cannot afford pads, a clean folded cotton cloth works — wash and dry it in the sun. Periods are natural. They are nothing to be ashamed of.",
+    sw:"Hedhi ni damu ya kawaida ya kila mwezi inayoonyesha mwili wako uko na afya na unakua. Kwa kawaida huchukua siku tatu hadi saba. Tumia pedi safi, na ubadilishe kila baada ya masaa manne hadi sita. Nawa mikono kabla na baada ya kubadilisha. Kama huwezi kupata pedi, kitambaa safi cha pamba kinafaa — kifue na ukianike juani. Hedhi ni jambo la kawaida. Si jambo la aibu."
+  },
+  {
+    keys:["cramp","period pain","maumivu ya hedhi","tumbo wakati wa hedhi","dysmenorrh"],
+    en:"Period pain is common and usually not dangerous. To feel better: place a warm bottle or cloth on your lower belly, drink plenty of water, walk gently, and rest when you need to. If the pain is so strong that you cannot go to school, or you feel dizzy or faint, please visit the nearest clinic — a nurse can help. You do not have to suffer in silence.",
+    sw:"Maumivu ya hedhi ni jambo la kawaida na mara nyingi si hatari. Ili kupunguza: weka chupa ya maji moto au kitambaa cha joto tumboni, kunywa maji mengi, tembea polepole, na pumzika. Kama maumivu ni makali sana hadi unashindwa kwenda shule, au unahisi kizunguzungu, tafadhali tembelea kliniki iliyo karibu — muuguzi atakusaidia. Usivumilie kimya."
+  },
+  {
+    keys:["irregular","missed period","late period","hedhi haiji","hedhi imechelewa"],
+    en:"In the first few years after periods begin, it is very normal for them to be irregular — sometimes early, sometimes late, sometimes skipped. Stress, illness, or poor nutrition can also change your cycle. But if you have missed a period and you have had sex, or you have gone more than three months without a period, please visit a clinic to be checked. A nurse will treat you kindly and privately.",
+    sw:"Katika miaka ya kwanza baada ya hedhi kuanza, ni kawaida sana kuwa isiyo ya mpangilio — wakati mwingine mapema, wakati mwingine kuchelewa. Msongo wa mawazo, ugonjwa, au lishe duni pia vinaweza kubadilisha mzunguko wako. Lakini kama hedhi imekosekana na umewahi kufanya ngono, au miezi mitatu imepita bila hedhi, tafadhali tembelea kliniki. Muuguzi atakuhudumia kwa upole na kwa siri."
+  },
+  {
+    keys:["stress","anxious","anxiety","worried","wasiwasi","msongo","mawazo mengi","overwhelmed"],
+    en:"Feeling stressed or worried is a normal part of life, especially when facing exams, family problems, or big changes. Things that help: talk to someone you trust, breathe slowly and deeply, get enough sleep, and spend time doing something you enjoy. If the worry is so heavy that you cannot eat, sleep, or enjoy anything for many days, you deserve support. You can call Befrienders Kenya free on 0800 723 253 — they listen without judging.",
+    sw:"Kuhisi msongo wa mawazo ni sehemu ya kawaida ya maisha, hasa wakati wa mitihani, matatizo ya nyumbani, au mabadiliko makubwa. Yanayosaidia: zungumza na mtu unayemwamini, vuta pumzi polepole, lala vya kutosha, na fanya kitu unachokipenda. Kama wasiwasi ni mzito hadi unashindwa kula, kulala, au kufurahia chochote kwa siku nyingi, unastahili msaada. Piga simu Befrienders Kenya bure kwa 0800 723 253 — wanasikiliza bila kuhukumu."
+  },
+  {
+    keys:["sad","depress","huzuni","hopeless","cry","kulia","lonely","upweke","kujiua","suicide","kill myself","end my life","kufa"],
+    en:"I am sorry you are feeling this way. Your feelings matter, and you matter. Sadness that stays for a long time is not weakness — it is something many young people go through, and help works. Please talk to an adult you trust, and know you can call Befrienders Kenya free, day or night, on 0800 723 253. If you are thinking of hurting yourself, please call them now or press the Emergency button — you deserve support today, not someday.",
+    sw:"Pole sana kwa jinsi unavyohisi. Hisia zako ni muhimu, na wewe ni muhimu. Huzuni inayodumu kwa muda mrefu si udhaifu — ni jambo linalowapata vijana wengi, na msaada unasaidia. Tafadhali zungumza na mtu mzima unayemwamini, na ujue unaweza kupiga simu Befrienders Kenya bure, mchana au usiku, kwa 0800 723 253. Kama unafikiria kujidhuru, tafadhali wapigie sasa au bonyeza kitufe cha Dharura — unastahili msaada leo."
+  },
+  {
+    keys:["consent","ridhaa","permission to touch","kugusa bila","forced to","say no","kukataa"],
+    en:"Consent means saying yes freely, without fear, pressure, or tricks. Your body belongs to you. No one — not a boyfriend, girlfriend, relative, teacher, or stranger — has the right to touch you without your clear agreement. You can say no at any time, even if you said yes before. If someone touches you without consent, it is never your fault, and you can get help by pressing the Emergency button or calling 1195.",
+    sw:"Ridhaa maana yake ni kukubali kwa hiari, bila hofu, shinikizo, au ujanja. Mwili wako ni wako. Hakuna mtu — mpenzi, ndugu, mwalimu, au mgeni — mwenye haki ya kukugusa bila makubaliano yako wazi. Unaweza kukataa wakati wowote, hata kama ulikubali awali. Kama mtu amekugusa bila ridhaa, si kosa lako kamwe, na unaweza kupata msaada kwa kubonyeza kitufe cha Dharura au kupiga 1195."
+  },
+  {
+    keys:["puberty","balehe","body changing","kuvunja ungo","breast","voice deep","hair growing"],
+    en:"Puberty is when your body changes from a child's body to an adult's body. It can bring breast growth, new hair, voice changes, pimples, and new feelings. It happens to everyone, at different ages — usually between nine and sixteen — and everything about it is normal. If something worries you, like pain or a change that feels wrong, ask me or visit a clinic. There is no shameful question about your own body.",
+    sw:"Balehe ni wakati mwili wako unabadilika kutoka mwili wa mtoto kuwa wa mtu mzima. Huleta kukua kwa matiti, nywele mpya, mabadiliko ya sauti, chunusi, na hisia mpya. Hutokea kwa kila mtu, kwa umri tofauti — kwa kawaida kati ya miaka tisa na kumi na sita — na yote ni ya kawaida. Kama kitu kinakusumbua, kama maumivu, niulize au tembelea kliniki. Hakuna swali la aibu kuhusu mwili wako."
+  },
+  {
+    keys:["pregnan","mimba","kushika mimba","contracept","kuzuia mimba","family planning","uzazi wa mpango"],
+    en:"Pregnancy can happen any time a girl who has started her periods has unprotected sex — even the first time. The only sure way to avoid pregnancy is not having sex, and that is always a valid choice. If you are sexually active, youth-friendly clinics like Marie Stopes and LVCT Health offer free, private advice on safe methods, without judging you. If you think you may be pregnant, visit a clinic early — you have options and rights, and you will be treated with respect.",
+    sw:"Mimba inaweza kutungwa wakati wowote msichana aliyeanza hedhi anafanya ngono bila kinga — hata mara ya kwanza. Njia pekee ya uhakika ya kuepuka mimba ni kutofanya ngono, na huo ni uamuzi halali kila wakati. Kama unafanya ngono, kliniki rafiki kwa vijana kama Marie Stopes na LVCT Health zinatoa ushauri wa bure na wa siri, bila kukuhukumu. Kama unadhani una mimba, tembelea kliniki mapema — una haki, na utahudumiwa kwa heshima."
+  },
+  {
+    keys:["hiv","ukimwi","sti","std","magonjwa ya zinaa","infection down there","maambukizi"],
+    en:"HIV and other sexually transmitted infections pass mainly through unprotected sex. You cannot tell if someone has an infection by looking at them. Protection includes not having sex, or using a condom correctly every time. Testing is free, quick, and private at government clinics and LVCT Health centres — knowing your status is a sign of strength. If you notice pain, itching, sores, or unusual discharge, visit a clinic soon. Treatment works best early.",
+    sw:"Ukimwi na magonjwa mengine ya zinaa huenezwa hasa kupitia ngono bila kinga. Huwezi kujua kama mtu ana maambukizi kwa kumtazama. Kinga ni pamoja na kutofanya ngono, au kutumia kondomu ipasavyo kila wakati. Kupima ni bure, haraka, na siri katika kliniki za serikali na vituo vya LVCT Health — kujua hali yako ni ishara ya nguvu. Ukiona maumivu, kuwashwa, vidonda, au uchafu usio wa kawaida, tembelea kliniki mapema."
+  },
+  {
+    keys:["clinic","hospital","daktari","doctor","where can i get help","nipate msaada wapi","referral","kliniki"],
+    en:"You can get free or low-cost help at your nearest government health centre or dispensary — ask for the youth-friendly services desk. Marie Stopes Kenya, LVCT Health, and Kenya Red Cross clinics also serve young people kindly and privately. For emergencies: GBV helpline 1195, Befrienders Kenya 0800 723 253 for mental health, both free. If you tell me your county, I can suggest where to start.",
+    sw:"Unaweza kupata msaada bila malipo au kwa gharama ndogo katika kituo cha afya cha serikali kilicho karibu nawe — uliza huduma rafiki kwa vijana. Marie Stopes Kenya, LVCT Health, na kliniki za Msalaba Mwekundu pia huwahudumia vijana kwa upole na siri. Kwa dharura: nambari ya GBV ni 1195, na Befrienders Kenya 0800 723 253 kwa afya ya akili — zote ni bure. Niambie kaunti yako, nikupendekezee pa kuanzia."
+  }
+];
+
+/* SGBV trigger words — respond with support, never with questions for details */
+const SGBV = ["rape","raped","defil","assault","abuse","abused","molest","beaten","beat me",
+  "hit me","forced me","touched me","kubakwa","nilibakwa","alinibaka","kunajisi","alinilazimisha",
+  "ananipiga","alinipiga","kuguswa vibaya","unyanyasaji"];
+
+/* ---------- Speech synthesis (TTS) — NEVER en-US ---------- */
+let voices = [];
+function loadVoices(){ voices = speechSynthesis.getVoices(); }
+loadVoices();
+if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = loadVoices;
+
+function pickVoice(lang){
+  const prefs = lang === "sw"
+    ? ["sw-KE","sw-TZ","sw"]
+    : ["en-KE","en-GB","en-NG","en-ZA","en-IN","en-AU"]; // Kenyan first; en-US excluded on purpose
+  for (const p of prefs){
+    const v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(p.toLowerCase()));
+    if (v) return v;
+  }
+  // last resort: any non-US voice, then anything
+  return voices.find(v => v.lang && !v.lang.toLowerCase().startsWith("en-us")) || voices[0] || null;
+}
+
+/* Chrome silently stops speech after ~15s and can jam the speech engine.
+   Fix: split text into sentences, queue them, and nudge the engine alive. */
+let resumeTimer = null;
+function stopSpeaking(){
+  clearInterval(resumeTimer);
+  try{ speechSynthesis.cancel(); }catch(e){}
+}
+function speak(text, cb){
+  try{
+    stopSpeaking();
+    const parts = (text.match(/[^.!?]+[.!?]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    const v = pickVoice(LANG);
+    let remaining = parts.length;
+    const done = () => { remaining--; if (remaining <= 0){ clearInterval(resumeTimer); cb && cb(); } };
+    parts.forEach(part => {
+      const u = new SpeechSynthesisUtterance(part);
+      if (v) u.voice = v;
+      u.lang = LANG === "sw" ? "sw-KE" : (v && v.lang ? v.lang : "en-GB");
+      u.rate = 0.85;  // slightly slower for clarity, per spec
+      u.onend = done;
+      u.onerror = done;
+      speechSynthesis.speak(u);
+    });
+    // keep-alive nudge every 10s while speaking (Chrome desktop bug workaround)
+    resumeTimer = setInterval(() => {
+      if (speechSynthesis.speaking) speechSynthesis.resume();
+      else clearInterval(resumeTimer);
+    }, 10000);
+  }catch(e){ if(cb) cb(); }
+}
+
+/* ---------- Speech recognition (STT) ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false;
+
+function startListening(){
+  if (!SR){ setStatus(T[LANG].noSR); speak(T[LANG].noSR); return; }
+  if (listening){ stopListening(); return; }
+  stopSpeaking();                                  // never listen while talking
+  if (rec){ try{ rec.abort(); }catch(e){} rec = null; }  // full reset between questions
+  rec = new SR();
+  rec.lang = LANG === "sw" ? "sw-KE" : "en-KE";
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  listening = true;
+  micState("listening");
+  setStatus(T[LANG].listening);
+  if (navigator.vibrate) navigator.vibrate(80);   // haptic: recording started
+
+  rec.onresult = e => {
+    const text = e.results[0][0].transcript;
+    listening = false;
+    if (navigator.vibrate) navigator.vibrate([50,50,50]); // haptic: recording ended
+    handleQuestion(text);
+  };
+  rec.onerror = e => {
+    listening = false; micState("idle");
+    const why = {
+      "not-allowed": "Microphone is blocked. Tap the lock icon 🔒 next to the address bar, set Microphone to Allow, then reload this page.",
+      "service-not-allowed": "Microphone is blocked by the browser. Tap the lock icon 🔒 near the address bar, allow Microphone, then reload.",
+      "network": "Voice recognition needs internet. Please check your connection and try again.",
+      "no-speech": T[LANG].noSpeech,
+      "audio-capture": "No microphone was found on this device.",
+      "aborted": T[LANG].noSpeech
+    }[e.error] || (T[LANG].error + " (" + e.error + ")");
+    setStatus(why);
+    speak(why);   // errors must be HEARD, not just seen — users are blind
+  };
+  rec.onend = () => { if (listening){ listening = false; micState("idle"); } };
+  try{ rec.start(); }
+  catch(e){ listening = false; micState("idle"); setStatus(T[LANG].error); speak(T[LANG].error); }
+}
+function stopListening(){ if (rec){ try{rec.stop();}catch(e){} } listening = false; micState("idle"); }
+
+/* ---------- Brain: SGBV check → Gemma (if token) → verified library ---------- */
+async function handleQuestion(text){
+  addBubble(text, "user");
+  micState("thinking");
+  setStatus(T[LANG].thinking);
+
+  const lower = " " + text.toLowerCase() + " ";
+
+  // 1. SGBV safety pathway — highest priority, zero retention, no follow-up questions
+  if (SGBV.some(w => lower.includes(w))){
+    const msg = T[LANG].sgbv;
+    addBubble(msg, "app");
+    micState("idle"); setStatus("");
+    speak(msg, () => show("scrEmg", true));
+    return;
+  }
+
+  // 2. Try the Gemma AI brain when a token is configured
+  if (HF_TOKEN){
+    try{
+      const answer = await askGemma(text);
+      if (answer){ deliver(answer); return; }
+    }catch(e){ /* fall through to library */ }
+  }
+
+  // 3. Verified answer library
+  let best = null, bestScore = 0;
+  for (const item of KB){
+    const score = item.keys.reduce((s,k) => s + (lower.includes(k) ? 1 : 0), 0);
+    if (score > bestScore){ bestScore = score; best = item; }
+  }
+  if (best){ deliver(best[LANG]); }
+  else {
+    deliver(LANG === "sw"
+      ? "Samahani, sina jibu la uhakika kwa swali hilo bado. Naweza kukusaidia kuhusu hedhi, afya ya akili, ridhaa, balehe, mimba, magonjwa ya zinaa, na mahali pa kupata msaada. Jaribu kuuliza kwa maneno mengine, au tembelea kliniki iliyo karibu kwa msaada zaidi."
+      : "I am sorry, I do not have a verified answer for that yet. I can help with periods, mental health, consent, puberty, pregnancy, infections, and where to find help. Try asking in different words, or visit your nearest clinic for more support.");
+  }
+}
+
+function deliver(answer){
+  addBubble(answer, "app");
+  micState("idle"); setStatus("");
+  speak(answer, () => setStatus(T[LANG].again));
+}
+
+/* System prompt from Technical Specification v1.0 §7 — sent with every call */
+const SYSTEM_PROMPT = "You are SautiLume, a trusted health assistant for young people in Kenya, aged 10 to 24. You provide accurate, verified health information about: sexual and reproductive health, menstrual hygiene, mental health, consent, and bodily safety. Always respond in the language the user speaks to you in — either English or Swahili. Use simple, clear language. Avoid medical jargon. Your context is Kenya. Use Kenyan units, Kenyan institutions (Ministry of Health, AMREF, UNFPA Kenya), and Kenyan cultural sensitivity. You are non-judgmental, warm, and never shaming. The user may be blind, visually impaired, or have a disability. Never reference visual content. You do not store, share, or reference any personal information the user shares. Every conversation is completely private. If the user describes violence, abuse, or assault, do not ask for details. Express care, tell them it is not their fault, and offer to connect them with the SGBV helpline: 1195. Keep all responses under 150 words. Speak in a conversational tone, as if talking kindly to a young person. Remember what the user has already told you in this conversation and build on it. When it would help the user, end your answer with ONE short, caring follow-up question — for example asking how long they have felt this way, or whether they would like to know about treatments or where to get help. Never ask more than one question at a time.";
+
+async function askGemma(question){
+  const langHint = LANG === "sw"
+    ? "The user's app language is Swahili — respond in simple Kiswahili."
+    : "The user's app language is English — respond in simple Kenyan English.";
+  const messages = [
+    { role:"system", content: SYSTEM_PROMPT + " " + langHint },
+    ...history.slice(-8),                       // short conversation memory
+    { role:"user", content: question }
+  ];
+  const models = activeModel ? [activeModel] : MODELS;
+  for (const model of models){
+    try{
+      const res = await fetch("https://router.huggingface.co/v1/chat/completions", {
+        method:"POST",
+        headers:{ "Authorization":"Bearer " + HF_TOKEN, "Content-Type":"application/json" },
+        body: JSON.stringify({ model, messages, max_tokens: 300, temperature: 0.4 })
+      });
+      if (!res.ok) continue;                    // model unavailable → try the next
+      const data = await res.json();
+      const answer = data.choices && data.choices[0] && data.choices[0].message.content.trim();
+      if (answer){
+        activeModel = model;                    // stick with what works this session
+        history.push({ role:"user", content: question });
+        history.push({ role:"assistant", content: answer });
+        if (history.length > 16) history = history.slice(-16);
+        return answer;
+      }
+    }catch(e){ /* network hiccup → try next model */ }
+  }
+  return null;                                  // all failed → verified library takes over
+}
+
+/* ---------- UI helpers ---------- */
+function show(id, keepMic){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  $(id).classList.add("active");
+  $("micWrap").style.display = (id === "scrMain" || keepMic) ? "flex" : "none";
+}
+function setStatus(msg){ $("status").textContent = msg; }
+function micState(state){
+  const b = $("micBtn");
+  b.classList.remove("listening","thinking");
+  if (state === "listening"){ b.classList.add("listening"); b.innerHTML = T[LANG].micStop; b.setAttribute("aria-label","Recording. Tap to stop."); }
+  else if (state === "thinking"){ b.classList.add("thinking"); b.innerHTML = "..."; b.setAttribute("aria-label","Finding your answer, please wait."); }
+  else { b.innerHTML = T[LANG].micIdle; b.setAttribute("aria-label","Press to ask your question by voice"); }
+}
+function addBubble(text, who){
+  const d = document.createElement("div");
+  d.className = "bubble " + who;
+  d.textContent = text;
+  $("chat").appendChild(d);
+  d.scrollIntoView({behavior:"smooth"});
+}
+
+/* ---------- Quick exit: wipe everything instantly ---------- */
+function quickExit(){
+  stopSpeaking();
+  stopListening();
+  $("chat").innerHTML = "";       // conversation gone from screen
+  history = [];                   // and gone from memory — nothing survives Exit
+  setStatus("");
+  show("scrLang");                // back to neutral start screen
+}
+
+/* ---------- Language + start ---------- */
+function setLang(lang, announce){
+  if (LANG && LANG !== lang) history = [];  // fresh start when language changes
+  LANG = lang;
+  localStorage.setItem("sl_lang", lang);  // only the language is stored — nothing else
+  $("emgTitle").textContent = lang === "sw" ? "Msaada wa Dharura" : "Emergency Help";
+  $("emgLead").textContent  = lang === "sw"
+    ? "Naweza kukuunganisha na mtu wa kukusaidia sasa hivi. Chagua nani wa kupiga simu. Simu ni bure na ni ya siri."
+    : "I can connect you to someone who can help right now. Choose who to call. The call is free and confidential.";
+  micState("idle");
+  show("scrMain");
+  if (announce) speak(T[LANG].welcome);
+}
+
+/* ---------- Wire up ---------- */
+$("btnEN").onclick = () => setLang("en", true);
+$("btnSW").onclick = () => setLang("sw", true);
+$("micBtn").onclick = startListening;
+$("emgTop").onclick = () => { show("scrEmg"); speak(T[LANG || "en"].emgSpoken); };
+$("emgBack").onclick = () => { speechSynthesis.cancel(); LANG ? show("scrMain") : show("scrLang"); };
+$("exitTop").onclick = quickExit;
+$("settingsTop").onclick = () => { $("hfToken").value = HF_TOKEN; show("scrSettings"); };
+$("settingsBack").onclick = () => LANG ? show("scrMain") : show("scrLang");
+$("setEN").onclick = () => setLang("en", true);
+$("setSW").onclick = () => setLang("sw", true);
+$("saveSettings").onclick = () => {
+  HF_TOKEN = $("hfToken").value.trim();
+  if (HF_TOKEN) localStorage.setItem("sl_hf", HF_TOKEN); else localStorage.removeItem("sl_hf");
+  LANG ? show("scrMain") : show("scrLang");
+};
+
+/* Environment self-check — tells us why voice may not work */
+(function envCheck(){
+  const msgs = [];
+  if (!SR) msgs.push("⚠ This browser has no voice input. Please use Google Chrome. (You can still type your question.)");
+  if (location.hostname.includes("googleusercontent") || location.hostname.includes("drive.google"))
+    msgs.push("⚠ You are viewing this inside Google Drive's preview, which blocks the microphone. Please DOWNLOAD the file and open it with Chrome instead.");
+  if (msgs.length){
+    const d = document.createElement("div");
+    d.className = "privacy"; d.style.borderLeftColor = "#ef5350";
+    d.textContent = msgs.join(" ");
+    document.querySelector("main").prepend(d);
+  }
+})();
+
+/* Returning user: language remembered locally, go straight to conversation */
+if (LANG){ setLang(LANG, false); }
+</script>
+</body>
+</html>
