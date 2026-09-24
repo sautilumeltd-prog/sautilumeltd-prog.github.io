@@ -245,10 +245,28 @@ const KB = [
   }
 ];
 
-/* SGBV trigger words — respond with support, never with questions for details */
-const SGBV = ["rape","raped","defil","assault","abuse","abused","molest","beaten","beat me",
-  "hit me","forced me","touched me","kubakwa","nilibakwa","alinibaka","kunajisi","alinilazimisha",
-  "ananipiga","alinipiga","kuguswa vibaya","unyanyasaji"];
+/* SGBV trigger words — respond with support, never with questions for details.
+   Swahili verbs change with person and tense (alinigusa, ananigusa, amenigusa…),
+   so the Swahili triggers are the part of the verb that stays the same.
+   A trailing space means "whole word only": "ninajisi " (defiled me) must not
+   match "ninajisikia" (I feel).                                               */
+const SGBV = ["rape","raped","raping","defil","assault","abuse","abused","molest","beaten","beat me",
+  "hit me","forced me","forcing me ","forces me ","touched me","touching me ","touched my private",
+  "kubakwa","nilibakwa","alinibaka","nibaka ","bakwa ","kunajisi","najisiwa","ninajisi ",
+  "alinilazimisha","nilazimisha","nililazimishwa","nimelazimishwa","ninalazimishwa",
+  "ananipiga","alinipiga","nipiga ","kuguswa vibaya","guswa vibaya","nigusa vibaya",
+  "nigusa sehemu za siri","guswa sehemu za siri","unyanyasaji"];
+
+/* Self-harm and suicide — also a crisis. These always get the verified answer
+   with the Befrienders Kenya number, never "no answer" and never an AI guess.
+   Trailing space = whole word: "want to die " must not match "want to diet",
+   "nataka kufa " must not match "nataka kufanya" (to do).                     */
+const SELF_HARM = ["suicid","kill myself","end my life","ending my life","end it all",
+  "take my own life","taking my own life","want to die ","wish i was dead","wish i were dead",
+  "better off dead","want to live anymore","want to be alive","no reason to live","tired of living",
+  "want to hurt myself","harm myself","self harm","self-harm",
+  "jiua","jiue","sitaki kuishi tena","nimechoka kuishi","nataka kufa ","natamani kufa ",
+  "afadhali nife ","kujidhuru","kujitoa uhai","kujinyonga"];
 
 /* ---------- Speech synthesis (TTS) — NEVER en-US ---------- */
 let voices = [];
@@ -349,13 +367,22 @@ async function handleQuestion(text){
   setStatus(T[LANG].thinking);
 
   const lower = " " + text.toLowerCase() + " ";
+  // Punctuation becomes a space, so whole-word triggers still match "…kufa." or "…me!"
+  const plain = lower.replace(/[.,!?;:…"“”()]/g, " ");
 
   // 1. SGBV safety pathway — highest priority, zero retention, no follow-up questions
-  if (SGBV.some(w => lower.includes(w))){
+  if (SGBV.some(w => plain.includes(w))){
     const msg = T[LANG].sgbv;
     addBubble(msg, "app");
     micState("idle"); setStatus("");
     speak(msg, () => show("scrEmg", true));
+    return;
+  }
+
+  // 1b. Self-harm / suicide — the verified Befrienders answer, before anything else
+  if (SELF_HARM.some(w => plain.includes(w))){
+    const crisis = KB.find(item => item.keys.includes("suicide"));
+    deliver(crisis[LANG]);
     return;
   }
 
