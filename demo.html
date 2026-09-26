@@ -194,6 +194,7 @@ const T = {
    Befrienders Kenya. All answers < 120 words, plain language.            */
 const KB = [
   {
+    general:true,   // the general periods answer loses ties to specific ones (pain, late periods)
     keys:["period","menstru","hedhi","damu ya mwezi","monthly bleeding"],
     en:"A period is normal monthly bleeding that shows your body is healthy and growing. It usually lasts three to seven days and comes about once a month. Use a clean pad, and change it every four to six hours. Wash your hands before and after changing. If you cannot afford pads, a clean folded cotton cloth works — wash and dry it in the sun. Periods are natural. They are nothing to be ashamed of.",
     sw:"Hedhi ni damu ya kawaida ya kila mwezi inayoonyesha mwili wako uko na afya na unakua. Kwa kawaida huchukua siku tatu hadi saba. Tumia pedi safi, na ubadilishe kila baada ya masaa manne hadi sita. Nawa mikono kabla na baada ya kubadilisha. Kama huwezi kupata pedi, kitambaa safi cha pamba kinafaa — kifue na ukianike juani. Hedhi ni jambo la kawaida. Si jambo la aibu."
@@ -204,7 +205,8 @@ const KB = [
     sw:"Maumivu ya hedhi ni jambo la kawaida na mara nyingi si hatari. Ili kupunguza: weka chupa ya maji moto au kitambaa cha joto tumboni, kunywa maji mengi, tembea polepole, na pumzika. Kama maumivu ni makali sana hadi unashindwa kwenda shule, au unahisi kizunguzungu, tafadhali tembelea kliniki iliyo karibu — muuguzi atakusaidia. Usivumilie kimya."
   },
   {
-    keys:["irregular","missed period","late period","hedhi haiji","hedhi imechelewa"],
+    keys:["irregular","missed period","late period","has not come","hasn't come","have not come","haven't come",
+          "hedhi haiji","hedhi imechelewa","imechelewa","haijaja"],
     en:"In the first few years after periods begin, it is very normal for them to be irregular — sometimes early, sometimes late, sometimes skipped. Stress, illness, or poor nutrition can also change your cycle. But if you have missed a period and you have had sex, or you have gone more than three months without a period, please visit a clinic to be checked. A nurse will treat you kindly and privately.",
     sw:"Katika miaka ya kwanza baada ya hedhi kuanza, ni kawaida sana kuwa isiyo ya mpangilio — wakati mwingine mapema, wakati mwingine kuchelewa. Msongo wa mawazo, ugonjwa, au lishe duni pia vinaweza kubadilisha mzunguko wako. Lakini kama hedhi imekosekana na umewahi kufanya ngono, au miezi mitatu imepita bila hedhi, tafadhali tembelea kliniki. Muuguzi atakuhudumia kwa upole na kwa siri."
   },
@@ -214,7 +216,7 @@ const KB = [
     sw:"Kuhisi msongo wa mawazo ni sehemu ya kawaida ya maisha, hasa wakati wa mitihani, matatizo ya nyumbani, au mabadiliko makubwa. Yanayosaidia: zungumza na mtu unayemwamini, vuta pumzi polepole, lala vya kutosha, na fanya kitu unachokipenda. Kama wasiwasi ni mzito hadi unashindwa kula, kulala, au kufurahia chochote kwa siku nyingi, unastahili msaada. Piga simu Befrienders Kenya bure kwa 0800 723 253 — wanasikiliza bila kuhukumu."
   },
   {
-    keys:["sad","depress","huzuni","hopeless","cry","kulia","lonely","upweke","kujiua","suicide","kill myself","end my life","kufa"],
+    keys:["sad","depress","huzuni","hopeless","cry","kulia","lonely","upweke","kujiua","suicide","kill myself","end my life","kufa "],
     en:"I am sorry you are feeling this way. Your feelings matter, and you matter. Sadness that stays for a long time is not weakness — it is something many young people go through, and help works. Please talk to an adult you trust, and know you can call Befrienders Kenya free, day or night, on 0800 723 253. If you are thinking of hurting yourself, please call them now or press the Emergency button — you deserve support today, not someday.",
     sw:"Pole sana kwa jinsi unavyohisi. Hisia zako ni muhimu, na wewe ni muhimu. Huzuni inayodumu kwa muda mrefu si udhaifu — ni jambo linalowapata vijana wengi, na msaada unasaidia. Tafadhali zungumza na mtu mzima unayemwamini, na ujue unaweza kupiga simu Befrienders Kenya bure, mchana au usiku, kwa 0800 723 253. Kama unafikiria kujidhuru, tafadhali wapigie sasa au bonyeza kitufe cha Dharura — unastahili msaada leo."
   },
@@ -234,7 +236,7 @@ const KB = [
     sw:"Mimba inaweza kutungwa wakati wowote msichana aliyeanza hedhi anafanya ngono bila kinga — hata mara ya kwanza. Njia pekee ya uhakika ya kuepuka mimba ni kutofanya ngono, na huo ni uamuzi halali kila wakati. Kama unafanya ngono, kliniki rafiki kwa vijana kama Marie Stopes na LVCT Health zinatoa ushauri wa bure na wa siri, bila kukuhukumu. Kama unadhani una mimba, tembelea kliniki mapema — una haki, na utahudumiwa kwa heshima."
   },
   {
-    keys:["hiv","ukimwi","sti","std","magonjwa ya zinaa","infection down there","maambukizi"],
+    keys:["hiv","ukimwi"," sti "," stis "," std","magonjwa ya zinaa","infection down there","maambukizi"],
     en:"HIV and other sexually transmitted infections pass mainly through unprotected sex. You cannot tell if someone has an infection by looking at them. Protection includes not having sex, or using a condom correctly every time. Testing is free, quick, and private at government clinics and LVCT Health centres — knowing your status is a sign of strength. If you notice pain, itching, sores, or unusual discharge, visit a clinic soon. Treatment works best early.",
     sw:"Ukimwi na magonjwa mengine ya zinaa huenezwa hasa kupitia ngono bila kinga. Huwezi kujua kama mtu ana maambukizi kwa kumtazama. Kinga ni pamoja na kutofanya ngono, au kutumia kondomu ipasavyo kila wakati. Kupima ni bure, haraka, na siri katika kliniki za serikali na vituo vya LVCT Health — kujua hali yako ni ishara ya nguvu. Ukiona maumivu, kuwashwa, vidonda, au uchafu usio wa kawaida, tembelea kliniki mapema."
   },
@@ -248,14 +250,17 @@ const KB = [
 /* SGBV trigger words — respond with support, never with questions for details.
    Swahili verbs change with person and tense (alinigusa, ananigusa, amenigusa…),
    so the Swahili triggers are the part of the verb that stays the same.
-   A trailing space means "whole word only": "ninajisi " (defiled me) must not
-   match "ninajisikia" (I feel).                                               */
-const SGBV = ["rape","raped","raping","defil","assault","abuse","abused","molest","beaten","beat me",
+   A leading or trailing space means the word must start or end there:
+   "ninajisi " (defiled me) must not match "ninajisikia" (I feel), and
+   " rape" must not match "grape". The same rule applies to library keys.    */
+const SGBV = [" rape","defil","assault","abuse","abused","molest","beaten","beat me",
   "hit me","forced me","forcing me ","forces me ","touched me","touching me ","touched my private",
   "kubakwa","nilibakwa","alinibaka","nibaka ","bakwa ","kunajisi","najisiwa","ninajisi ",
   "alinilazimisha","nilazimisha","nililazimishwa","nimelazimishwa","ninalazimishwa",
   "ananipiga","alinipiga","nipiga ","kuguswa vibaya","guswa vibaya","nigusa vibaya",
   "nigusa sehemu za siri","guswa sehemu za siri","unyanyasaji"];
+/* Phrases that contain an SGBV word but are about something else */
+const NOT_SGBV = ["drug abuse","drugs abuse","substance abuse","alcohol abuse"];
 
 /* Self-harm and suicide — also a crisis. These always get the verified answer
    with the Befrienders Kenya number, never "no answer" and never an AI guess.
@@ -286,6 +291,18 @@ function pickVoice(lang){
   return voices.find(v => v.lang && !v.lang.toLowerCase().startsWith("en-us")) || voices[0] || null;
 }
 
+/* Phone numbers must be heard digit by digit so a blind user can dial them:
+   "0800 723 253" → "0 8 0 0, 7 2 3, 2 5 3" and "1195" → "1 1 9 5".
+   Only what is spoken changes; the screen shows the number as written.     */
+const PHONE = /\b(?:0\d{2,3}(?:[ -]?\d{3}){2}|1195|1199|116|999|112)\b/g;
+function sayDigits(text){
+  return text.replace(PHONE, num => {
+    let groups = num.split(/[ -]/);
+    if (groups.length === 1 && num.length === 10) groups = [num.slice(0,4), num.slice(4,7), num.slice(7)];
+    return groups.map(g => g.split("").join(" ")).join(", ");
+  });
+}
+
 /* Chrome silently stops speech after ~15s and can jam the speech engine.
    Fix: split text into sentences, queue them, and nudge the engine alive. */
 let resumeTimer = null;
@@ -296,7 +313,8 @@ function stopSpeaking(){
 function speak(text, cb){
   try{
     stopSpeaking();
-    const parts = (text.match(/[^.!?]+[.!?]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    const spoken = sayDigits(text);
+    const parts = (spoken.match(/[^.!?]+[.!?]*/g) || [spoken]).map(s => s.trim()).filter(Boolean);
     const v = pickVoice(LANG);
     let remaining = parts.length;
     const done = () => { remaining--; if (remaining <= 0){ clearInterval(resumeTimer); cb && cb(); } };
@@ -371,7 +389,8 @@ async function handleQuestion(text){
   const plain = lower.replace(/[.,!?;:…"“”()]/g, " ");
 
   // 1. SGBV safety pathway — highest priority, zero retention, no follow-up questions
-  if (SGBV.some(w => plain.includes(w))){
+  const sgbvText = NOT_SGBV.reduce((t, p) => t.split(p).join(" "), plain);
+  if (SGBV.some(w => sgbvText.includes(w))){
     const msg = T[LANG].sgbv;
     addBubble(msg, "app");
     micState("idle"); setStatus("");
@@ -394,10 +413,12 @@ async function handleQuestion(text){
     }catch(e){ /* fall through to library */ }
   }
 
-  // 3. Verified answer library
+  // 3. Verified answer library. Multi-word phrases ("period pain") outrank single
+  //    words ("period"), and the general periods answer loses ties to specific ones.
   let best = null, bestScore = 0;
   for (const item of KB){
-    const score = item.keys.reduce((s,k) => s + (lower.includes(k) ? 1 : 0), 0);
+    let score = item.keys.reduce((s,k) => s + (plain.includes(k) ? (k.trim().includes(" ") ? 3 : 1) : 0), 0);
+    if (score && item.general) score -= 0.5;
     if (score > bestScore){ bestScore = score; best = item; }
   }
   if (best){ deliver(best[LANG]); }
