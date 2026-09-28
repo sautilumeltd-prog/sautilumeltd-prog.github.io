@@ -171,6 +171,7 @@ const T = {
     micIdle: "PRESS<br>TO ASK",
     micStop: "TAP TO<br>STOP",
     noSpeech: "I did not hear you. Please press the big button and ask again.",
+    emgOpened: "I have opened the emergency screen so you can call with one touch.",
     emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. The call is free and confidential.",
     sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free and open day and night. I have opened the emergency screen so you can call with one touch.",
     noSR: "Voice input is not available in this browser. Please open SautiLume using Google Chrome.",
@@ -184,6 +185,7 @@ const T = {
     micIdle: "BONYEZA<br>KUULIZA",
     micStop: "GUSA<br>KUSIMAMISHA",
     noSpeech: "Sikukusikia. Tafadhali bonyeza kitufe kikubwa na uulize tena.",
+    emgOpened: "Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
     emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu ni bure na ni ya siri.",
     sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
     noSR: "Sauti haipatikani kwenye kivinjari hiki. Tafadhali fungua SautiLume kwa kutumia Google Chrome.",
@@ -441,7 +443,11 @@ async function handleQuestion(text){
     const selfHarm = KB.find(item => item.keys.includes("self harm"));
     const crisis = selfHarm && selfHarm.keys.some(k => plain.includes(k))
       ? selfHarm : KB.find(item => item.keys.includes("suicide"));
-    deliver(crisis[LANG]);
+    // Like the violence reply: say so, then open the call screen so help is one touch away
+    const msg = crisis[LANG] + " " + T[LANG].emgOpened;
+    addBubble(msg, "app");
+    micState("idle"); setStatus("");
+    speak(msg, () => show("scrEmg", true));
     return;
   }
 
