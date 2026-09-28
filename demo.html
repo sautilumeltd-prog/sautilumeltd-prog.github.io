@@ -114,7 +114,7 @@
   <!-- EMERGENCY -->
   <section class="screen" id="scrEmg" aria-label="Emergency help">
     <h1 id="emgTitle">Emergency Help</h1>
-    <p class="lead" id="emgLead">I can connect you to someone who can help right now. Choose who to call. The call is free and confidential.</p>
+    <p class="lead" id="emgLead">I can connect you to someone who can help right now. Choose who to call. Calls to 1195, 1199 and 116 are free. All calls are confidential.</p>
     <a href="tel:1195" class="plain"><button class="big-btn call">📞 GBV Helpline — 1195 (free, 24 hours)</button></a>
     <a href="tel:0722178177" class="plain"><button class="big-btn call">📞 Befrienders Kenya (mental health) — 0722 178 177 (Mon–Fri, 9am–5pm)</button></a>
     <a href="tel:1199" class="plain"><button class="big-btn call">📞 Kenya Red Cross counselling (mental health) — 1199 (free, 24 hours)</button></a>
@@ -172,7 +172,7 @@ const T = {
     micStop: "TAP TO<br>STOP",
     noSpeech: "I did not hear you. Please press the big button and ask again.",
     emgOpened: "I have opened the emergency screen so you can call with one touch.",
-    emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. The call is free and confidential.",
+    emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. Calls to 1195, 1199 and 116 are free. All calls are confidential.",
     sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free and open day and night. I have opened the emergency screen so you can call with one touch.",
     noSR: "Voice input is not available in this browser. Please open SautiLume using Google Chrome.",
     error: "Sorry, something went wrong. Please try again."
@@ -186,7 +186,7 @@ const T = {
     micStop: "GUSA<br>KUSIMAMISHA",
     noSpeech: "Sikukusikia. Tafadhali bonyeza kitufe kikubwa na uulize tena.",
     emgOpened: "Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
-    emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu ni bure na ni ya siri.",
+    emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu kwa 1195, 1199 na 116 ni bure. Simu zote ni za siri.",
     sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
     noSR: "Sauti haipatikani kwenye kivinjari hiki. Tafadhali fungua SautiLume kwa kutumia Google Chrome.",
     error: "Samahani, kuna hitilafu. Tafadhali jaribu tena."
@@ -555,8 +555,8 @@ function setLang(lang, announce){
   localStorage.setItem("sl_lang", lang);  // only the language is stored — nothing else
   $("emgTitle").textContent = lang === "sw" ? "Msaada wa Dharura" : "Emergency Help";
   $("emgLead").textContent  = lang === "sw"
-    ? "Naweza kukuunganisha na mtu wa kukusaidia sasa hivi. Chagua nani wa kupiga simu. Simu ni bure na ni ya siri."
-    : "I can connect you to someone who can help right now. Choose who to call. The call is free and confidential.";
+    ? "Naweza kukuunganisha na mtu wa kukusaidia sasa hivi. Chagua nani wa kupiga simu. Simu kwa 1195, 1199 na 116 ni bure. Simu zote ni za siri."
+    : "I can connect you to someone who can help right now. Choose who to call. Calls to 1195, 1199 and 116 are free. All calls are confidential.";
   micState("idle");
   show("scrMain");
   if (announce) speak(T[LANG].welcome);
