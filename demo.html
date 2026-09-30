@@ -114,7 +114,8 @@
   <!-- EMERGENCY -->
   <section class="screen" id="scrEmg" aria-label="Emergency help">
     <h1 id="emgTitle">Emergency Help</h1>
-    <p class="lead" id="emgLead">I can connect you to someone who can help right now. Choose who to call. Calls to 1195, 1199 and 116 are free. All calls are confidential.</p>
+    <p class="lead" id="emgLead">I can connect you to someone who can help right now. Choose who to call. Calls to 999, 1195, 1199 and 116 are free. All calls are confidential.</p>
+    <a href="tel:999" class="plain"><button class="big-btn call">📞 Danger to life right now: police and ambulance — 999 (free, 24 hours)</button></a>
     <a href="tel:1195" class="plain"><button class="big-btn call">📞 GBV Helpline — 1195 (free, 24 hours)</button></a>
     <a href="tel:0722178177" class="plain"><button class="big-btn call">📞 Befrienders Kenya (mental health) — 0722 178 177 (Mon–Fri, 9am–5pm)</button></a>
     <a href="tel:1199" class="plain"><button class="big-btn call">📞 Kenya Red Cross counselling (mental health) — 1199 (free, 24 hours)</button></a>
@@ -172,8 +173,9 @@ const T = {
     micStop: "TAP TO<br>STOP",
     noSpeech: "I did not hear you. Please press the big button and ask again.",
     emgOpened: "I have opened the emergency screen so you can call with one touch.",
-    emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. Calls to 1195, 1199 and 116 are free. All calls are confidential.",
-    sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free and open day and night. I have opened the emergency screen so you can call with one touch.",
+    urgent: "Your life matters, and I want you to get help right now. If you have taken pills, poison or anything else to harm yourself, call 999 or 112 now, or ask someone near you to take you to the nearest hospital straight away. Even if you feel fine, go now: some medicines cause harm hours later. Please don't stay alone. You can also call the Kenya Red Cross free on 1199, day or night.",
+    emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. Calls to 999, 1195, 1199 and 116 are free. All calls are confidential.",
+    sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free and open day and night. If you were forced to have sex in the last 3 days, please go to a clinic or hospital as soon as you can. They can give you medicine to prevent HIV and pregnancy. I have opened the emergency screen so you can call with one touch.",
     noSR: "Voice input is not available in this browser. Please open SautiLume using Google Chrome.",
     error: "Sorry, something went wrong. Please try again."
   },
@@ -186,8 +188,9 @@ const T = {
     micStop: "GUSA<br>KUSIMAMISHA",
     noSpeech: "Sikukusikia. Tafadhali bonyeza kitufe kikubwa na uulize tena.",
     emgOpened: "Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
-    emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu kwa 1195, 1199 na 116 ni bure. Simu zote ni za siri.",
-    sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
+    urgent: "Maisha yako ni muhimu, na nataka upate msaada sasa hivi. Kama umekunywa vidonge, sumu au kitu kingine ili kujidhuru, piga simu 999 au 112 sasa, au mwombe mtu aliye karibu akupeleke hospitali iliyo karibu mara moja. Hata kama unajisikia sawa, nenda sasa: dawa nyingine hudhuru baada ya masaa kadhaa. Tafadhali usibaki peke yako. Unaweza pia kupiga simu Msalaba Mwekundu bure kwa 1199, mchana au usiku.",
+    emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu kwa 999, 1195, 1199 na 116 ni bure. Simu zote ni za siri.",
+    sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Kama ulilazimishwa kufanya ngono ndani ya siku 3 zilizopita, tafadhali nenda kliniki au hospitali haraka iwezekanavyo. Wanaweza kukupa dawa za kuzuia Ukimwi na mimba. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
     noSR: "Sauti haipatikani kwenye kivinjari hiki. Tafadhali fungua SautiLume kwa kutumia Google Chrome.",
     error: "Samahani, kuna hitilafu. Tafadhali jaribu tena."
   }
@@ -213,8 +216,8 @@ const KB = [
     en:"Feeling stressed or worried is a normal part of life, especially when facing exams, family problems, or big changes. Things that help: talk to someone you trust, breathe slowly and deeply, get enough sleep, and spend time doing something you enjoy. If the worry is so heavy that you cannot eat, sleep, or enjoy anything for many days, you deserve support. You can call Befrienders Kenya on 0722 178 177, Monday to Friday, 9am to 5pm, or the Kenya Red Cross free on 1199, day or night — they listen without judging.",
     sw:"Kuhisi msongo wa mawazo ni sehemu ya kawaida ya maisha, hasa wakati wa mitihani, matatizo ya nyumbani, au mabadiliko makubwa. Yanayosaidia: zungumza na mtu unayemwamini, vuta pumzi polepole, lala vya kutosha, na fanya kitu unachokipenda. Kama wasiwasi ni mzito hadi unashindwa kula, kulala, au kufurahia chochote kwa siku nyingi, unastahili msaada. Piga simu Befrienders Kenya kwa 0722 178 177, Jumatatu hadi Ijumaa, saa tatu asubuhi hadi saa kumi na moja jioni, au Msalaba Mwekundu bure kwa 1199, mchana au usiku — wanasikiliza bila kuhukumu." },
   { keys:["sad","depress","huzuni","hopeless","cry","kulia","lonely","upweke","pweke","kujiua","suicide","kill myself","end my life","kufa "],
-    en:"I am sorry you are feeling this way. Your feelings matter, and you matter. Sadness that stays for a long time is not weakness — it is something many young people go through, and help works. Please talk to an adult you trust, and know you can call Befrienders Kenya on 0722 178 177, Monday to Friday, 9am to 5pm, or the Kenya Red Cross free on 1199, day or night. If you are under 18, you can call the Child Helpline on 116, free, day or night. If you are thinking of hurting yourself, please call now or use the Emergency button — you deserve support today, not someday.",
-    sw:"Pole sana kwa jinsi unavyohisi. Hisia zako ni muhimu, na wewe ni muhimu. Huzuni inayodumu kwa muda mrefu si udhaifu — ni jambo linalowapata vijana wengi, na msaada unasaidia. Tafadhali zungumza na mtu mzima unayemwamini, na ujue unaweza kupiga simu Befrienders Kenya kwa 0722 178 177, Jumatatu hadi Ijumaa, saa tatu asubuhi hadi saa kumi na moja jioni, au Msalaba Mwekundu bure kwa 1199, mchana au usiku. Kama uko chini ya miaka 18, unaweza kupiga simu ya msaada kwa watoto, 116, bure, mchana au usiku. Kama unafikiria kujidhuru, tafadhali piga simu sasa au tumia kitufe cha Dharura — unastahili msaada leo." },
+    en:"I am sorry you are feeling this way. Your feelings matter, and you matter. Sadness that stays for a long time is not weakness — it is something many young people go through, and help works. Please talk to an adult you trust, and know you can call the Kenya Red Cross free on 1199, day or night, or Befrienders Kenya on 0722 178 177, Monday to Friday, 9am to 5pm. If you are under 18, you can call the Child Helpline on 116, free, day or night. If you are thinking of hurting yourself, please call now or use the Emergency button — you deserve support today, not someday. If you are in danger right now, call 999 or 112.",
+    sw:"Pole sana kwa jinsi unavyohisi. Hisia zako ni muhimu, na wewe ni muhimu. Huzuni inayodumu kwa muda mrefu si udhaifu — ni jambo linalowapata vijana wengi, na msaada unasaidia. Tafadhali zungumza na mtu mzima unayemwamini, na ujue unaweza kupiga simu Msalaba Mwekundu bure kwa 1199, mchana au usiku, au Befrienders Kenya kwa 0722 178 177, Jumatatu hadi Ijumaa, saa tatu asubuhi hadi saa kumi na moja jioni. Kama uko chini ya miaka 18, unaweza kupiga simu ya msaada kwa watoto, 116, bure, mchana au usiku. Kama unafikiria kujidhuru, tafadhali piga simu sasa au tumia kitufe cha Dharura — unastahili msaada leo. Kama uko hatarini sasa hivi, piga simu 999 au 112." },
   { keys:["consent","ridhaa","permission to touch","kugusa bila","forced to","say no","kukataa"],
     en:"Consent means saying yes freely, without fear, pressure, or tricks. Your body belongs to you. No one — not a boyfriend, girlfriend, relative, teacher, or stranger — has the right to touch you without your clear agreement. You can say no at any time, even if you said yes before. If someone touches you without consent, it is never your fault, and you can get help using the Emergency button or by calling 1195.",
     sw:"Ridhaa maana yake ni kukubali kwa hiari, bila hofu, shinikizo, au ujanja. Mwili wako ni wako. Hakuna mtu — mpenzi, ndugu, mwalimu, au mgeni — mwenye haki ya kukugusa bila makubaliano yako wazi. Unaweza kukataa wakati wowote, hata kama ulikubali awali. Kama mtu amekugusa bila ridhaa, si kosa lako kamwe, na unaweza kupata msaada kwa kitufe cha Dharura au kupiga 1195." },
@@ -310,10 +313,13 @@ const SELF_HARM = ["suicid","kill myself","end my life","ending my life","end it
   "better off dead","want to live anymore","want to be alive","no reason to live","tired of living",
   "want to hurt myself","harm myself","self harm","self-harm","cutting myself","hurting myself","kujikata",
   "jiua","jiue","sitaki kuishi tena","nimechoka kuishi","nataka kufa ","natamani kufa ",
-  "afadhali nife ","jidhuru","kujitoa uhai","kujinyonga",
-  // Poison and overdose (I-015)
-  "drank poison","drunk poison","drink poison","took poison","taken poison","take poison","swallowed poison","ate poison","poison myself","drank bleach","drink bleach","an overdose","overdosed","too many pills","too many tablets",
+  "afadhali nife ","jidhuru","kujitoa uhai","kujinyonga"];
+
+// Poison or overdose: a medical emergency, so 999/112 or hospital first (I-016).
+// A suicide or self-harm phrase plus a means word ("pills", "sumu"…) counts too.
+const OVERDOSE = ["drank poison","drunk poison","drink poison","took poison","taken poison","take poison","swallowed poison","ate poison","poison myself","drank bleach","drink bleach","an overdose","overdosed","too many pills","too many tablets",
   "kunywa sumu","kula sumu","meza sumu","sumu ya panya","kunywa vidonge vingi","meza vidonge vingi","kunywa dawa nyingi","meza dawa nyingi"];
+const OVERDOSE_MEANS = ["pill","tablet","poison","bleach","overdose","vidonge","kidonge","dawa","sumu"];
 
 /* ---------- Speech synthesis (TTS) — NEVER en-US ---------- */
 let voices = [];
@@ -440,8 +446,18 @@ async function handleQuestion(text){
     return;
   }
 
-  // 1b. Self-harm / suicide — the verified suicide-support answer, before anything else
-  if (SELF_HARM.some(w => plain.includes(w))){
+  // 1b. Poison or overdose — a medical emergency: 999/112 or hospital first, then the call screen
+  const selfHarmWords = SELF_HARM.some(w => plain.includes(w));
+  if (OVERDOSE.some(w => plain.includes(w)) || (selfHarmWords && OVERDOSE_MEANS.some(w => plain.includes(w)))){
+    const msg = T[LANG].urgent + " " + T[LANG].emgOpened;
+    addBubble(msg, "app");
+    micState("idle"); setStatus("");
+    speak(msg, () => show("scrEmg", true));
+    return;
+  }
+
+  // 1c. Self-harm / suicide — the verified suicide-support answer, before anything else
+  if (selfHarmWords){
     // Self-harm has its own answer; suicidal thoughts get the suicide one (as in the app)
     const selfHarm = KB.find(item => item.keys.includes("self harm"));
     const crisis = selfHarm && selfHarm.keys.some(k => plain.includes(k))
@@ -558,8 +574,8 @@ function setLang(lang, announce){
   localStorage.setItem("sl_lang", lang);  // only the language is stored — nothing else
   $("emgTitle").textContent = lang === "sw" ? "Msaada wa Dharura" : "Emergency Help";
   $("emgLead").textContent  = lang === "sw"
-    ? "Naweza kukuunganisha na mtu wa kukusaidia sasa hivi. Chagua nani wa kupiga simu. Simu kwa 1195, 1199 na 116 ni bure. Simu zote ni za siri."
-    : "I can connect you to someone who can help right now. Choose who to call. Calls to 1195, 1199 and 116 are free. All calls are confidential.";
+    ? "Naweza kukuunganisha na mtu wa kukusaidia sasa hivi. Chagua nani wa kupiga simu. Simu kwa 999, 1195, 1199 na 116 ni bure. Simu zote ni za siri."
+    : "I can connect you to someone who can help right now. Choose who to call. Calls to 999, 1195, 1199 and 116 are free. All calls are confidential.";
   micState("idle");
   show("scrMain");
   if (announce) speak(T[LANG].welcome);
