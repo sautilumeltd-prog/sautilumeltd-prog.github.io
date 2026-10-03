@@ -173,6 +173,7 @@ const T = {
     micStop: "TAP TO<br>STOP",
     noSpeech: "I did not hear you. Please press the big button and ask again.",
     emgOpened: "I have opened the emergency screen so you can call with one touch.",
+    bleeding: "Heavy bleeding in pregnancy, or after an abortion or miscarriage, is an emergency. Please go to the nearest hospital or health centre now, or call 999 or 112. Care after an abortion is confidential, and health workers must treat you.",
     urgent: "Your life matters, and I want you to get help right now. If you have taken pills, poison or anything else to harm yourself, call 999 or 112 now, or ask someone near you to take you to the nearest hospital straight away. Even if you feel fine, go now: some medicines cause harm hours later. Please don't stay alone. You can also call the Kenya Red Cross free on 1199, day or night.",
     emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. Calls to 999, 1195, 1199 and 116 are free. All calls are confidential.",
     sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free and open day and night. If you are under 18, you can also call the Child Helpline on 116, free, day or night. If you were forced to have sex in the last 3 days, please go to a clinic or hospital as soon as you can. They can give you medicine to prevent HIV and pregnancy. I have opened the emergency screen so you can call with one touch.",
@@ -188,6 +189,7 @@ const T = {
     micStop: "GUSA<br>KUSIMAMISHA",
     noSpeech: "Sikukusikia. Tafadhali bonyeza kitufe kikubwa na uulize tena.",
     emgOpened: "Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
+    bleeding: "Kutokwa na damu nyingi ukiwa na mimba, au baada ya kutoa mimba au mimba kuharibika, ni dharura. Tafadhali nenda hospitali au kituo cha afya kilicho karibu sasa hivi, au piga simu 999 au 112. Huduma baada ya kutoa mimba ni ya siri, na wahudumu wa afya lazima wakutibu.",
     urgent: "Maisha yako ni muhimu, na nataka upate msaada sasa hivi. Kama umekunywa vidonge, sumu au kitu kingine ili kujidhuru, piga simu 999 au 112 sasa, au mwombe mtu aliye karibu akupeleke hospitali iliyo karibu mara moja. Hata kama unajisikia sawa, nenda sasa: dawa nyingine hudhuru baada ya masaa kadhaa. Tafadhali usibaki peke yako. Unaweza pia kupiga simu Msalaba Mwekundu bure kwa 1199, mchana au usiku.",
     emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu kwa 999, 1195, 1199 na 116 ni bure. Simu zote ni za siri.",
     sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Kama uko chini ya miaka 18, unaweza pia kupiga simu ya msaada kwa watoto, 116, bure, mchana na usiku. Kama ulilazimishwa kufanya ngono ndani ya siku 3 zilizopita, tafadhali nenda kliniki au hospitali haraka iwezekanavyo. Wanaweza kukupa dawa za kuzuia Ukimwi na mimba. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
@@ -227,7 +229,7 @@ const KB = [
   { keys:["pregnan","mimba","kushika mimba"],
     en:"Pregnancy can happen any time a girl who has started her periods has unprotected sex — even the first time. The only sure way to avoid pregnancy is not having sex, and that is always a valid choice. If you are sexually active, youth-friendly clinics like Marie Stopes and LVCT Health offer free, private advice on safe methods, without judging you. If you think you may be pregnant, visit a clinic early — you have options and rights, and you will be treated with respect.",
     sw:"Mimba inaweza kutungwa wakati wowote msichana aliyeanza hedhi anafanya ngono bila kinga — hata mara ya kwanza. Njia pekee ya uhakika ya kuepuka mimba ni kutofanya ngono, na huo ni uamuzi halali kila wakati. Kama unafanya ngono, kliniki rafiki kwa vijana kama Marie Stopes na LVCT Health zinatoa ushauri wa bure na wa siri, bila kukuhukumu. Kama unadhani una mimba, tembelea kliniki mapema — una haki, na utahudumiwa kwa heshima." },
-  { keys:["hiv","ukimwi"," sti "," stis "," std","magonjwa ya zinaa","infection down there","maambukizi"],
+  { keys:["hiv","ukimwi","nimeambukizwa","nina ukimwi","nina virusi vya ukimwi","hiv positive","i have hiv","positive for hiv"," sti "," stis "," std","magonjwa ya zinaa","infection down there","maambukizi"],
     en:"HIV and other sexually transmitted infections pass mainly through unprotected sex. You cannot tell if someone has an infection by looking at them. Protection includes not having sex, or using a condom correctly every time. Testing is free, quick, and private at government clinics and LVCT Health centres — knowing your status is a sign of strength. If you notice pain, itching, sores, or unusual discharge, visit a clinic soon. Treatment works best early.",
     sw:"Ukimwi na magonjwa mengine ya zinaa huenezwa hasa kupitia ngono bila kinga. Huwezi kujua kama mtu ana maambukizi kwa kumtazama. Kinga ni pamoja na kutofanya ngono, au kutumia kondomu ipasavyo kila wakati. Kupima ni bure, haraka, na siri katika kliniki za serikali na vituo vya LVCT Health — kujua hali yako ni ishara ya nguvu. Ukiona maumivu, kuwashwa, vidonda, au uchafu usio wa kawaida, tembelea kliniki mapema." },
   { keys:["clinic","hospital","daktari","doctor","where can i get help","nipate msaada wapi","referral","kliniki","counsellor","counselor","who can i call","who do i call","mshauri","kumpigia simu","msaada wa haraka"],
@@ -272,7 +274,7 @@ const KB = [
   { keys:["myths about periods","can i bathe during periods","cook during periods","pray during periods","hadithi za hedhi","kuoga wakati wa hedhi","kupika wakati wa hedhi","swim","kuogelea"],
     en:"There are many myths about periods, but none of them are true. You can bathe, wash your hair, cook, pray, exercise, and go about your normal life while on your period — menstrual blood is not dirty or dangerous to others. Periods do not mean you are unclean or cursed. These are just old beliefs, not medical facts. If someone tells you otherwise, it is okay to trust your body and the facts instead. Periods are a normal, healthy part of growing up.",
     sw:"Kuna hadithi nyingi kuhusu hedhi, lakini hakuna hata moja ya kweli. Unaweza kuoga, kunawa nywele, kupika, kusali, kufanya mazoezi, na kuendelea na maisha yako ya kawaida wakati wa hedhi — damu ya hedhi si chafu wala hatari kwa wengine. Hedhi haimaanishi wewe ni mchafu au umelaaniwa. Haya ni imani za zamani tu, si ukweli wa kitiba. Kama mtu akikuambia vinginevyo, ni sawa kuamini mwili wako na ukweli badala yake. Hedhi ni sehemu ya kawaida na yenye afya ya kukua." },
-  { keys:["can hospital treat mental illness","mental health right","haki ya afya ya akili","hospitali inaweza kutibu afya ya akili","is mental health a right"],
+  { keys:["can hospital treat mental illness","hear voices","hearing voices","nasikia sauti","sauti kichwani","mental health right","haki ya afya ya akili","hospitali inaweza kutibu afya ya akili","is mental health a right"],
     en:"Getting help for your mental health is your right, not a favor. Kenya's Constitution recognises health, including mental health, as a right for everyone. Many general hospitals across the country — not just special mental hospitals — are approved to treat mental health conditions like depression, anxiety, and stress-related illness. You do not need to go somewhere far or unusual to get support; your local hospital may already offer it. If you are unsure where to start, ask at any government hospital, or call Befrienders Kenya on 0722 178 177 (weekdays) or the Kenya Red Cross free on 1199 (any time) for guidance and a listening ear.",
     sw:"Kupata msaada wa afya ya akili ni haki yako, si fadhila. Katiba ya Kenya inatambua afya, ikiwemo afya ya akili, kama haki ya kila mtu. Hospitali nyingi za kawaida nchini — si hospitali maalum za akili pekee — zimeidhinishwa kutibu hali za afya ya akili kama huzuni, wasiwasi, na magonjwa yanayohusiana na msongo. Hulazimiki kwenda mahali mbali au pa kigeni kupata msaada; hospitali yako ya karibu inaweza kuwa tayari inatoa huduma hiyo. Kama huna uhakika pa kuanzia, uliza katika hospitali yoyote ya serikali, au piga simu Befrienders Kenya kwa 0722 178 177 (siku za kazi) au Msalaba Mwekundu bure kwa 1199 (wakati wowote) kwa mwongozo na sikio la kusikiliza." },
   { keys:["child marriage","married young","ndoa ya utotoni","kuolewa nikiwa mdogo","forced marriage","ndoa ya kulazimishwa","want me to marry","marry an old","niolewe","kuolewa na mzee"],
@@ -281,7 +283,7 @@ const KB = [
   { keys:["condom","condoms","use a condom","put on a condom","kondomu","kutumia kondomu","kuvaa kondomu"],
     en:"Using a condom correctly every time protects against pregnancy, HIV and other sexually transmitted infections. First, press the packet gently: if you feel a small cushion of air, it is not damaged. If you cannot check the expiry date, ask a pharmacist or nurse, or get condoms from a clinic. Open the packet with your fingers, never your teeth. Pinch the tip to squeeze out the air, then put it on the erect penis before any sexual contact. The rolled rim should be on the outside; if it does not unroll easily, throw it away and use a new one. Roll it all the way down. Afterwards, hold the base while pulling out, before the penis softens, and put it in a bin. Use a new condom every time, and never use Vaseline, oil or lotion with it, because it can break. Condoms are free at government health centres.",
     sw:"Kutumia kondomu ipasavyo kila mara kunakukinga dhidi ya mimba, Ukimwi na magonjwa mengine ya zinaa. Kwanza, bonyeza pakiti taratibu: ukihisi mto mdogo wa hewa ndani, haijaharibika. Kama huwezi kusoma tarehe ya mwisho wa matumizi, muulize mfamasia au muuguzi, au chukua kondomu kliniki. Fungua pakiti kwa vidole, si kwa meno. Bana ncha ya kondomu kutoa hewa, kisha ivae kwenye uume uliosimama kabla ya kugusana kwa njia yoyote ya ngono. Ukingo uliokunjwa unapaswa kuwa nje ili ikunjuke kwa urahisi; isipokunjuka, itupe na utumie mpya. Ikunjue hadi chini kabisa. Baadaye, shika kondomu kwenye shina wakati wa kutoa uume, kabla haujalegea, kisha itupe kwenye pipa la taka. Tumia kondomu mpya kila mara, na usitumie Vaseline, mafuta wala losheni nayo, kwa sababu inaweza kupasuka. Kondomu ni bure katika vituo vya afya vya serikali." },
-  { keys:["discharge","itching down there","itchy down there","vaginal itching","itchy vagina","burns when i pee","burning when i urinate","smell down there","kuwashwa sehemu za siri","muwasho sehemu za siri","kuwashwa ukeni","muwasho ukeni","uchafu ukeni","kutokwa na uchafu","harufu mbaya ukeni","kuwaka moto nikikojoa"],
+  { keys:["discharge","smells bad","smell bad","bad smell","harufu mbaya","itching down there","itchy down there","vaginal itching","itchy vagina","burns when i pee","burning when i urinate","smell down there","kuwashwa sehemu za siri","muwasho sehemu za siri","kuwashwa ukeni","muwasho ukeni","uchafu ukeni","kutokwa na uchafu","harufu mbaya ukeni","kuwaka moto nikikojoa"],
     en:"Some discharge from the vagina is normal and healthy. It keeps the vagina clean, and it changes during your monthly cycle. Please visit a clinic if you notice a strong or bad smell, itching, burning or pain when you pass urine, pain during sex, sores, or pain in your lower belly, or, for boys, any discharge from the penis. These are often caused by common infections that are easy to treat, like thrush, and sometimes by sexually transmitted infections such as gonorrhoea, chlamydia or trichomoniasis. Do not wash inside the vagina or use scented soaps; plain water on the outside is best. Do not take leftover or borrowed medicine. A nurse can check you quickly and privately, often for free. If it is an infection passed on through sex, your partner needs treatment too.",
     sw:"Kutokwa na ute kiasi ukeni ni jambo la kawaida na la afya. Husafisha uke, na hubadilika katika mzunguko wako wa hedhi. Tafadhali tembelea kliniki ukiona harufu kali au mbaya, kuwashwa, kuhisi kuwaka moto au maumivu wakati wa kukojoa, maumivu wakati wa ngono, vidonda, au maumivu chini ya tumbo, au, kwa wavulana, uchafu wowote unaotoka kwenye uume. Mara nyingi husababishwa na maambukizi ya kawaida yanayotibika kwa urahisi, kama fangasi, na wakati mwingine na magonjwa ya zinaa kama kisonono, klamidia au trikomonasi. Usioshe ndani ya uke wala kutumia sabuni zenye manukato; maji safi sehemu ya nje yanatosha. Usitumie dawa zilizobaki au za kuazima. Muuguzi atakupima haraka na kwa siri, mara nyingi bure. Kama ni ugonjwa unaoambukizwa kwa ngono, mpenzi wako anahitaji matibabu pia." },
   { keys:["menstrual cup","menstrual cups","period cup","kikombe cha hedhi","vikombe vya hedhi"],
@@ -311,7 +313,9 @@ const SGBV = [" rape","defil","assault","abuse","abused","molest","beaten","beat
   "blackmailing me","blackmail me","blackmailed me",
   // Added 2026-10-01 (I-020): sexual exploitation by a teacher
   "teacher asked me for sex","teacher wants sex","teacher wants to have sex","sex to pass","sex for marks",
-  "sex for grades","mwalimu ananitaka","mwalimu aliniomba ngono","ngono ili nipite"];
+  "sex for grades","mwalimu ananitaka","mwalimu aliniomba ngono","ngono ili nipite",
+  // Added 2026-10-03 (I-023)
+  "grabbed my breast","grabbed my bum","grabbed my butt","grabbed my private","groped","grope me","alinishika matiti","alinishika makalio","ananifuatilia","stalking me","following me everywhere"];
 /* Phrases that contain an SGBV word but are about something else */
 const NOT_SGBV = ["drug abuse","drugs abuse","substance abuse","alcohol abuse",
   "it hits me","it really hits me","this hits me","that hits me","it beats me","that beats me"];
@@ -329,12 +333,17 @@ const SELF_HARM = ["suicid","kill myself","end my life","ending my life","end it
   // Added 2026-09-30 (I-018)
   "giving up on life","give up on life","gave up on life","no point in living","no point living","maisha hayana maana",
   // Added 2026-10-01 (I-020)
-  "cut myself","cut my wrist","better without me","better off without me"];
+  "cut myself","cut my wrist","better without me","better off without me",
+  // Added 2026-10-03 (I-023): someone worried about a friend
+  "kill herself","kill himself","kill themselves","wants to die ","end her life","end his life","take her own life","take his own life"];
 
 // Poison or overdose: a medical emergency, so 999/112 or hospital first (I-016).
 // A suicide or self-harm phrase plus a means word ("pills", "sumu"…) counts too.
 const OVERDOSE = ["drank poison","drunk poison","drink poison","took poison","taken poison","take poison","swallowed poison","ate poison","poison myself","drank bleach","drink bleach","an overdose","overdosed","too many pills","too many tablets",
   "kunywa sumu","kula sumu","meza sumu","sumu ya panya","kunywa vidonge vingi","meza vidonge vingi","kunywa dawa nyingi","meza dawa nyingi"];
+// Bleeding in pregnancy or after an abortion or miscarriage: hospital or 999/112 now (I-024).
+const BLEEDING = ["bleeding","bleed","blood clots","lots of blood","a lot of blood","tokwa na damu","damu nyingi","mabonge ya damu"];
+const PREGNANCY_STATE = ["i am pregnant","i'm pregnant","im pregnant","abortion","aborted","miscarriage","miscarried","nina mimba","nimetoa mimba","kutoa mimba","nilitoa mimba","mimba imeharibika","mimba kuharibika","mimba iliharibika"];
 const OVERDOSE_MEANS = ["pill","tablet","poison","bleach","overdose","vidonge","kidonge","dawa","sumu"];
 
 /* ---------- Speech synthesis (TTS) — NEVER en-US ---------- */
@@ -472,7 +481,16 @@ async function handleQuestion(text){
     return;
   }
 
-  // 1c. Self-harm / suicide — the verified suicide-support answer, before anything else
+  // 1c. Bleeding in pregnancy or after an abortion or miscarriage — hospital or 999/112 now, then the call screen
+  if (BLEEDING.some(w => plain.includes(w)) && PREGNANCY_STATE.some(w => plain.includes(w))){
+    const msg = T[LANG].bleeding + " " + T[LANG].emgOpened;
+    addBubble(msg, "app");
+    micState("idle"); setStatus("");
+    speak(msg, () => show("scrEmg", true));
+    return;
+  }
+
+  // 1d. Self-harm / suicide — the verified suicide-support answer, before anything else
   if (selfHarmWords){
     // Self-harm has its own answer; suicidal thoughts get the suicide one (as in the app)
     const selfHarm = KB.find(item => item.keys.includes("self harm"));
