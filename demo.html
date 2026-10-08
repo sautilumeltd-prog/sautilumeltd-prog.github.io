@@ -357,14 +357,16 @@ const SELF_HARM = ["suicid","kill myself","end my life","ending my life","end it
 const OVERDOSE = ["drank poison","drunk poison","drink poison","took poison","taken poison","take poison","swallowed poison","ate poison","poison myself","drank bleach","drink bleach","an overdose","overdosed","too many pills","too many tablets",
   "kunywa sumu","kula sumu","meza sumu","sumu ya panya","kunywa vidonge vingi","meza vidonge vingi","kunywa dawa nyingi","meza dawa nyingi",
   // Added 2026-10-04 (I-030)
-  "rat poison","drank jik","drink jik","drunk jik","swallowed jik","kunywa jik","drank dettol","drink dettol","kunywa dettol","meza panadol nyingi","kunywa panadol nyingi","meza paracetamol nyingi","kunywa paracetamol nyingi"];
+  "rat poison","drank jik","drink jik","drunk jik","swallowed jik","kunywa jik","drank dettol","drink dettol","kunywa dettol","meza panadol nyingi","kunywa panadol nyingi","meza paracetamol nyingi","kunywa paracetamol nyingi","meza tembe nyingi","kunywa tembe nyingi","meza madawa mengi","kunywa madawa mengi"];
 // Bleeding in pregnancy or after an abortion or miscarriage: hospital or 999/112 now (I-024).
 const BLEEDING = ["bleeding","bleed","blood clots","lots of blood","a lot of blood","tokwa na damu","damu nyingi","mabonge ya damu"];
 const PREGNANCY_STATE = ["i am pregnant","i'm pregnant","im pregnant","abortion","aborted","miscarriage","miscarried","nina mimba","nimetoa mimba","kutoa mimba","nilitoa mimba","mimba imeharibika","mimba kuharibika","mimba iliharibika","giving birth","gave birth","after birth","after delivery","delivered my baby","kujifungua","nilijifungua","nimejifungua","baada ya kuzaa"];
-const OVERDOSE_AMOUNT = ["took all","taken all","swallowed all","took the whole","swallowed the whole","whole packet","whole bottle","whole box","whole strip","vidonge vyote","meza vyote","swallowed a lot","took a lot","taken a lot","swallowed lots","took lots","took too much","taken too much","swallowed too much"];
+const OVERDOSE_AMOUNT = ["took all","taken all","swallowed all","took the whole","swallowed the whole","whole packet","whole bottle","whole box","whole strip","vidonge vyote","meza vyote"];
 const OVERDOSE_DRUGS = ["sleeping","painkiller","pain killer","paracetamol","panadol","usingizi","maumivu","mum's pills","mum's tablets","mother's pills","mother's tablets","mum’s pills","mum’s tablets","mother’s pills","mother’s tablets"];
 const PREGNANCY_DANGER = ["vomiting blood","vomit blood","vomited blood","kutapika damu","natapika damu","severe pain","severe stomach pain","severe belly pain","very bad stomach pain","very bad pain","strong pain","maumivu makali","having fits","had fits","convuls","degedege","severe headache","very bad headache","kichwa kinauma sana","blurred vision","kuona kwa ukungu","water is leaking","water leaking","waters broke","maji yanatoka","high fever","homa kali"];
-const OVERDOSE_MEANS = ["pill","tablet","poison","bleach","overdose","vidonge","kidonge","dawa","sumu"," jik ","dettol"];
+const OVERDOSE_HEAVY = ["swallowed a lot","swallowed lots","swallowed many","swallowed too many","swallowed too much","took a lot","took lots","took too many","took too much","taken a lot","taken lots","taken too many","taken too much"];
+const OVERDOSE_ANY_MEDICINE = ["pill","tablet","drug","medicine","medication","capsule","vidonge","tembe","dawa"];
+const OVERDOSE_MEANS = ["pill","tablet","poison","bleach","overdose","vidonge","kidonge","dawa","sumu"," jik ","dettol","drug","medicine","medication","capsule","tembe"];
 
 /* ---------- Speech synthesis (TTS) — NEVER en-US ---------- */
 let voices = [];
@@ -493,7 +495,7 @@ async function handleQuestion(text){
 
   // 1b. Poison or overdose — a medical emergency: 999/112 or hospital first, then the call screen
   const selfHarmWords = SELF_HARM.some(w => plain.includes(w));
-  if (OVERDOSE.some(w => plain.includes(w)) || (selfHarmWords && OVERDOSE_MEANS.some(w => plain.includes(w))) || (OVERDOSE_AMOUNT.some(w => plain.includes(w)) && OVERDOSE_DRUGS.some(w => plain.includes(w)))){
+  if (OVERDOSE.some(w => plain.includes(w)) || (selfHarmWords && OVERDOSE_MEANS.some(w => plain.includes(w))) || (OVERDOSE_AMOUNT.some(w => plain.includes(w)) && OVERDOSE_DRUGS.some(w => plain.includes(w))) || (OVERDOSE_HEAVY.some(w => plain.includes(w)) && (OVERDOSE_ANY_MEDICINE.some(w => plain.includes(w)) || OVERDOSE_DRUGS.some(w => plain.includes(w))))){
     const msg = T[LANG].urgent + " " + T[LANG].emgOpened;
     addBubble(msg, "app");
     micState("idle"); setStatus("");
