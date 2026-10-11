@@ -625,11 +625,12 @@ function show(id, keepMic){
 }
 function setStatus(msg){ $("status").textContent = msg; }
 function micState(state){
+  const L = T[LANG || "en"];  // the Exit button can run this before a language is chosen (I-007)
   const b = $("micBtn");
   b.classList.remove("listening","thinking");
-  if (state === "listening"){ b.classList.add("listening"); b.innerHTML = T[LANG].micStop; b.setAttribute("aria-label","Recording. Tap to stop."); }
+  if (state === "listening"){ b.classList.add("listening"); b.innerHTML = L.micStop; b.setAttribute("aria-label","Recording. Tap to stop."); }
   else if (state === "thinking"){ b.classList.add("thinking"); b.innerHTML = "..."; b.setAttribute("aria-label","Finding your answer, please wait."); }
-  else { b.innerHTML = T[LANG].micIdle; b.setAttribute("aria-label","Press to ask your question by voice"); }
+  else { b.innerHTML = L.micIdle; b.setAttribute("aria-label","Press to ask your question by voice"); }
 }
 function addBubble(text, who){
   const d = document.createElement("div");
