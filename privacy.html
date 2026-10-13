@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy | SautiLume</title>
+<meta name="description" content="How SautiLume handles information across its voice app, voice demo, and website. No names, no voice recordings, no stored conversations.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231B2A5A'/%3E%3Ctext x='50' y='68' font-size='55' font-family='Arial' fill='%232BC5EA' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
 <style>
-  :root { --navy:#1B2A5A; --cyan:#2BC5EA; --muted:#5A6B8C; --bg-soft:#F4F8FB; --border:#E3E9F2; }
+  :root { --navy:#1B2A5A; --cyan:#2BC5EA; --green:#A6CE39; --muted:#5A6B8C; --bg-soft:#F4F8FB; --border:#E3E9F2; }
   * { box-sizing: border-box; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--navy); line-height:1.65; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--navy); line-height:1.65; background:#fff; }
   .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px 80px; }
   header { border-bottom:1px solid var(--border); padding: 18px 0; margin-bottom: 40px; }
   header .wrap { display:flex; align-items:center; justify-content:space-between; padding-top:0; padding-bottom:0; }
@@ -19,15 +20,29 @@
   a.back:hover { text-decoration:underline; }
   h1 { font-size:1.9rem; margin: 0 0 6px; }
   .updated { color:var(--muted); font-size:0.88rem; margin-bottom:28px; }
-  .notice {
+  .intro { font-size:1.05rem; }
+  .callout {
     background: var(--bg-soft); border-left: 4px solid var(--cyan); border-radius: 0 10px 10px 0;
-    padding: 16px 20px; margin: 0 0 32px; color: var(--muted); font-size: 0.92rem;
+    padding: 16px 20px; margin: 18px 0 8px;
   }
-  h2 { font-size:1.2rem; margin: 34px 0 10px; }
+  .callout p { margin:0; }
+  .callout strong { color: var(--navy); }
+  h2 { font-size:1.2rem; margin: 40px 0 10px; }
+  h3 { font-size:1.02rem; margin: 22px 0 6px; }
   p, li { color: #2b3a5c; font-size: 0.98rem; }
   ul { padding-left: 20px; }
   li { margin-bottom: 6px; }
   a { color: var(--navy); }
+  .contact-card {
+    background: linear-gradient(135deg, var(--navy), #0f1a3d); border-radius: 18px;
+    padding: 28px 30px; margin-top: 44px; color:#fff;
+  }
+  .contact-card h2 { color:#fff; margin-top:0; }
+  .contact-card p { color:#cfe0ff; margin: 0 0 6px; }
+  .contact-card a { color: var(--cyan); font-weight:600; }
+  .legal-foot { border-top:1px solid var(--border); margin-top:48px; padding-top:20px; display:flex; flex-wrap:wrap; gap:8px 20px; font-size:0.85rem; }
+  .legal-foot a { color: var(--muted); text-decoration:none; }
+  .legal-foot a:hover, .legal-foot a[aria-current] { color: var(--navy); text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -40,34 +55,111 @@
 
 <main class="wrap">
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: July 2026</p>
+  <p class="updated">Last updated: 13 October 2026</p>
 
-  <div class="notice">
-    This is a draft policy describing how SautiLume is designed to work today, published so partners, reviewers, and early users can see our privacy approach in writing. It will be reviewed by qualified legal counsel before SautiLume processes personal data at scale, and it is not a substitute for legal advice.
+  <p class="intro">SautiLume Ltd ("SautiLume", "we", "us") builds voice-first health information services for blind and visually impaired young people in Kenya. This Privacy Policy explains what information our mobile application, our browser-based voice demo, and this website (together, the "Services") handle, why we handle it, and the choices you have.</p>
+  <p>Many of the people we serve are young, and the questions they ask concern their health, their bodies, and their safety. We have therefore designed SautiLume to collect as little as possible and to keep nothing it does not need.</p>
+
+  <div class="callout">
+    <p><strong>Our core commitment:</strong> SautiLume does not keep your name, your voice, or your conversations. When a conversation ends, or the moment you press Exit, it is gone from the device and from our systems.</p>
   </div>
 
-  <h2>The short version</h2>
-  <p>SautiLume is built on zero data retention. When you speak to SautiLume, your question and the spoken answer exist only for the length of that conversation. Once the conversation ends, or the moment you press Exit, nothing about it remains on the device or on our servers. We do not keep your name, your voice recording, a transcript, or a summary of what you asked.</p>
-
-  <h2>What we do not collect</h2>
+  <h2>1. Voice and Biometric Data</h2>
+  <p>SautiLume is operated entirely by voice. To understand your question, the Services use your device's microphone. To answer, they speak back using your device's built-in text-to-speech voice.</p>
   <ul>
-    <li>Your name or any other identifying information</li>
-    <li>Audio recordings of your voice</li>
-    <li>Transcripts or summaries of your conversations</li>
-    <li>Location data beyond what you may voluntarily share in conversation (which is never stored)</li>
+    <li>Your speech is converted to text by the speech recognition service built into your phone or browser. Depending on your device and settings, that service may process audio on the device itself or on its provider's servers (for example, Google on most Android phones and in the Chrome browser), under that provider's own privacy terms.</li>
+    <li>SautiLume never receives, records, or stores audio of your voice.</li>
+    <li>We do not create voiceprints or use your voice to identify you.</li>
+  </ul>
+  <div class="callout">
+    <p><strong>Key commitment:</strong> Under Kenya's Data Protection Act, 2019, voice recognition data is a form of biometric data, which the Act treats as sensitive personal data. SautiLume does not collect or store biometric data of any kind, whether on your device, on our systems, or in cookies.</p>
+  </div>
+
+  <h2>2. How We Answer Your Questions</h2>
+  <h3>Verified answer library, on your device</h3>
+  <p>Safety-critical questions, such as those about violence, abuse, self-harm, or a medical emergency, are always answered from verified answers and helplines stored inside the app. These questions are never sent to an AI service. Questions about where to find a clinic, pharmacy, or support service are answered only from our verified facility directory, which is also stored on the device.</p>
+  <h3>AI-assisted answers, when enabled</h3>
+  <p>For other health questions, SautiLume can use a third-party AI model to give a more natural, conversational reply, guided by our verified health content. When this feature is turned on:</p>
+  <ul>
+    <li>Only the text of your question is sent to the AI provider, together with the earlier questions and answers from the same conversation so that the reply makes sense.</li>
+    <li>We never send your audio, your name, your location, or any identifier that links the question to you.</li>
+    <li>All requests are encrypted in transit using HTTPS (TLS).</li>
+    <li>SautiLume does not store the request or the response. The conversation is held only in your device's temporary memory and is erased when the conversation ends or you press Exit.</li>
+    <li>We do not use your conversations to train AI models.</li>
   </ul>
 
-  <h2>What may exist temporarily</h2>
-  <p>Your chosen language (English or Swahili) is saved on your own device only, so SautiLume can greet you correctly next time. This never leaves your device. If you optionally add a Hugging Face API token to use the AI-assisted answer mode in the demo, that token is stored on your device only and is never sent to SautiLume.</p>
+  <h2>3. Optional Features You Control</h2>
+  <p>Two features in the mobile app are off by default. Each one asks for your permission by voice first, and you agree by shaking your phone, so the choice is fully accessible without needing to see the screen. If you do nothing, the feature stays off.</p>
+  <ul>
+    <li><strong>Finding services near you.</strong> If you allow it, the app reads your phone's location once to work out which county you are in, so it can suggest nearby facilities without asking. Your phone's built-in location service converts the position into a place name. The location is used in that moment only and then discarded. It is never stored and never sent to SautiLume.</li>
+    <li><strong>Anonymous usage count.</strong> If you agree to be counted, the app sends a small record containing a random identifier created on your device, the type of event, the app language, and the time. This helps us show partners and funders how many young people SautiLume reaches. It never includes your question, the answer, your name, your phone number, or your location. These records are stored with Google Firebase. You can switch this off at any time in the app's Settings.</li>
+  </ul>
 
-  <h2>Website hosting</h2>
-  <p>This website is hosted on GitHub Pages. Like most web hosting providers, GitHub's infrastructure may log standard technical information (such as IP address and browser type) for security and reliability purposes. SautiLume does not add any additional tracking, marketing, or analytics scripts to this site.</p>
+  <h2>4. Information Stored on Your Device</h2>
+  <p>A small number of settings are saved on your own device so that SautiLume works smoothly. None of them contain your conversations.</p>
+  <ul>
+    <li>Your language choice (English or Kiswahili), so SautiLume can greet you correctly next time.</li>
+    <li>Your answers to the optional features described above, and the random identifier used only for the optional usage count.</li>
+    <li>An AI access key, if one has been added (for example, a Hugging Face token in the voice demo). It stays on your device and is sent only to that AI provider, never to SautiLume.</li>
+  </ul>
+  <p>You can remove all of this at any time by clearing the app's storage in your phone's settings, or by clearing this site's data in your browser.</p>
 
-  <h2>Young people and minors</h2>
-  <p>SautiLume is designed for people aged 10 to 30, which includes minors. Because we do not collect or store any personal data during use of the product itself, there is no personal data of a minor for us to hold, share, or lose. As SautiLume grows, our approach to any future data collection will be built around Kenya's Data Protection Act, 2019, and international best practice for services used by young people.</p>
+  <h2>5. Our Website and Cookies</h2>
+  <ul>
+    <li>This website does not use advertising, analytics, or tracking cookies, and we do not use social media tracking pixels.</li>
+    <li>We use only essential browser storage, for example to remember your answer to our cookie notice. See <a href="cookies.html">Cookie Settings</a> for full details.</li>
+    <li>As with any website, our hosting provider automatically processes standard technical information, such as your IP address and browser type, to deliver pages securely and protect against abuse. We do not use this information to identify or profile you.</li>
+    <li>If you email or call us, we receive the details you choose to share, such as your name, email address, and message. We use them only to respond to you and keep them only for as long as that requires.</li>
+  </ul>
 
-  <h2>Questions</h2>
-  <p>If you have questions about this policy, contact us at <a href="mailto:sautilumeltd@gmail.com">sautilumeltd@gmail.com</a>.</p>
+  <h2>6. Third-Party Sharing</h2>
+  <p>We do not sell, rent, or trade personal data, and we never share it for advertising. We work only with the following service providers, each of which processes data under its own privacy terms:</p>
+  <ul>
+    <li><strong>Speech services:</strong> the speech recognition and text-to-speech built into your phone or browser.</li>
+    <li><strong>AI providers:</strong> Google (Gemini API) and Hugging Face, which generate AI-assisted answers when that feature is enabled.</li>
+    <li><strong>Google Firebase:</strong> stores the optional anonymous usage count.</li>
+    <li><strong>Website hosting:</strong> the provider that serves this website.</li>
+  </ul>
+  <p>We may disclose information where required by Kenyan law or a valid legal order. Because SautiLume does not keep conversations, there is no conversation history that we could be asked to hand over.</p>
+
+  <h2>7. Security</h2>
+  <ul>
+    <li>All communication between SautiLume and our service providers is encrypted in transit using HTTPS (TLS).</li>
+    <li>Our usage-count database is configured so that the app can only add new records. It cannot read, change, or delete existing ones.</li>
+    <li>Quick Exit stops speech instantly, clears the conversation from memory, and returns to a neutral start screen.</li>
+    <li>Access to our systems is limited to authorised members of the SautiLume team.</li>
+  </ul>
+
+  <h2>8. Children and Young People</h2>
+  <p>SautiLume is designed for young people aged 10 to 30, which includes children. Because we do not collect names, contact details, voice recordings, or conversations, we do not hold personal data that could identify a child. Optional features are explained in plain language and stay off unless they are switched on. Any future feature involving personal data will be designed around Kenya's Data Protection Act, 2019, including its specific protections for children's data, and international best practice for services used by young people.</p>
+
+  <h2>9. Your Rights</h2>
+  <p>Regardless of where you live, we extend the rights set out in Kenya's Data Protection Act, 2019 to everyone who uses SautiLume:</p>
+  <ul>
+    <li><strong>Right to be informed:</strong> know how and why your data is used.</li>
+    <li><strong>Right to access:</strong> request a copy of any personal data we hold about you.</li>
+    <li><strong>Right to correction:</strong> ask us to correct data that is inaccurate or misleading.</li>
+    <li><strong>Right to erasure:</strong> ask us to delete any personal data we hold about you.</li>
+    <li><strong>Right to object or opt out:</strong> switch off optional features at any time, or object to any processing.</li>
+  </ul>
+  <p>Because SautiLume does not keep conversations or link usage records to your identity, in most cases we will hold no personal data about you at all. To exercise any of these rights, contact us using the details below and we will respond promptly, within the timelines set by law. You also have the right to lodge a complaint with the <a href="https://www.odpc.go.ke/" target="_blank" rel="noopener">Office of the Data Protection Commissioner</a> in Kenya.</p>
+
+  <h2>10. Changes to This Policy</h2>
+  <p>We may update this policy as SautiLume grows. When we make important changes, we will update the date at the top of this page and highlight what has changed.</p>
+
+  <section class="contact-card" aria-labelledby="privacyContact">
+    <h2 id="privacyContact">Questions about privacy?</h2>
+    <p>Our team is happy to help with any question about this policy or how SautiLume handles information.</p>
+    <p>SautiLume Ltd, Nairobi, Kenya</p>
+    <p>Email: <a href="mailto:sautilumeltd@gmail.com">sautilumeltd@gmail.com</a> &middot; Phone: <a href="tel:+254723294284">+254 723 294 284</a></p>
+  </section>
+
+  <nav class="legal-foot" aria-label="Legal">
+    <a href="privacy.html" aria-current="page">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="cookies.html">Cookie Settings</a>
+  </nav>
 </main>
+<script src="consent.js" defer></script>
 </body>
 </html>

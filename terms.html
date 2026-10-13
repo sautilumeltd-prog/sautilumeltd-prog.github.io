@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Terms of Service | SautiLume</title>
+<meta name="description" content="The terms that govern use of the SautiLume voice app, voice demo, and website.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231B2A5A'/%3E%3Ctext x='50' y='68' font-size='55' font-family='Arial' fill='%232BC5EA' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
 <style>
-  :root { --navy:#1B2A5A; --cyan:#2BC5EA; --muted:#5A6B8C; --bg-soft:#F4F8FB; --border:#E3E9F2; }
+  :root { --navy:#1B2A5A; --cyan:#2BC5EA; --green:#A6CE39; --muted:#5A6B8C; --bg-soft:#F4F8FB; --border:#E3E9F2; }
   * { box-sizing: border-box; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--navy); line-height:1.65; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--navy); line-height:1.65; background:#fff; }
   .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px 80px; }
   header { border-bottom:1px solid var(--border); padding: 18px 0; margin-bottom: 40px; }
   header .wrap { display:flex; align-items:center; justify-content:space-between; padding-top:0; padding-bottom:0; }
@@ -19,16 +20,29 @@
   a.back:hover { text-decoration:underline; }
   h1 { font-size:1.9rem; margin: 0 0 6px; }
   .updated { color:var(--muted); font-size:0.88rem; margin-bottom:28px; }
-  .notice {
+  .intro { font-size:1.05rem; }
+  .callout {
     background: var(--bg-soft); border-left: 4px solid var(--cyan); border-radius: 0 10px 10px 0;
-    padding: 16px 20px; margin: 0 0 32px; color: var(--muted); font-size: 0.92rem;
+    padding: 16px 20px; margin: 18px 0 8px;
   }
-  .notice.warn { border-left-color: #d97706; }
-  h2 { font-size:1.2rem; margin: 34px 0 10px; }
+  .callout.warn { border-left-color: #d97706; background: #FFF8EE; }
+  .callout p { margin:0; }
+  .callout strong { color: var(--navy); }
+  h2 { font-size:1.2rem; margin: 40px 0 10px; }
   p, li { color: #2b3a5c; font-size: 0.98rem; }
   ul { padding-left: 20px; }
   li { margin-bottom: 6px; }
   a { color: var(--navy); }
+  .contact-card {
+    background: linear-gradient(135deg, var(--navy), #0f1a3d); border-radius: 18px;
+    padding: 28px 30px; margin-top: 44px; color:#fff;
+  }
+  .contact-card h2 { color:#fff; margin-top:0; }
+  .contact-card p { color:#cfe0ff; margin: 0 0 6px; }
+  .contact-card a { color: var(--cyan); font-weight:600; }
+  .legal-foot { border-top:1px solid var(--border); margin-top:48px; padding-top:20px; display:flex; flex-wrap:wrap; gap:8px 20px; font-size:0.85rem; }
+  .legal-foot a { color: var(--muted); text-decoration:none; }
+  .legal-foot a:hover, .legal-foot a[aria-current] { color: var(--navy); text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -41,40 +55,70 @@
 
 <main class="wrap">
   <h1>Terms of Service</h1>
-  <p class="updated">Last updated: July 2026</p>
+  <p class="updated">Last updated: 13 October 2026</p>
 
-  <div class="notice">
-    This is a draft version of our terms, published for transparency while SautiLume is in early prototype stage. It will be reviewed by qualified legal counsel before public launch, and it is not a substitute for legal advice.
+  <p class="intro">Welcome to SautiLume. These Terms of Service ("Terms") govern your use of the SautiLume mobile application, voice demo, and website (together, the "Services"), provided by SautiLume Ltd ("SautiLume", "we", "us"). By accessing or using the Services, you agree to be bound by these Terms. If you do not agree, please do not use the Services.</p>
+
+  <h2>1. About SautiLume</h2>
+  <p>SautiLume is a voice-first health information service for blind and visually impaired young people in Kenya. It provides verified information about sexual and reproductive health, mental health, menstrual hygiene, consent, and personal safety, spoken aloud in English or Kiswahili, together with referrals to real health and support services.</p>
+  <div class="callout warn">
+    <p><strong>Not a medical service.</strong> SautiLume is not a medical device and does not provide medical diagnosis, treatment, or emergency services. It shares health information and referrals only. Always consult a qualified health professional for medical decisions. In an emergency, call 999 or 112, or one of the helplines listed in the app.</p>
   </div>
 
-  <h2>What SautiLume is</h2>
-  <p>SautiLume is a voice-first health information prototype built for blind and visually impaired young people in Kenya. It gives verified information about sexual and reproductive health, mental health, menstrual hygiene, consent, and where to find real health services, spoken back by voice.</p>
+  <h2>2. Who May Use SautiLume</h2>
+  <p>SautiLume is designed for young people aged 10 to 30. If you are under 18, we encourage you to involve a parent, guardian, or trusted adult in decisions about your health, while recognising that some of the information SautiLume provides is, by its nature, private. Organisations that offer SautiLume to young people are responsible for making sure their use complies with these Terms and with applicable law.</p>
 
-  <div class="notice warn">
-    SautiLume is not a medical device and does not provide medical diagnosis, treatment, or emergency services. It shares verified information and referrals only. Always consult a licensed health professional for medical decisions, and in an emergency, contact local emergency services or the helplines listed in the app.
-  </div>
-
-  <h2>Who can use SautiLume</h2>
-  <p>SautiLume is designed for adolescents and young people aged 10 to 30. If you are under 18, we encourage you to also involve a parent, guardian, or trusted adult in decisions about your health, while respecting that some of the information SautiLume shares is by nature private.</p>
-
-  <h2>Acceptable use</h2>
+  <h2>3. Acceptable Use</h2>
+  <p>You agree not to use SautiLume to:</p>
   <ul>
-    <li>Use SautiLume for personal, non-commercial health information purposes</li>
-    <li>Do not attempt to reverse-engineer, scrape, or misuse the underlying voice or AI systems</li>
-    <li>Do not use SautiLume to harass, harm, or impersonate others</li>
+    <li>Generate, request, or share hate speech, threats, harassment, or illegal content.</li>
+    <li>Harm, deceive, or impersonate any other person.</li>
+    <li>Reverse engineer, copy, or extract our software, AI configuration, verified answer library, or facility directory.</li>
+    <li>Scrape the Services or send automated or high-volume requests without our written permission.</li>
+    <li>Interfere with the security, integrity, or operation of the Services.</li>
   </ul>
 
-  <h2>No warranty</h2>
-  <p>SautiLume is an early-stage prototype under active development. It is provided "as is," without warranties of any kind. While every answer in our knowledge base is reviewed for accuracy, we cannot guarantee the platform will be error-free or available at all times.</p>
+  <h2>4. Accuracy Disclaimer</h2>
+  <p>SautiLume combines a verified health answer library with optional generative AI. While we work hard to keep every answer accurate and current:</p>
+  <div class="callout">
+    <p>You acknowledge that AI-generated answers may contain errors, omissions, or cultural inaccuracies, and that health guidance can change over time. SautiLume should not be relied upon for medical, legal, or emergency decisions where a qualified professional is required.</p>
+  </div>
+  <p>Referral information, including helpline numbers and facility details, is verified before it is added, but services may change their hours or contact details without notice.</p>
 
-  <h2>Limitation of liability</h2>
-  <p>To the fullest extent permitted by law, SautiLume Ltd is not liable for indirect, incidental, or consequential damages arising from use of the platform. Nothing in these terms limits liability that cannot be limited under Kenyan law.</p>
+  <h2>5. Fees</h2>
+  <p>SautiLume is free for individual users. We do not charge young people to use the Services, and we do not show advertising. Organisations that license SautiLume for institutional use do so under separate written agreements, which take precedence over these Terms where they differ.</p>
 
-  <h2>Governing law</h2>
-  <p>These terms are governed by the laws of Kenya.</p>
+  <h2>6. Intellectual Property</h2>
+  <p>The SautiLume name and logo, our software and voice design, and our compiled answer library and facility directory are owned by SautiLume Ltd or its licensors and are protected by law. These Terms give you a personal, non-exclusive, non-transferable right to use the Services for their intended purpose, and no other rights.</p>
 
-  <h2>Contact</h2>
-  <p>Questions about these terms can be sent to <a href="mailto:sautilumeltd@gmail.com">sautilumeltd@gmail.com</a>.</p>
+  <h2>7. Third-Party Services and Links</h2>
+  <p>The Services rely on third-party providers, such as speech recognition services and AI providers, and link to external services such as helplines, health facilities, and social media. We are not responsible for their content, availability, or practices, which are governed by their own terms. Our <a href="privacy.html">Privacy Policy</a> explains how these providers are used.</p>
+
+  <h2>8. Availability and Changes to the Services</h2>
+  <p>SautiLume is under active development. The Services are provided on an "as is" and "as available" basis, and we may update, suspend, or discontinue any part of them at any time. We do not guarantee that the Services will be uninterrupted or free from errors.</p>
+
+  <h2>9. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by law, SautiLume Ltd, its directors, employees, and partners shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation loss of profits, data, or use, arising from or related to your use of the Services. Nothing in these Terms limits or excludes any liability that cannot be limited or excluded under the laws of Kenya.</p>
+
+  <h2>10. Changes to These Terms</h2>
+  <p>We may revise these Terms from time to time. The date at the top of this page shows when they were last updated. By continuing to use the Services after a change takes effect, you accept the revised Terms.</p>
+
+  <h2>11. Governing Law</h2>
+  <p>These Terms are governed by and construed in accordance with the laws of the Republic of Kenya, without regard to its conflict of law provisions. Any dispute arising from these Terms or the Services shall be subject to the jurisdiction of the courts of Kenya.</p>
+
+  <section class="contact-card" aria-labelledby="termsContact">
+    <h2 id="termsContact">Questions about these Terms?</h2>
+    <p>We are happy to explain anything in these Terms.</p>
+    <p>SautiLume Ltd, Nairobi, Kenya</p>
+    <p>Email: <a href="mailto:sautilumeltd@gmail.com">sautilumeltd@gmail.com</a> &middot; Phone: <a href="tel:+254723294284">+254 723 294 284</a></p>
+  </section>
+
+  <nav class="legal-foot" aria-label="Legal">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html" aria-current="page">Terms of Service</a>
+    <a href="cookies.html">Cookie Settings</a>
+  </nav>
 </main>
+<script src="consent.js" defer></script>
 </body>
 </html>
