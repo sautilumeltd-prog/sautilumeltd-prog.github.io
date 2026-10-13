@@ -107,6 +107,7 @@
   }
 
   section { padding: 72px 0; }
+  section[id] { scroll-margin-top: 80px; }  /* keep anchored sections clear of the sticky header */
   section.soft { background: var(--bg-soft); }
   h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
   h2 { font-size: 1.9rem; margin-bottom: 8px; }
@@ -273,17 +274,56 @@
   .foot-legal .legal-links a { color: var(--muted); font-size: 0.82rem; text-decoration: none; }
   .foot-legal .legal-links a:hover { color: var(--navy); text-decoration: underline; }
 
-  .cta-band {
-    background: linear-gradient(135deg, var(--navy), #0f1a3d);
-    border-radius: 28px; padding: 52px 44px; text-align: center;
+  .contact-band {
+    background: linear-gradient(135deg, var(--navy), #0f1a3d); color: #fff; padding: 88px 0;
   }
-  .cta-band h2 { color: #fff; }
-  .cta-band p { color: #cfe0ff; max-width: 560px; margin: 0 auto 26px; }
-  .cta-band .cta-btn {
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .contact-band .eyebrow { color: var(--green); }
+  .contact-band h2 { color: #fff; font-size: 2.3rem; margin: 0 0 16px; }
+  .contact-band .lede { color: #cfe0ff; }
+  .contact-items { list-style: none; padding: 0; margin: 34px 0 0; display: flex; flex-direction: column; gap: 22px; }
+  .contact-items li { display: flex; align-items: center; gap: 16px; }
+  .contact-items .ci-icon {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(255,255,255,0.08); color: var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .contact-items strong { display: block; color: #fff; font-size: 1rem; }
+  .contact-items a { color: #b9c6e8; text-decoration: none; font-size: 0.95rem; }
+  .contact-items a:hover { color: #fff; text-decoration: underline; }
+  .contact-form {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 22px; padding: 32px;
+  }
+  .contact-form .req-note { color: #9fb0d9; font-size: 0.82rem; margin: 0 0 18px; }
+  .contact-form .field { margin-bottom: 18px; }
+  .contact-form label { display: block; font-weight: 700; font-size: 0.92rem; margin: 0 0 8px; color: #fff; }
+  .contact-form .optional { font-weight: 400; color: #9fb0d9; }
+  .contact-form input, .contact-form textarea {
+    width: 100%; font: inherit; font-size: 1rem; color: #fff; background: #0b1533;
+    border: 1px solid rgba(255,255,255,0.22); border-radius: 12px; padding: 13px 16px;
+  }
+  .contact-form textarea { min-height: 130px; resize: vertical; }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color: #7f8fb5; }
+  .contact-form input:focus, .contact-form textarea:focus {
+    outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(43,197,234,0.3);
+  }
+  .contact-form button {
+    width: 100%; border: none; border-radius: 14px; padding: 15px; cursor: pointer;
+    font: inherit; font-weight: 800; font-size: 1rem; color: #0f1a3d;
     background: linear-gradient(90deg, var(--cyan), var(--green));
-    border: none; color: #0f1a3d; font-weight: 800;
   }
-  .cta-band .cta-btn:hover { opacity: 0.9; }
+  .contact-form button:hover { opacity: 0.92; }
+  .contact-form button:disabled { opacity: 0.6; cursor: wait; }
+  .contact-form button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .form-status { margin: 14px 0 0; font-size: 0.92rem; color: #cfe0ff; }
+  .form-status:empty { display: none; }
+  .form-status.ok { color: var(--green); font-weight: 700; }
+  .form-status.err { color: #ffd6a5; }
+  .form-status a { color: var(--cyan); font-weight: 700; }
+  .form-privacy { margin: 14px 0 0; font-size: 0.8rem; color: #9fb0d9; }
+  .form-privacy a { color: #cfe0ff; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
   @media (max-width: 860px) {
     .menu-toggle { display: flex; }
@@ -303,6 +343,10 @@
     .privacy-grid { grid-template-columns: 1fr; }
     .founder { grid-template-columns: 1fr; }
     .founder-photo { max-width: 160px; }
+    .contact-band { padding: 64px 0; }
+    .contact-grid { grid-template-columns: 1fr; gap: 36px; }
+    .contact-band h2 { font-size: 1.8rem; }
+    .contact-form { padding: 24px 20px; }
     h1 { font-size: 2.1rem !important; }
     .foot-legal { flex-direction: column; align-items: flex-start; }
   }
@@ -583,19 +627,66 @@
     </div>
   </section>
 
-  <section>
-    <div class="wrap">
-      <div class="cta-band">
-        <h2>Building health access that actually reaches everyone.</h2>
-        <p>We welcome connections with foundations and donors, AI and technology companies, government health agencies, and disability and health organizations working toward the same goal.</p>
-        <a class="btn cta-btn" href="#contact">Get in Touch</a>
+  <section class="contact-band" id="contact" aria-labelledby="contactTitle">
+    <div class="wrap contact-grid">
+      <div>
+        <div class="eyebrow">Partner with us</div>
+        <h2 id="contactTitle">Ready to make health information truly accessible?</h2>
+        <p class="lede">We welcome foundations and donors, AI and technology companies, government health agencies, and disability and health organizations who share our mission. Tell us how you'd like to work with SautiLume.</p>
+        <ul class="contact-items">
+          <li>
+            <span class="ci-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </span>
+            <div><strong>Email us</strong><a href="mailto:sautilumeltd@gmail.com">sautilumeltd@gmail.com</a></div>
+          </li>
+          <li>
+            <span class="ci-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </span>
+            <div><strong>Call us</strong><a href="tel:+254723294284">+254 723 294 284</a></div>
+          </li>
+          <li>
+            <span class="ci-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg>
+            </span>
+            <div><strong>Visit HQ</strong><a href="https://maps.app.goo.gl/2ScnLoMut6UHfyj36" target="_blank" rel="noopener">Nairobi, Kenya</a></div>
+          </li>
+        </ul>
       </div>
+
+      <form class="contact-form" id="contactForm">
+        <p class="req-note">* Indicates required fields</p>
+        <div class="field">
+          <label for="cfName">Full name <span aria-hidden="true">*</span></label>
+          <input id="cfName" name="name" type="text" autocomplete="name" placeholder="Jane Doe" required>
+        </div>
+        <div class="field">
+          <label for="cfEmail">Email <span aria-hidden="true">*</span></label>
+          <input id="cfEmail" name="email" type="email" autocomplete="email" placeholder="jane@organization.org" required>
+        </div>
+        <div class="field">
+          <label for="cfOrg">Organization <span class="optional">(optional)</span></label>
+          <input id="cfOrg" name="organization" type="text" autocomplete="organization" placeholder="Your organization">
+        </div>
+        <div class="field">
+          <label for="cfMsg">Message <span aria-hidden="true">*</span></label>
+          <textarea id="cfMsg" name="message" placeholder="Tell us about your organization and how you'd like to work with SautiLume." required></textarea>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label for="cfHoney">Leave this field empty</label>
+          <input id="cfHoney" name="_honey" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button type="submit" id="cfSubmit">Send Request</button>
+        <p class="form-status" id="cfStatus" role="status" aria-live="polite"></p>
+        <p class="form-privacy">We use your details only to reply to you. See our <a href="privacy.html">Privacy Policy</a>.</p>
+      </form>
     </div>
   </section>
 
 </main>
 
-<footer id="contact">
+<footer>
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
@@ -656,6 +747,57 @@
     a.addEventListener("click", function(){
       nav.classList.remove("open");
       toggle.setAttribute("aria-expanded", "false");
+    });
+  });
+})();
+</script>
+<script>
+/* Contact form: FormSubmit emails each message to the SautiLume inbox.
+   If it can't be reached (or the form isn't activated yet), the visitor
+   gets a ready-to-send email instead, so no enquiry is lost. */
+(function(){
+  var form = document.getElementById("contactForm");
+  if (!form) return;
+  var TO = "sautilumeltd@gmail.com";
+  var btn = document.getElementById("cfSubmit");
+  var status = document.getElementById("cfStatus");
+  function val(id){ return document.getElementById(id).value.trim(); }
+  function mailtoLink(d){
+    var body = d.message + "\n\n" + d.name + (d.organization ? "\n" + d.organization : "") + "\n" + d.email;
+    return "mailto:" + TO + "?subject=" + encodeURIComponent("Enquiry from " + d.name) + "&body=" + encodeURIComponent(body);
+  }
+  function done(){ btn.disabled = false; btn.textContent = "Send Request"; }
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var d = { name: val("cfName"), email: val("cfEmail"), organization: val("cfOrg"), message: val("cfMsg") };
+    if (val("cfHoney")) { form.reset(); return; }  // a bot filled the hidden field
+    btn.disabled = true; btn.textContent = "Sending…";
+    status.className = "form-status"; status.textContent = "";
+    fetch("https://formsubmit.co/ajax/" + TO, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        name: d.name, email: d.email, organization: d.organization || "Not given", message: d.message,
+        _subject: "New enquiry from sautilume.com: " + d.name, _template: "table"
+      })
+    })
+    .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+      if (!res.ok || String(res.j.success) !== "true") throw new Error(res.j.message || "Not sent");
+      form.reset();
+      status.className = "form-status ok";
+      status.textContent = "Thank you. Your message has been sent, and we'll get back to you soon.";
+      done();
+    })
+    .catch(function(){
+      status.className = "form-status err";
+      status.innerHTML = "Sorry, your message couldn't be sent just now. ";
+      var a = document.createElement("a");
+      a.href = mailtoLink(d);
+      a.textContent = "Send it by email instead";
+      status.appendChild(a);
+      status.appendChild(document.createTextNode(", with your message already filled in."));
+      done();
     });
   });
 })();
