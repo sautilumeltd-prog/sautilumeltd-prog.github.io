@@ -22,7 +22,7 @@
   }
   .logo{font-size:26px; font-weight:800; letter-spacing:.5px;}
   .logo span{color:var(--accent);}
-  main{width:100%; max-width:520px; padding:8px 16px 140px; flex:1;}
+  main{width:100%; max-width:520px; padding:8px 16px 230px; flex:1;}
   .screen{display:none;}
   .screen.active{display:block;}
   h1{font-size:24px; margin:14px 0 10px; font-weight:700;}
@@ -39,8 +39,14 @@
   .big-btn.primary{background:#0d47a1; border-color:#1565c0;}
   .big-btn.danger{background:#7f1d1d; border-color:#b91c1c;}
   .big-btn.call{background:#14532d; border-color:#166534; font-size:20px; text-align:left;}
-  .mic-wrap{position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:center;
-    padding:14px 0 22px; background:linear-gradient(transparent, var(--bg) 40%);}
+  .mic-wrap{position:fixed; bottom:0; left:0; right:0; display:flex; flex-direction:column; align-items:center;
+    gap:12px; padding:26px 16px 22px; background:linear-gradient(transparent, var(--bg) 26px);}
+  /* Typing is the way in when a browser has no voice input (Firefox), and an
+     option everywhere else. On phones the keyboard's own microphone works here. */
+  .ask-form{display:flex; gap:8px; width:100%; max-width:488px;}
+  .ask-form input[type=text]{flex:1; min-width:0;}
+  .ask-form button{padding:0 20px; font-size:18px; border-radius:12px; background:#0d47a1; border:2px solid #1565c0;}
+  .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
   #micBtn{
     width:130px; height:130px; border-radius:50%;
     background:radial-gradient(circle at 35% 30%, #1976d2, #0d47a1);
@@ -141,6 +147,11 @@
 </main>
 
 <div class="mic-wrap" id="micWrap" style="display:none">
+  <form class="ask-form" id="askForm" autocomplete="off">
+    <label for="askInput" class="sr-only" id="askLabel">Type your question</label>
+    <input type="text" id="askInput" enterkeyhint="send" placeholder="Or type your question here">
+    <button type="submit" id="askBtn">Ask</button>
+  </form>
   <button id="micBtn" aria-label="Press to ask your question by voice">PRESS<br>TO ASK</button>
 </div>
 
@@ -154,8 +165,11 @@
    ============================================================ */
 
 const $ = id => document.getElementById(id);
-let LANG = localStorage.getItem("sl_lang") || null;   // 'en' | 'sw'
-let HF_TOKEN = localStorage.getItem("sl_hf") || "";
+// Browsers that block site storage (private modes, strict settings) throw here; the demo still works without it
+function store(key, value){ try{ if (value) localStorage.setItem(key, value); else localStorage.removeItem(key); }catch(e){} }
+function stored(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
+let LANG = stored("sl_lang") || null;   // 'en' | 'sw'
+let HF_TOKEN = stored("sl_hf") || "";
 /* AI models, tried in order. MedGemma = Google's medically-trained Gemma.
    If one is unavailable on the free tier, the next is tried automatically. */
 const MODELS = ["google/medgemma-4b-it", "google/gemma-3-4b-it", "google/gemma-2-2b-it"];
@@ -181,7 +195,17 @@ const T = {
     urgent: "Your life matters, and I want you to get help right now. If you have taken pills, poison or anything else to harm yourself, call 999 or 112 now, or ask someone near you to take you to the nearest hospital straight away. Even if you feel fine, go now: some medicines cause harm hours later. Please don't stay alone. You can also call the Kenya Red Cross free on 1199, day or night.",
     emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. Calls to 999, 1195, 1199 and 116 are free. All calls are confidential.",
     sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free and open day and night. If you are under 18, you can also call the Child Helpline on 116, free, day or night. If you were forced to have sex in the last 3 days, please go to a clinic or hospital as soon as you can. They can give you medicine to prevent HIV and pregnancy. Even after 3 days, a clinic can still help you. I have opened the emergency screen so you can call with one touch.",
-    noSR: "Voice input is not available in this browser. Please open SautiLume using Google Chrome.",
+    noSR: "Voice input is not available in this browser. Type your question in the box, or use the microphone button on your keyboard to say it.",
+    langNoVoice: "This browser cannot understand spoken English. Type your question in the box, or use the microphone button on your keyboard to say it.",
+    micBlocked: "The microphone is blocked for this page. Allow the microphone for this site in your browser's settings, then try again. You can also type your question in the box.",
+    voiceOff: "Voice input is turned off on this device. On an iPhone or iPad, turn on Dictation in Settings, then General, then Keyboard. You can also type your question in the box.",
+    noNetwork: "Voice input needs the internet. Please check your connection and try again, or type your question in the box.",
+    noMic: "No microphone was found on this device. Please type your question in the box.",
+    pressAgain: "Please press the big button again and ask your question.",
+    micType: "TYPE<br>TO ASK",
+    typeLabel: "Type your question",
+    typePlaceholder: "Or type your question here",
+    askBtn: "Ask",
     error: "Sorry, something went wrong. Please try again."
   },
   sw: {
@@ -201,7 +225,17 @@ const T = {
     urgent: "Maisha yako ni muhimu, na nataka upate msaada sasa hivi. Kama umekunywa vidonge, sumu au kitu kingine ili kujidhuru, piga simu 999 au 112 sasa, au mwombe mtu aliye karibu akupeleke hospitali iliyo karibu mara moja. Hata kama unajisikia sawa, nenda sasa: dawa nyingine hudhuru baada ya masaa kadhaa. Tafadhali usibaki peke yako. Unaweza pia kupiga simu Msalaba Mwekundu bure kwa 1199, mchana au usiku.",
     emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu kwa 999, 1195, 1199 na 116 ni bure. Simu zote ni za siri.",
     sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Kama uko chini ya miaka 18, unaweza pia kupiga simu ya msaada kwa watoto, 116, bure, mchana na usiku. Kama ulilazimishwa kufanya ngono ndani ya siku 3 zilizopita, tafadhali nenda kliniki au hospitali haraka iwezekanavyo. Wanaweza kukupa dawa za kuzuia Ukimwi na mimba. Hata baada ya siku 3, kliniki bado inaweza kukusaidia. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
-    noSR: "Sauti haipatikani kwenye kivinjari hiki. Tafadhali fungua SautiLume kwa kutumia Google Chrome.",
+    noSR: "Sauti haipatikani kwenye kivinjari hiki. Andika swali lako kwenye kisanduku, au tumia kitufe cha maikrofoni kwenye kibodi yako kulisema.",
+    langNoVoice: "Kivinjari hiki bado hakiwezi kuelewa Kiswahili kinachozungumzwa. Andika swali lako kwenye kisanduku, au tumia kitufe cha maikrofoni kwenye kibodi yako kulisema.",
+    micBlocked: "Maikrofoni imezuiwa kwenye ukurasa huu. Ruhusu maikrofoni kwa tovuti hii kwenye mipangilio ya kivinjari, kisha ujaribu tena. Unaweza pia kuandika swali lako kwenye kisanduku.",
+    voiceOff: "Sauti imezimwa kwenye kifaa hiki. Kwenye iPhone au iPad, washa Dictation katika Settings, kisha General, kisha Keyboard. Unaweza pia kuandika swali lako kwenye kisanduku.",
+    noNetwork: "Sauti inahitaji intaneti. Tafadhali angalia muunganisho wako na ujaribu tena, au andika swali lako kwenye kisanduku.",
+    noMic: "Hakuna maikrofoni kwenye kifaa hiki. Tafadhali andika swali lako kwenye kisanduku.",
+    pressAgain: "Tafadhali bonyeza kitufe kikubwa tena na uulize swali lako.",
+    micType: "ANDIKA<br>KUULIZA",
+    typeLabel: "Andika swali lako",
+    typePlaceholder: "Au andika swali lako hapa",
+    askBtn: "Uliza",
     error: "Samahani, kuna hitilafu. Tafadhali jaribu tena."
   }
 };
@@ -442,21 +476,33 @@ const OVERDOSE_ANY_MEDICINE = ["pill","tablet","drug","medicine","medication","c
 const OVERDOSE_MEANS = ["pill","tablet","poison","bleach","overdose","vidonge","kidonge","dawa","sumu"," jik ","dettol","drug","medicine","medication","capsule","tembe","paraffin","kerosene","pesticide","insecticide","mafuta ya taa"];
 
 /* ---------- Speech synthesis (TTS) — NEVER en-US ---------- */
+const SYNTH = window.speechSynthesis || null;   // missing in some in-app browsers: the chat is still read by screen readers
 let voices = [];
-function loadVoices(){ voices = speechSynthesis.getVoices(); }
+function loadVoices(){ if (SYNTH) voices = SYNTH.getVoices(); }
 loadVoices();
-if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = loadVoices;
+if (SYNTH && "onvoiceschanged" in SYNTH) SYNTH.onvoiceschanged = loadVoices;
 
 function pickVoice(lang){
+  if (!voices.length) loadVoices();   // Safari can fill the list late without telling us
   const prefs = lang === "sw"
     ? ["sw-KE","sw-TZ","sw"]
     : ["en-KE","en-GB","en-NG","en-ZA","en-IN","en-AU"]; // Kenyan first; en-US excluded on purpose
   for (const p of prefs){
-    const v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(p.toLowerCase()));
+    const v = voices.find(v => v.lang && v.lang.toLowerCase().replace("_","-").startsWith(p.toLowerCase()));
     if (v) return v;
   }
   // last resort: any non-US voice, then anything
-  return voices.find(v => v.lang && !v.lang.toLowerCase().startsWith("en-us")) || voices[0] || null;
+  return voices.find(v => v.lang && !v.lang.toLowerCase().replace("_","-").startsWith("en-us")) || voices[0] || null;
+}
+
+/* iPhones and iPads only let a page talk after a tap has started speech once.
+   Returning users skip the language buttons, so their first tap on the big
+   button or on Ask unlocks speech with a silent utterance.                  */
+let speechUnlocked = false;
+function unlockSpeech(){
+  if (speechUnlocked || !SYNTH) return;
+  speechUnlocked = true;
+  try{ const u = new SpeechSynthesisUtterance(" "); u.volume = 0; SYNTH.speak(u); }catch(e){}
 }
 
 /* Phone numbers must be heard digit by digit so a blind user can dial them:
@@ -472,79 +518,138 @@ function sayDigits(text){
 }
 
 /* Chrome silently stops speech after ~15s and can jam the speech engine.
-   Fix: split text into sentences, queue them, and nudge the engine alive. */
-let resumeTimer = null;
+   Fix: split text into sentences, queue them, and nudge the engine alive.
+   Whatever waits for the speech to end (the emergency screen after a crisis
+   reply) must still happen if a browser never reports the end, or blocks
+   speech, so a timer finishes it, and stopping speech finishes it at once. */
+let resumeTimer = null, safetyTimer = null, finishSpeech = null;
 function stopSpeaking(){
   clearInterval(resumeTimer);
-  try{ speechSynthesis.cancel(); }catch(e){}
+  clearTimeout(safetyTimer);
+  try{ if (SYNTH) SYNTH.cancel(); }catch(e){}
+  const f = finishSpeech; finishSpeech = null;
+  if (f) f();
 }
 function speak(text, cb){
+  const busy = !!(SYNTH && (SYNTH.speaking || SYNTH.pending));
+  stopSpeaking();
+  let called = false;
+  const finish = () => {
+    if (called) return;
+    called = true;
+    if (finishSpeech === finish){ finishSpeech = null; clearInterval(resumeTimer); clearTimeout(safetyTimer); }
+    if (cb) cb();
+  };
+  finishSpeech = finish;
+  if (!SYNTH){ finish(); return; }
   try{
-    stopSpeaking();
     const spoken = sayDigits(text);
     const parts = (spoken.match(/[^.!?]+[.!?]*/g) || [spoken]).map(s => s.trim()).filter(Boolean);
     const v = pickVoice(LANG);
     let remaining = parts.length;
-    const done = () => { remaining--; if (remaining <= 0){ clearInterval(resumeTimer); cb && cb(); } };
-    parts.forEach(part => {
-      const u = new SpeechSynthesisUtterance(part);
-      if (v) u.voice = v;
-      u.lang = LANG === "sw" ? "sw-KE" : (v && v.lang ? v.lang : "en-GB");
-      u.rate = 0.85;  // slightly slower for clarity, per spec
-      u.onend = done;
-      u.onerror = done;
-      speechSynthesis.speak(u);
-    });
+    const done = () => { remaining--; if (remaining <= 0) finish(); };
+    const go = () => {
+      if (finishSpeech !== finish) return;   // stopped before it started
+      parts.forEach(part => {
+        const u = new SpeechSynthesisUtterance(part);
+        if (v) u.voice = v;
+        u.lang = LANG === "sw" ? "sw-KE" : (v && v.lang ? v.lang : "en-GB");
+        u.rate = 0.85;  // slightly slower for clarity, per spec
+        u.onend = done;
+        u.onerror = done;
+        SYNTH.speak(u);
+      });
+    };
+    // Safari can drop speech queued straight after cancelling earlier speech
+    if (busy) setTimeout(go, 120); else go();
+    safetyTimer = setTimeout(finish, 4000 + spoken.length * 90);
     // keep-alive nudge every 10s while speaking (Chrome desktop bug workaround)
     resumeTimer = setInterval(() => {
-      if (speechSynthesis.speaking) speechSynthesis.resume();
-      else clearInterval(resumeTimer);
+      if (SYNTH.speaking) SYNTH.resume();
+      else if (!SYNTH.pending) clearInterval(resumeTimer);
     }, 10000);
-  }catch(e){ if(cb) cb(); }
+  }catch(e){ finish(); }
 }
 
-/* ---------- Speech recognition (STT) ---------- */
+/* ---------- Speech recognition (STT) ----------
+   Chrome, Edge, Samsung Internet and Safari can listen; Firefox and some
+   in-app browsers cannot, so there the big button opens the typing box,
+   where a phone keyboard's own microphone still lets people speak.
+   Language codes are tried best first: Chrome understands Kenyan English and
+   Kiswahili, but Apple's speech service may not, so when a browser says a
+   language is not supported we step down the list (en-US is fine for
+   listening; the "never American" rule is about the voice that speaks).   */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec = null, listening = false;
+const SR_LANGS = { en: ["en-KE","en-GB","en-US"], sw: ["sw-KE","sw-TZ","sw"] };
+const srLang = { en: 0, sw: 0 };
+let rec = null, listening = false, heard = "", handled = false, autoRetry = false;
+
+function focusTyping(){ try{ $("askInput").focus(); }catch(e){} }
+function sayProblem(msg){ setStatus(msg); speak(msg); }   // errors must be HEARD, not just seen — users are blind
 
 function startListening(){
-  if (!SR){ setStatus(T[LANG].noSR); speak(T[LANG].noSR); return; }
+  if (!SR){ sayProblem(T[LANG].noSR); focusTyping(); return; }
   if (listening){ stopListening(); return; }
   stopSpeaking();                                  // never listen while talking
-  if (rec){ try{ rec.abort(); }catch(e){} rec = null; }  // full reset between questions
-  rec = new SR();
-  rec.lang = LANG === "sw" ? "sw-KE" : "en-KE";
-  rec.interimResults = false;
-  rec.maxAlternatives = 1;
+  if (rec){ const old = rec; rec = null; try{ old.abort(); }catch(e){} }  // full reset between questions
+  const r = rec = new SR();
+  r.lang = SR_LANGS[LANG][srLang[LANG]];
+  r.interimResults = false;
+  r.maxAlternatives = 1;
+  heard = ""; handled = false;
   listening = true;
   micState("listening");
   setStatus(T[LANG].listening);
   if (navigator.vibrate) navigator.vibrate(80);   // haptic: recording started
 
-  rec.onresult = e => {
-    const text = e.results[0][0].transcript;
-    listening = false;
-    if (navigator.vibrate) navigator.vibrate([50,50,50]); // haptic: recording ended
-    handleQuestion(text);
+  // Safari may report partial results first; act on the final one
+  r.onresult = e => {
+    if (rec !== r) return;
+    const last = e.results[e.results.length - 1];
+    heard = last[0].transcript;
+    if (last.isFinal) useHeard();
   };
-  rec.onerror = e => {
-    listening = false; micState("idle");
+  r.onerror = e => {
+    if (rec !== r) return;
+    listening = false; handled = true; micState("idle");
+    const retried = autoRetry; autoRetry = false;
+    if (e.error === "language-not-supported" || e.error === "bad-grammar"){
+      if (srLang[LANG] < SR_LANGS[LANG].length - 1){ srLang[LANG]++; autoRetry = true; startListening(); return; }
+      sayProblem(T[LANG].langNoVoice); focusTyping(); return;
+    }
+    if (retried && (e.error === "not-allowed" || e.error === "service-not-allowed")){ sayProblem(T[LANG].pressAgain); return; }
     const why = {
-      "not-allowed": "Microphone is blocked. Tap the lock icon 🔒 next to the address bar, set Microphone to Allow, then reload this page.",
-      "service-not-allowed": "Microphone is blocked by the browser. Tap the lock icon 🔒 near the address bar, allow Microphone, then reload.",
-      "network": "Voice recognition needs internet. Please check your connection and try again.",
+      "not-allowed": T[LANG].micBlocked,
+      "service-not-allowed": T[LANG].voiceOff,
+      "network": T[LANG].noNetwork,
       "no-speech": T[LANG].noSpeech,
-      "audio-capture": "No microphone was found on this device.",
+      "audio-capture": T[LANG].noMic,
       "aborted": T[LANG].noSpeech
     }[e.error] || (T[LANG].error + " (" + e.error + ")");
-    setStatus(why);
-    speak(why);   // errors must be HEARD, not just seen — users are blind
+    sayProblem(why);
   };
-  rec.onend = () => { if (listening){ listening = false; micState("idle"); } };
-  try{ rec.start(); }
-  catch(e){ listening = false; micState("idle"); setStatus(T[LANG].error); speak(T[LANG].error); }
+  // Safari can stop with only a partial result; use what was heard
+  r.onend = () => {
+    if (rec !== r) return;
+    if (heard && !handled) useHeard();
+    else if (listening){ listening = false; micState("idle"); }
+  };
+  try{ r.start(); }
+  catch(e){ listening = false; handled = true; micState("idle"); sayProblem(autoRetry ? T[LANG].pressAgain : T[LANG].error); autoRetry = false; }
 }
+function useHeard(){
+  if (handled) return;
+  handled = true; listening = false; autoRetry = false;
+  if (navigator.vibrate) navigator.vibrate([50,50,50]); // haptic: recording ended
+  handleQuestion(heard);
+}
+// Stop listening but still answer what was already said
 function stopListening(){ if (rec){ try{rec.stop();}catch(e){} } listening = false; micState("idle"); }
+// Stop listening and throw away anything heard (Quick Exit)
+function abortListening(){
+  if (rec){ const old = rec; rec = null; try{ old.abort(); }catch(e){} }
+  listening = false; handled = true; micState("idle");
+}
 
 /* ---------- Brain: SGBV check → Gemma (if token) → verified library ---------- */
 async function handleQuestion(text){
@@ -704,6 +809,7 @@ function micState(state){
   b.classList.remove("listening","thinking");
   if (state === "listening"){ b.classList.add("listening"); b.innerHTML = L.micStop; b.setAttribute("aria-label","Recording. Tap to stop."); }
   else if (state === "thinking"){ b.classList.add("thinking"); b.innerHTML = "..."; b.setAttribute("aria-label","Finding your answer, please wait."); }
+  else if (!SR){ b.innerHTML = L.micType; b.setAttribute("aria-label","Voice input is not available in this browser. Press to type your question."); }
   else { b.innerHTML = L.micIdle; b.setAttribute("aria-label","Press to ask your question by voice"); }
 }
 function addBubble(text, who){
@@ -717,7 +823,8 @@ function addBubble(text, who){
 /* ---------- Quick exit: wipe everything instantly ---------- */
 function quickExit(){
   stopSpeaking();
-  stopListening();
+  abortListening();               // anything half-heard is thrown away, not answered
+  $("askInput").value = "";
   $("chat").innerHTML = "";       // conversation gone from screen
   history = [];                   // and gone from memory — nothing survives Exit
   setStatus("");
@@ -728,7 +835,10 @@ function quickExit(){
 function setLang(lang, announce){
   if (LANG && LANG !== lang) history = [];  // fresh start when language changes
   LANG = lang;
-  localStorage.setItem("sl_lang", lang);  // only the language is stored — nothing else
+  store("sl_lang", lang);  // only the language is stored — nothing else
+  $("askLabel").textContent = T[lang].typeLabel;
+  $("askInput").placeholder = T[lang].typePlaceholder;
+  $("askBtn").textContent = T[lang].askBtn;
   $("emgTitle").textContent = lang === "sw" ? "Msaada wa Dharura" : "Emergency Help";
   $("emgLead").textContent  = lang === "sw"
     ? "Naweza kukuunganisha na mtu wa kukusaidia sasa hivi. Chagua nani wa kupiga simu. Simu kwa 999, 1195, 1199 na 116 ni bure. Simu zote ni za siri."
@@ -741,9 +851,18 @@ function setLang(lang, announce){
 /* ---------- Wire up ---------- */
 $("btnEN").onclick = () => setLang("en", true);
 $("btnSW").onclick = () => setLang("sw", true);
-$("micBtn").onclick = startListening;
+$("micBtn").onclick = () => { unlockSpeech(); startListening(); };
+$("askForm").onsubmit = e => {
+  e.preventDefault();
+  const text = $("askInput").value.trim();
+  if (!text || !LANG) return;
+  unlockSpeech();
+  if (listening) abortListening();
+  $("askInput").value = "";
+  handleQuestion(text);
+};
 $("emgTop").onclick = () => { show("scrEmg"); speak(T[LANG || "en"].emgSpoken); };
-$("emgBack").onclick = () => { speechSynthesis.cancel(); LANG ? show("scrMain") : show("scrLang"); };
+$("emgBack").onclick = () => { stopSpeaking(); LANG ? show("scrMain") : show("scrLang"); };
 $("exitTop").onclick = quickExit;
 $("settingsTop").onclick = () => { $("hfToken").value = HF_TOKEN; show("scrSettings"); };
 $("settingsBack").onclick = () => LANG ? show("scrMain") : show("scrLang");
@@ -751,19 +870,19 @@ $("setEN").onclick = () => setLang("en", true);
 $("setSW").onclick = () => setLang("sw", true);
 $("saveSettings").onclick = () => {
   HF_TOKEN = $("hfToken").value.trim();
-  if (HF_TOKEN) localStorage.setItem("sl_hf", HF_TOKEN); else localStorage.removeItem("sl_hf");
+  store("sl_hf", HF_TOKEN);
   LANG ? show("scrMain") : show("scrLang");
 };
 
 /* Environment self-check — tells us why voice may not work */
 (function envCheck(){
   const msgs = [];
-  if (!SR) msgs.push("⚠ This browser has no voice input. Please use Google Chrome. (You can still type your question.)");
+  if (!SR) msgs.push("This browser has no voice input, so type your question in the box, or use the microphone button on your phone's keyboard. · Kivinjari hiki hakina sauti: andika swali lako, au tumia maikrofoni ya kibodi yako.");
   if (location.hostname.includes("googleusercontent") || location.hostname.includes("drive.google"))
     msgs.push("⚠ You are viewing this inside Google Drive's preview, which blocks the microphone. Please DOWNLOAD the file and open it with Chrome instead.");
   if (msgs.length){
     const d = document.createElement("div");
-    d.className = "privacy"; d.style.borderLeftColor = "#ef5350";
+    d.className = "privacy"; d.style.borderLeftColor = "#ffb74d";
     d.textContent = msgs.join(" ");
     document.querySelector("main").prepend(d);
   }
