@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cookie Settings | SautiLume</title>
+<meta name="description" content="The cookies and browser storage used on the SautiLume website, and how to change your choice.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231B2A5A'/%3E%3Ctext x='50' y='68' font-size='55' font-family='Arial' fill='%232BC5EA' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
 <style>
   :root { --navy:#1B2A5A; --cyan:#2BC5EA; --green:#A6CE39; --muted:#5A6B8C; --bg-soft:#F4F8FB; --border:#E3E9F2; }
   * { box-sizing: border-box; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--navy); line-height:1.65; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--navy); line-height:1.65; background:#fff; }
   .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px 80px; }
   header { border-bottom:1px solid var(--border); padding: 18px 0; margin-bottom: 40px; }
   header .wrap { display:flex; align-items:center; justify-content:space-between; padding-top:0; padding-bottom:0; }
@@ -25,11 +26,31 @@
   }
   .status .dot { width:12px; height:12px; border-radius:50%; background: var(--green); flex-shrink:0; }
   .status p { margin:0; font-weight:700; color: var(--navy); font-size:0.98rem; }
-  h2 { font-size:1.2rem; margin: 34px 0 10px; }
+  .choice {
+    border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; margin: 14px 0 0;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .choice p { margin:0; }
+  .choice button {
+    font: inherit; font-weight:700; font-size:0.92rem; border-radius:999px; padding:10px 20px; cursor:pointer;
+    background: var(--navy); color:#fff; border:2px solid var(--navy);
+  }
+  .choice button:hover { background:#142049; }
+  .choice button:focus-visible { outline:3px solid var(--cyan); outline-offset:2px; }
+  h2 { font-size:1.2rem; margin: 40px 0 10px; }
   p, li { color: #2b3a5c; font-size: 0.98rem; }
   ul { padding-left: 20px; }
   li { margin-bottom: 6px; }
   a { color: var(--navy); }
+  .table-wrap { overflow-x:auto; margin: 14px 0 0; border:1px solid var(--border); border-radius: 12px; }
+  table { width:100%; border-collapse:collapse; font-size:0.92rem; }
+  th, td { text-align:left; padding:12px 14px; vertical-align:top; color:#2b3a5c; }
+  th { background: var(--bg-soft); color: var(--navy); font-weight:700; }
+  tr + tr td { border-top:1px solid var(--border); }
+  code { font-size:0.86rem; background: var(--bg-soft); padding: 2px 6px; border-radius: 6px; }
+  .legal-foot { border-top:1px solid var(--border); margin-top:48px; padding-top:20px; display:flex; flex-wrap:wrap; gap:8px 20px; font-size:0.85rem; }
+  .legal-foot a { color: var(--muted); text-decoration:none; }
+  .legal-foot a:hover, .legal-foot a[aria-current] { color: var(--navy); text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -42,24 +63,78 @@
 
 <main class="wrap">
   <h1>Cookie Settings</h1>
-  <p class="updated">Last updated: July 2026</p>
+  <p class="updated">Last updated: 13 October 2026</p>
 
   <div class="status">
     <span class="dot" aria-hidden="true"></span>
-    <p>This website does not use tracking, advertising, or analytics cookies. There is nothing to opt out of.</p>
+    <p>This website uses only essential storage. We do not use advertising, analytics, or tracking cookies.</p>
   </div>
 
-  <h2>What this site uses instead</h2>
-  <p>sautilumeltd-prog.github.io does not set marketing or tracking cookies of any kind. We don't run ad networks, and we don't use analytics tools that track you across sites.</p>
+  <h2>1. Your Cookie Choice</h2>
+  <p>On your first visit, we ask for your cookie preference. Your answer is saved in your own browser so that we do not ask again on every page. You can change it at any time.</p>
+  <div class="choice">
+    <p id="consentStatus" aria-live="polite">Your current choice: not yet made.</p>
+    <button type="button" id="consentReset">Change my choice</button>
+  </div>
 
-  <h2>The live demo</h2>
-  <p>The <a href="demo.html">SautiLume voice demo</a> uses your browser's local storage, not cookies, to remember one thing on your own device: your chosen language (English or Swahili), so you don't have to pick it again next time. If you optionally add a Hugging Face API token to try the AI-assisted answer mode, that token is also saved only in your browser's local storage on your device. None of this is ever sent to or stored by SautiLume's servers, and you can clear it any time by clearing your browser's site data or pressing Exit in the demo.</p>
+  <h2>2. What We Store in Your Browser</h2>
+  <p>Instead of cookies, this site uses your browser's local storage, which stays on your device and is never sent to SautiLume.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">Name</th><th scope="col">Purpose</th><th scope="col">Where</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>sl_cookie_consent</code></td><td>Remembers your answer to the cookie notice.</td><td>All pages</td></tr>
+        <tr><td><code>sl_lang</code></td><td>Remembers your language (English or Kiswahili) so SautiLume can greet you correctly.</td><td>Voice demo</td></tr>
+        <tr><td><code>sl_hf</code></td><td>Optional AI access key, only if you choose to add one. Sent only to that AI provider.</td><td>Voice demo</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Each item stays until you clear your browser's data for this site.</p>
 
-  <h2>Third-party links</h2>
-  <p>This site links out to services like LinkedIn and X (Twitter). Those sites have their own cookie and privacy practices, which we don't control. We recommend checking their policies directly.</p>
+  <h2>3. What We Do Not Use</h2>
+  <ul>
+    <li>Advertising or marketing cookies</li>
+    <li>Analytics tools that track your visits or follow you across other websites</li>
+    <li>Social media tracking pixels</li>
+    <li>Any cookie or storage containing voice recordings, conversations, or biometric data</li>
+  </ul>
 
-  <h2>Questions</h2>
+  <h2>4. Third-Party Links</h2>
+  <p>Our website links to services such as LinkedIn, X (Twitter), and Google Maps. Those sites have their own cookie and privacy practices, which we do not control. We recommend reviewing their policies directly.</p>
+
+  <h2>5. Managing Storage in Your Browser</h2>
+  <p>You can view and delete everything this site has stored at any time through your browser's settings, usually under "Site settings" or "Cookies and site data". Clearing it will simply bring back the cookie notice on your next visit. For more on how SautiLume handles information, see our <a href="privacy.html">Privacy Policy</a>.</p>
+
+  <h2>6. Questions</h2>
   <p>If you have questions about this page, contact us at <a href="mailto:sautilumeltd@gmail.com">sautilumeltd@gmail.com</a>.</p>
+
+  <nav class="legal-foot" aria-label="Legal">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="cookies.html" aria-current="page">Cookie Settings</a>
+  </nav>
 </main>
+<script src="consent.js"></script>
+<script>
+(function(){
+  var status = document.getElementById("consentStatus");
+  var reset = document.getElementById("consentReset");
+  var labels = { accepted: "accepted", declined: "declined" };
+  function render(){
+    var choice = window.SautiLumeConsent && window.SautiLumeConsent.get();
+    status.textContent = "Your current choice: " + (labels[choice] || "not yet made") + ".";
+  }
+  render();
+  document.addEventListener("sl-consent-change", render);
+  reset.addEventListener("click", function(){
+    if (window.SautiLumeConsent) window.SautiLumeConsent.reset();
+    render();
+    var first = document.querySelector("#slConsent button");
+    if (first) first.focus();
+  });
+})();
+</script>
 </body>
 </html>
