@@ -1,9 +1,8 @@
 /* SautiLume cookie notice.
    Shown once per browser until the visitor chooses Accept All or Decline.
-   The site sets no advertising, analytics or tracking cookies, so both
-   choices behave the same today; the choice itself is the only thing saved
-   (in localStorage, key "sl_cookie_consent"). If optional cookies are ever
-   added, load them only when SautiLumeConsent.get() === "accepted". */
+   The site sets no advertising or tracking cookies. Decline switches off the
+   anonymous usage counts (usage.js reads this choice); Accept All keeps them.
+   The choice is saved in localStorage, key "sl_cookie_consent". */
 (function () {
   "use strict";
   var KEY = "sl_cookie_consent";
@@ -56,8 +55,8 @@
     '</div>' +
     '<div class="sl-consent-body">' +
       '<p class="sl-consent-title" id="slConsentTitle">We value your privacy</p>' +
-      '<p class="sl-consent-text" id="slConsentText">We use only essential cookies and similar technologies to run this site and remember your choices. ' +
-        'We do not use advertising or tracking cookies, and we never store voice recordings or biometric data. ' +
+      '<p class="sl-consent-text" id="slConsentText">We use essential storage to run this site, and anonymous counts of how the site and voice demo are used, to improve SautiLume. ' +
+        'We do not use advertising or tracking cookies, and we never store your questions, voice recordings, or biometric data. Decline turns the anonymous counts off. ' +
         '<a href="cookies.html">Cookie settings</a></p>' +
     '</div>' +
     '<div class="sl-consent-actions">' +
