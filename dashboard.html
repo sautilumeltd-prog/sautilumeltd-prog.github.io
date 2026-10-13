@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Usage Dashboard | SautiLume</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231B2A5A'/%3E%3Ctext x='50' y='68' font-size='55' font-family='Arial' fill='%232BC5EA' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #F4F8FB; --surface: #FFFFFF; --ink: #1B2A5A; --ink-2: #44547A; --muted: #6A7893;
+    --border: #E3E9F2; --grid: #E8EDF4; --bar: #1E88C9; --bar-track: #EAF3FA; --accent: #2BC5EA;
+    --warn-bg: #FFF8EE; --warn: #9A5B00; --btn: #1B2A5A; --btn-ink: #FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0B1226; --surface: #131C36; --ink: #EAF0FB; --ink-2: #B9C6E8; --muted: #8E9BBD;
+      --border: #24304F; --grid: #222D4A; --bar: #4FB3E8; --bar-track: #1B2747; --accent: #2BC5EA;
+      --warn-bg: #2A2112; --warn: #F2C27B; --btn: #2BC5EA; --btn-ink: #0B1226;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B1226; --surface: #131C36; --ink: #EAF0FB; --ink-2: #B9C6E8; --muted: #8E9BBD;
+    --border: #24304F; --grid: #222D4A; --bar: #4FB3E8; --bar-track: #1B2747; --accent: #2BC5EA;
+    --warn-bg: #2A2112; --warn: #F2C27B; --btn: #2BC5EA; --btn-ink: #0B1226;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px 64px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0; flex-wrap: wrap; }
+  header h1 { font-size: 1.25rem; margin: 0; }
+  header h1 span { color: var(--muted); font-weight: 500; }
+  button, select { font: inherit; }
+  .btn { background: var(--btn); color: var(--btn-ink); border: none; border-radius: 999px; padding: 10px 20px; font-weight: 700; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .btn:focus-visible, .seg button:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+  .note { color: var(--muted); font-size: 0.85rem; }
+  .signin { max-width: 520px; margin: 48px auto; text-align: center; }
+  .signin p { color: var(--ink-2); }
+  .msg { background: var(--warn-bg); color: var(--warn); border-radius: 12px; padding: 12px 16px; margin: 0 0 16px; font-size: 0.92rem; }
+  .filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 4px 0 18px; }
+  .seg { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .seg button { border: none; background: none; color: var(--ink-2); padding: 6px 14px; border-radius: 999px; cursor: pointer; font-size: 0.88rem; }
+  .seg button[aria-pressed="true"] { background: var(--btn); color: var(--btn-ink); font-weight: 700; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .tile .label { color: var(--ink-2); font-size: 0.85rem; }
+  .tile .value { font-size: 1.9rem; font-weight: 650; letter-spacing: -0.01em; margin-top: 2px; }
+  .tile .sub { color: var(--muted); font-size: 0.78rem; }
+  h2 { font-size: 1rem; margin: 0 0 4px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .chart-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .chart { position: relative; height: 220px; }
+  .chart svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .chart .axis text { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .chart .gridline { stroke: var(--grid); stroke-width: 1; }
+  .chart .col { fill: var(--bar); }
+  .chart .hit { fill: transparent; cursor: default; }
+  .chart .hit:hover + .col, .chart .col.on { fill: var(--accent); }
+  .tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 0.8rem; padding: 6px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -100%); display: none; }
+  .ranks { list-style: none; padding: 0; margin: 10px 0 0; }
+  .ranks li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 5px 0; font-size: 0.9rem; }
+  .ranks .name { overflow-wrap: anywhere; color: var(--ink); }
+  .ranks .track { height: 14px; background: var(--bar-track); border-radius: 0 4px 4px 0; }
+  .ranks .fill { height: 14px; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .ranks .num { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; min-width: 5.5em; }
+  .empty { color: var(--muted); font-size: 0.9rem; margin: 10px 0 0; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: var(--ink-2); font-size: 0.88rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; margin-top: 8px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  footer { margin-top: 24px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 860px) {
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .grid2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>SautiLume <span>Usage dashboard</span></h1>
+    <div id="who" hidden><span class="note" id="whoEmail"></span> <button class="btn ghost" id="signOut">Sign out</button></div>
+  </header>
+
+  <section class="card signin" id="signinCard">
+    <h2>Sign in to see how SautiLume is used</h2>
+    <p>Only the SautiLume Google account can open these numbers.</p>
+    <p id="signinMsg" class="msg" hidden></p>
+    <button class="btn" id="signIn">Sign in with Google</button>
+    <p class="note" style="margin-top:18px">The numbers count what happened, never who did it: no names, no questions or answers, no voices, and no device or visitor IDs.</p>
+  </section>
+
+  <main id="app" hidden>
+    <p id="appMsg" class="msg" hidden></p>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="Time range" id="range">
+        <button data-days="7">7 days</button>
+        <button data-days="30" aria-pressed="true">30 days</button>
+        <button data-days="90">90 days</button>
+        <button data-days="365">12 months</button>
+      </div>
+      <button class="btn ghost" id="csv">Download CSV</button>
+      <span class="note" id="loaded"></span>
+    </div>
+
+    <div class="tiles" id="tiles"></div>
+
+    <section class="card">
+      <div class="chart-head">
+        <div><h2 id="chartTitle">Per day</h2><div class="note">East Africa Time</div></div>
+        <div class="seg" role="group" aria-label="What the chart shows" id="metric">
+          <button data-metric="sessions" aria-pressed="true">Demo conversations</button>
+          <button data-metric="questions">Questions</button>
+          <button data-metric="visits">Website visits</button>
+        </div>
+      </div>
+      <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
+      <details><summary>Show as a table</summary><div id="chartTable"></div></details>
+    </section>
+
+    <div class="grid2">
+      <section class="card"><h2>What people asked about</h2><div class="note">Questions answered from the verified library, by topic</div><div id="topics"></div></section>
+      <section class="card"><h2>How questions were answered</h2><div class="note">"No verified answer yet" shows where the library needs new answers</div><div id="routes"></div></section>
+      <section class="card"><h2>Helpline buttons pressed</h2><div class="note">On the demo's emergency screen</div><div id="helplines"></div></section>
+      <section class="card"><h2>Browsers and devices</h2><div class="note">Demo conversations, and the share whose browser had voice input</div><div id="browsers"></div></section>
+      <section class="card"><h2>Voice problems</h2><div class="note">Errors from the browser's speech recognition</div><div id="errors"></div></section>
+      <section class="card"><h2>Where website visitors came from</h2><div class="note">The site that linked to SautiLume</div><div id="refs"></div></section>
+      <section class="card"><h2>Language</h2><div class="note">Demo conversations</div><div id="langs"></div></section>
+      <section class="card"><h2>Spoken or typed</h2><div class="note">How demo questions were asked</div><div id="inputs"></div></section>
+    </div>
+
+    <footer class="note">Records are rounded to the hour and contain no names, questions, answers, voices, IP addresses or visitor IDs. Visitors who chose Decline on the cookie notice, or whose browser asks not to be tracked, are not counted. Android app figures include only phones whose users agreed to be counted.</footer>
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+"use strict";
+const OWNER = "sautilumeltd@gmail.com";
+firebase.initializeApp({
+  apiKey: "AIzaSyDfT4U6UrZtM-y_IBW13OPnJcApnhBx9XE",
+  authDomain: "sautilume-1fa3c.firebaseapp.com",
+  projectId: "sautilume-1fa3c"
+});
+const auth = firebase.auth();
+const db = firebase.firestore();
+const $ = id => document.getElementById(id);
+
+/* ---------- Readable names ---------- */
+const TOPIC = {
+  "period": "Periods", "cramp": "Period pain", "irregular": "Irregular periods", "stress": "Stress and anxiety",
+  "sad": "Sadness and low mood", "consent": "Consent", "puberty": "Puberty", "pregnan": "Pregnancy and contraception",
+  "hiv": "HIV and STIs", "clinic": "Finding a clinic", "age of consent": "Age of consent",
+  "emergency contraception": "Emergency contraception", "what happens if i call 1195": "Calling the 1195 helpline",
+  "healthy relationship": "Healthy relationships", "what is mental health": "What mental health is", "grief": "Grief",
+  "bullying": "Bullying", "self harm": "Self-harm", "cant afford pads": "Affording pads",
+  "i cant see if i am leaking": "Periods when you can't see", "need my parents permission": "Clinic without parents",
+  "what happens at the clinic after": "Care after sexual assault", "myths about periods": "Period myths",
+  "can hospital treat mental illness": "Mental health treatment rights", "child marriage": "Child marriage",
+  "condom": "Condoms", "discharge": "Vaginal discharge", "menstrual cup": "Menstrual cups",
+  "contraceptive methods": "Contraceptive methods", "masturbat": "Masturbation", "alcohol and drugs": "Alcohol and drugs",
+  "sex during pregnancy": "Sex during pregnancy", "tell my parents i am pregnant": "Telling parents about a pregnancy",
+  "revenge": "Anger", "bleeding after sex": "Bleeding after sex", "talk to my parents about sex": "Talking to parents about sex",
+  "oral sex": "Oral sex", "pill make you fat": "Contraception and weight", "hpv": "HPV and screening",
+  "sex during my period": "Sex during a period", "pregnancy test": "Pregnancy tests",
+  "will my baby be blind": "Disability and parenthood", "tampon": "Tampons", "run away from home": "Running away from home",
+  "because i am blind": "Disability support", "deaf and blind": "Help for deafblind users",
+  "year old boyfriend": "Older partners", "want an abortion": "Unwanted pregnancy", "i am gay": "Sexual orientation",
+  "send nudes": "Pressure to send nude photos"
+};
+const ROUTE = {
+  library: "Verified library answer", ai: "AI-assisted answer", no_answer: "No verified answer yet",
+  crisis_violence: "Crisis: violence or abuse", crisis_helper: "Crisis: helping someone after abuse",
+  crisis_fgm: "Crisis: FGM", crisis_overdose: "Crisis: poison or overdose", crisis_bleeding: "Crisis: bleeding in pregnancy",
+  crisis_pregnancy: "Crisis: pregnancy danger signs", crisis_self_harm: "Crisis: self-harm", crisis_suicide: "Crisis: suicidal thoughts"
+};
+const HELPLINE = {
+  "999": "999 Police and ambulance", "1195": "1195 GBV helpline", "116": "116 Child Helpline",
+  "1199": "1199 Kenya Red Cross", "0722178177": "Befrienders Kenya", "0719638006": "Gender Violence Recovery Centre"
+};
+const ERROR = {
+  "not-allowed": "Microphone blocked", "service-not-allowed": "Voice input turned off",
+  "network": "No internet for voice", "no-speech": "Nothing heard", "audio-capture": "No microphone",
+  "aborted": "Listening stopped", "language-not-supported": "Language not supported by the browser"
+};
+const BROWSER = { chrome: "Chrome", safari: "Safari", firefox: "Firefox", edge: "Edge", samsung: "Samsung Internet", opera: "Opera", "in-app": "In-app browser", other: "Other browser" };
+const OS = { android: "Android", ios: "iPhone/iPad", windows: "Windows", mac: "Mac", linux: "Linux", chromeos: "ChromeOS", other: "other" };
+const LANG = { en: "English", sw: "Kiswahili" };
+const INPUT = { voice: "Spoken", typed: "Typed" };
+
+let days = 30, metric = "sessions", rows = [];
+
+/* ---------- Sign in ---------- */
+function showMsg(el, text){ el.textContent = text; el.hidden = !text; }
+$("signIn").onclick = () => {
+  showMsg($("signinMsg"), "");
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(err => {
+    const why = {
+      "auth/unauthorized-domain": "Sign-in isn't allowed on this address yet. In Firebase, add sautilume.com under Authentication, Settings, Authorized domains.",
+      "auth/operation-not-allowed": "Google sign-in isn't switched on yet. In Firebase, turn on Google under Authentication, Sign-in method.",
+      "auth/popup-blocked": "Your browser blocked the sign-in window. Allow pop-ups for this page and try again.",
+      "auth/popup-closed-by-user": ""
+    }[err.code];
+    showMsg($("signinMsg"), why === undefined ? "Sign-in failed (" + err.code + ")." : why);
+  });
+};
+$("signOut").onclick = () => auth.signOut();
+auth.onAuthStateChanged(user => {
+  const ok = !!user;
+  $("signinCard").hidden = ok; $("app").hidden = !ok; $("who").hidden = !ok;
+  if (!ok) return;
+  $("whoEmail").textContent = user.email;
+  if (user.email !== OWNER) showMsg($("appMsg"), "You're signed in as " + user.email + ". Only " + OWNER + " can read the numbers.");
+  load();
+});
+
+/* ---------- Load and count ---------- */
+const dayKey = d => new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Nairobi" }).format(d);
+
+async function load(){
+  $("loaded").textContent = "Loading…";
+  try {
+    const since = firebase.firestore.Timestamp.fromDate(new Date(Date.now() - days * 864e5));
+    const snap = await db.collection("analytics_pings").where("ts", ">=", since).get();
+    rows = snap.docs.map(d => {
+      const r = d.data();
+      return Object.assign({}, r, { platform: r.platform || "android_app", ts: r.ts && r.ts.toDate ? r.ts.toDate() : null });
+    }).filter(r => r.ts);
+    if ($("appMsg").textContent.startsWith("Couldn't")) showMsg($("appMsg"), "");
+    $("loaded").textContent = rows.length.toLocaleString() + " records";
+    render();
+  } catch (err) {
+    $("loaded").textContent = "";
+    showMsg($("appMsg"), err.code === "permission-denied"
+      ? "Couldn't read the numbers: the Firestore rules don't allow this account to read them yet. Publish the updated rules in Firebase (Firestore Database, Rules)."
+      : "Couldn't load the numbers (" + (err.code || err.message) + ").");
+    rows = []; render();
+  }
+}
+
+function tally(list, keyFn){
+  const m = new Map();
+  for (const r of list){ const k = keyFn(r); if (k === null || k === undefined || k === "") continue; m.set(k, (m.get(k) || 0) + 1); }
+  return [...m.entries()].sort((a, b) => b[1] - a[1]);
+}
+const fmt = n => n >= 10000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1).replace(/\.0$/, "") + "K" : n.toLocaleString();
+
+function render(){
+  const demo = rows.filter(r => r.platform === "web_demo");
+  const site = rows.filter(r => r.platform === "website");
+  const app = rows.filter(r => r.platform === "android_app");
+  const sessions = demo.filter(r => r.event === "start");
+  const questions = demo.filter(r => r.event === "question");
+  const crisis = questions.filter(r => String(r.route).startsWith("crisis_"));
+  const appPhones = new Set(app.map(r => r.anon_id).filter(Boolean)).size;
+
+  const tiles = [
+    ["Demo conversations", sessions.length, "times someone started talking to the demo"],
+    ["Questions answered", questions.length, "in the demo"],
+    ["New visitors", rows.filter(r => r.event === "first_visit").length, "browsers seen for the first time"],
+    ["Website visits", site.filter(r => r.event === "visit").length, "homepage page views"],
+    ["Crisis replies", crisis.length, "violence, self-harm and urgent replies"],
+    ["Helpline buttons pressed", demo.filter(r => r.event === "call_tap").length, "on the emergency screen"],
+    ["Contact messages", site.filter(r => r.event === "contact_form").length, "full messages are in the inbox"],
+    ["Android app phones", appPhones, "that agreed to be counted"]
+  ];
+  $("tiles").innerHTML = "";
+  for (const [label, value, sub] of tiles){
+    const t = document.createElement("div"); t.className = "card tile";
+    t.innerHTML = '<div class="label"></div><div class="value"></div><div class="sub"></div>';
+    t.querySelector(".label").textContent = label;
+    t.querySelector(".value").textContent = fmt(value);
+    t.querySelector(".sub").textContent = sub;
+    $("tiles").appendChild(t);
+  }
+
+  const pick = { sessions: sessions, questions: questions, visits: site.filter(r => r.event === "visit") }[metric];
+  drawColumns(pick);
+
+  ranks("topics", tally(questions.filter(r => r.route === "library"), r => r.topic), k => TOPIC[k] || k, 15);
+  ranks("routes", tally(questions, r => r.route), k => ROUTE[k] || k);
+  ranks("helplines", tally(demo.filter(r => r.event === "call_tap"), r => r.helpline), k => HELPLINE[k] || k);
+  const voiceShare = {};
+  for (const r of sessions){ const k = r.browser + "|" + r.os; voiceShare[k] = voiceShare[k] || [0, 0]; voiceShare[k][0]++; if (r.voice_input) voiceShare[k][1]++; }
+  ranks("browsers", tally(sessions, r => r.browser + "|" + r.os), k => {
+    const [b, o] = k.split("|"); const v = voiceShare[k];
+    return (BROWSER[b] || b) + " on " + (OS[o] || o) + " · " + Math.round(100 * v[1] / v[0]) + "% voice";
+  });
+  ranks("errors", tally(demo.filter(r => r.event === "voice_error"), r => r.error + "|" + r.browser), k => {
+    const [e, b] = k.split("|"); return (ERROR[e] || e) + " · " + (BROWSER[b] || b);
+  }, 10);
+  ranks("refs", tally(site.filter(r => r.event === "visit"), r => r.ref), k => k === "direct" ? "Typed in or bookmarked" : k, 10);
+  ranks("langs", tally(sessions, r => r.lang), k => LANG[k] || k);
+  ranks("inputs", tally(questions, r => r.input), k => INPUT[k] || k);
+}
+
+/* Ranked horizontal bars: one hue, value at the tip, top N then "Other" */
+function ranks(id, entries, label, top){
+  const box = $(id); box.innerHTML = "";
+  if (!entries.length){ const p = document.createElement("p"); p.className = "empty"; p.textContent = "Nothing yet for this period."; box.appendChild(p); return; }
+  if (top && entries.length > top){
+    const rest = entries.slice(top).reduce((s, e) => s + e[1], 0);
+    entries = entries.slice(0, top).concat([["__other", rest]]);
+  }
+  const total = entries.reduce((s, e) => s + e[1], 0);
+  const max = Math.max(...entries.map(e => e[1]));
+  const ul = document.createElement("ul"); ul.className = "ranks";
+  for (const [k, n] of entries){
+    const li = document.createElement("li");
+    const name = document.createElement("span"); name.className = "name"; name.textContent = k === "__other" ? "Everything else" : label(k);
+    const track = document.createElement("span"); track.className = "track";
+    const fill = document.createElement("span"); fill.className = "fill"; fill.style.width = (100 * n / max) + "%"; fill.style.display = "block";
+    track.appendChild(fill);
+    const num = document.createElement("span"); num.className = "num"; num.textContent = n.toLocaleString() + " · " + Math.round(100 * n / total) + "%";
+    li.title = name.textContent + ": " + n.toLocaleString();
+    li.append(name, track, num); ul.appendChild(li);
+  }
+  box.appendChild(ul);
+}
+
+/* Daily columns: one series, rounded data-end, hover tooltip, table view */
+function drawColumns(list){
+  const box = $("chart"); const tip = $("tip");
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  $("chartTitle").textContent = { sessions: "Demo conversations", questions: "Demo questions", visits: "Website visits" }[metric] + " per day";
+  const n = Math.min(days, 365);
+  const keys = [];
+  for (let i = n - 1; i >= 0; i--) keys.push(dayKey(new Date(Date.now() - i * 864e5)));
+  const counts = new Map(keys.map(k => [k, 0]));
+  for (const r of list){ const k = dayKey(r.ts); if (counts.has(k)) counts.set(k, counts.get(k) + 1); }
+  const vals = keys.map(k => counts.get(k));
+  const max = Math.max(1, ...vals);
+  const step = max <= 5 ? 1 : Math.pow(10, Math.floor(Math.log10(max))) * (max / Math.pow(10, Math.floor(Math.log10(max))) > 5 ? 2 : 1);
+  const top = Math.ceil(max / step) * step;
+
+  const W = box.clientWidth || 600, H = box.clientHeight || 220, L = 34, B = 22, T = 8;
+  const pw = W - L, ph = H - B - T, slot = pw / keys.length, bw = Math.max(2, Math.min(24, slot - 2));
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg"); svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  svg.setAttribute("role", "img"); svg.setAttribute("aria-label", $("chartTitle").textContent + ", last " + n + " days. Total " + vals.reduce((a, b) => a + b, 0) + ".");
+  const axis = document.createElementNS(ns, "g"); axis.setAttribute("class", "axis");
+  for (let v = 0; v <= top; v += step){
+    const y = T + ph - (v / top) * ph;
+    const line = document.createElementNS(ns, "line"); line.setAttribute("class", "gridline");
+    line.setAttribute("x1", L); line.setAttribute("x2", W); line.setAttribute("y1", y); line.setAttribute("y2", y); axis.appendChild(line);
+    const t = document.createElementNS(ns, "text"); t.setAttribute("x", L - 6); t.setAttribute("y", y + 4); t.setAttribute("text-anchor", "end"); t.textContent = fmt(v); axis.appendChild(t);
+  }
+  const every = Math.ceil(keys.length / 7);
+  keys.forEach((k, i) => {
+    if (i % every && i !== keys.length - 1) return;
+    const t = document.createElementNS(ns, "text"); t.setAttribute("x", L + slot * i + slot / 2); t.setAttribute("y", H - 4); t.setAttribute("text-anchor", "middle");
+    t.textContent = new Date(k + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }); axis.appendChild(t);
+  });
+  svg.appendChild(axis);
+  vals.forEach((v, i) => {
+    const x = L + slot * i + (slot - bw) / 2, h = (v / top) * ph, y = T + ph - h;
+    const hit = document.createElementNS(ns, "rect"); hit.setAttribute("class", "hit");
+    hit.setAttribute("x", L + slot * i); hit.setAttribute("y", T); hit.setAttribute("width", slot); hit.setAttribute("height", ph);
+    const col = document.createElementNS(ns, "path"); col.setAttribute("class", "col");
+    if (v > 0){ const r = Math.min(4, bw / 2, h); col.setAttribute("d", "M" + x + "," + (T + ph) + "V" + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y + "H" + (x + bw - r) + "Q" + (x + bw) + "," + y + " " + (x + bw) + "," + (y + r) + "V" + (T + ph) + "Z"); }
+    const label = new Date(keys[i] + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) + ": " + v.toLocaleString();
+    hit.addEventListener("mouseenter", () => { tip.textContent = label; tip.style.display = "block"; tip.style.left = (100 * (L + slot * i + slot / 2) / W) + "%"; tip.style.top = (100 * Math.max(y - 6, 14) / H) + "%"; col.classList.add("on"); });
+    hit.addEventListener("mouseleave", () => { tip.style.display = "none"; col.classList.remove("on"); });
+    svg.appendChild(hit); svg.appendChild(col);
+  });
+  box.insertBefore(svg, tip);
+
+  const table = document.createElement("table");
+  table.innerHTML = "<thead><tr><th>Day</th><th>Count</th></tr></thead>";
+  const tb = document.createElement("tbody");
+  keys.slice().reverse().forEach((k, i) => { const tr = document.createElement("tr"); tr.innerHTML = "<td></td><td></td>"; tr.cells[0].textContent = k; tr.cells[1].textContent = vals[keys.length - 1 - i]; tb.appendChild(tr); });
+  table.appendChild(tb); $("chartTable").innerHTML = ""; $("chartTable").appendChild(table);
+}
+
+/* ---------- Controls ---------- */
+function segment(id, attr, onPick){
+  $(id).addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    $(id).querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    onPick(b.dataset[attr]);
+  });
+}
+segment("range", "days", v => { days = Number(v); load(); });
+segment("metric", "metric", v => { metric = v; render(); });
+window.addEventListener("resize", () => { if (rows.length) render(); });
+
+$("csv").onclick = () => {
+  const cols = ["ts", "platform", "event", "lang", "route", "topic", "input", "browser", "os", "voice_input", "speech_output", "error", "helpline", "page", "ref", "how"];
+  const esc = v => { const s = v === undefined || v === null ? "" : v instanceof Date ? v.toISOString() : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const csv = [cols.join(",")].concat(rows.map(r => cols.map(c => esc(r[c])).join(","))).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  a.download = "sautilume-usage-last-" + days + "-days.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+};
+</script>
+</body>
+</html>
