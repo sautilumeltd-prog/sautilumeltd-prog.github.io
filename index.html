@@ -35,10 +35,11 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Does SautiLume cover education as well as health?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SautiLume is a health and education platform. Health is where we started, with verified answers by voice and real referrals. We are now building learning support with special needs teachers: spoken explanations and revision, accessible maths and science, health topics linked to what learners meet in class, and tools that help teachers prepare accessible materials. These learning features are introduced step by step and tested with learners, with the consent of schools and of parents or guardians."}},
+    {"@type": "Question", "name": "Does SautiLume cover education as well as health?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SautiLume is a health and education platform. Health is where we started, with verified answers by voice and real referrals. The demo and app now also answer first questions about learning: revising for exams, books in Braille and audio, exam arrangements, screen readers, maths and science without sight, school fees and the right to education, and careers. With special needs teachers we are building much more: spoken explanations and revision, accessible maths and science, health topics linked to what learners meet in class, and tools that help teachers prepare accessible materials. These learning features are introduced step by step and tested with learners, with the consent of schools and of parents or guardians."}},
     {"@type": "Question", "name": "Is SautiLume solely dependent on AI?", "acceptedAnswer": {"@type": "Answer", "text": "No. SautiLume's core answers come from a verified knowledge base: health answers are reviewed by health professionals, and learning content is co-designed with special needs educators. It works even without AI. An optional AI layer can add more natural, conversational responses, but SautiLume is never solely dependent on it. If AI is unavailable, the verified library always has the final say."}},
     {"@type": "Question", "name": "Is my data stored when I use SautiLume?", "acceptedAnswer": {"@type": "Answer", "text": "No. SautiLume keeps no names, no audio, no transcripts, and no summaries. Once a conversation ends, nothing is left behind on the device."}},
     {"@type": "Question", "name": "How does SautiLume work with schools?", "acceptedAnswer": {"@type": "Answer", "text": "We work alongside teachers, guidance and counselling departments and school health programmes, never around them. Before any activity with learners, we obtain written permission from the school and consent from parents or guardians, and learners are asked in a format they can access, such as Braille, large print or audio. We do not record learners or keep notes that identify them."}},
+    {"@type": "Question", "name": "Can I use SautiLume on an iPhone or an Android phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The voice demo works in Chrome, Microsoft Edge, Safari and Firefox, on Android phones, iPhones, iPads and computers. In Chrome, Edge and Safari you can speak your question. In Firefox, and in any browser that cannot listen, you can type it or use the microphone button on your phone's keyboard. To keep SautiLume on your phone like an app: on an iPhone, open the demo in Safari, tap Share, then Add to Home Screen; on Android, open the demo in Chrome, tap the menu, then Add to Home screen or Install app. Our Android app is in testing with pilot schools, and an iPhone app is planned."}},
     {"@type": "Question", "name": "What languages does SautiLume support?", "acceptedAnswer": {"@type": "Answer", "text": "SautiLume currently works in English and Kiswahili, with offline voice recognition for both languages in development."}},
     {"@type": "Question", "name": "Is SautiLume free of charge?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SautiLume is free of charge for all users. Our plan is to sustain the platform through institutional licensing with health, education, and disability-focused partners."}},
     {"@type": "Question", "name": "Where is SautiLume being tested?", "acceptedAnswer": {"@type": "Answer", "text": "SautiLume is being tested continuously, even at this early prototype stage, with visually impaired young people in Kitui, Kiambu, and Nairobi counties."}},
@@ -78,6 +79,7 @@
   header.site {
     position: sticky; top: 0; z-index: 50;
     background: rgba(255,255,255,0.94);
+    -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
     border-bottom: 1px solid var(--border);
   }
@@ -642,12 +644,14 @@
     <div class="wrap">
       <div class="eyebrow">Try it yourself</div>
       <h2>Hear SautiLume answer a real question, right now.</h2>
-      <p class="lede">This is the same voice AI experience behind the SautiLume app: no typing, no login, nothing kept after you close it. Ask a health question out loud in English or Kiswahili and hear a verified answer spoken back. Learning features are being added next, co-designed with teachers.</p>
+      <p class="lede">This is the same voice AI experience behind the SautiLume app: no typing, no login, nothing kept after you close it. Ask a question out loud in English or Kiswahili, about your health or your learning, and hear a verified answer spoken back.</p>
       <div class="demo-grid">
         <div>
           <ul class="demo-list">
-            <li>Works in your browser, no app install needed</li>
-            <li>Speak in English or Kiswahili</li>
+            <li>Works in Chrome, Edge, Safari and Firefox, on Android phones, iPhones and computers</li>
+            <li>Speak or type in English or Kiswahili</li>
+            <li>Ask about your health, or about revising, exams, books in Braille and audio, and careers</li>
+            <li>Add it to your Home Screen and it opens like an app</li>
             <li>Nothing you say is saved once you close the tab</li>
           </ul>
           <a class="btn primary" href="demo.html" target="_blank" rel="noopener">Try the Live Demo ↗</a>
@@ -766,7 +770,7 @@
       <div class="faq-list">
         <details>
           <summary>Does SautiLume cover education as well as health?</summary>
-          <p>Yes. SautiLume is a health and education platform. Health is where we started, with verified answers by voice and real referrals. We are now building learning support with special needs teachers: spoken explanations and revision, accessible maths and science, health topics linked to what learners meet in class, and tools that help teachers prepare accessible materials. These learning features are introduced step by step and tested with learners, with the consent of schools and of parents or guardians.</p>
+          <p>Yes. SautiLume is a health and education platform. Health is where we started, with verified answers by voice and real referrals. The demo and app now also answer first questions about learning: revising for exams, books in Braille and audio, exam arrangements, screen readers, maths and science without sight, school fees and the right to education, and careers. With special needs teachers we are building much more: spoken explanations and revision, accessible maths and science, health topics linked to what learners meet in class, and tools that help teachers prepare accessible materials. These learning features are introduced step by step and tested with learners, with the consent of schools and of parents or guardians.</p>
         </details>
         <details>
           <summary>Is SautiLume solely dependent on AI?</summary>
@@ -779,6 +783,10 @@
         <details>
           <summary>How does SautiLume work with schools?</summary>
           <p>We work alongside teachers, guidance and counselling departments and school health programmes, never around them. Before any activity with learners, we obtain written permission from the school and consent from parents or guardians, and learners are asked in a format they can access, such as Braille, large print or audio. We do not record learners or keep notes that identify them.</p>
+        </details>
+        <details>
+          <summary>Can I use SautiLume on an iPhone or an Android phone?</summary>
+          <p>Yes. The voice demo works in Chrome, Microsoft Edge, Safari and Firefox, on Android phones, iPhones, iPads and computers. In Chrome, Edge and Safari you can speak your question. In Firefox, and in any browser that cannot listen, you can type it or use the microphone button on your phone's keyboard. To keep SautiLume on your phone like an app: on an iPhone, open the demo in Safari, tap Share, then Add to Home Screen; on Android, open the demo in Chrome, tap the menu, then Add to Home screen or Install app. Our Android app is in testing with pilot schools, and an iPhone app is planned.</p>
         </details>
         <details>
           <summary>What languages does SautiLume support?</summary>
@@ -808,7 +816,7 @@
       <ul class="roadmap-list">
         <li>
           <span class="tag">Now</span>
-          <p><strong>Working voice pipeline.</strong> A voice-first Android prototype answers health questions end to end, with verified content and zero data retention.</p>
+          <p><strong>Working voice pipeline.</strong> A voice-first Android prototype answers health questions, and the first education questions, end to end, with verified content and zero data retention.</p>
         </li>
         <li>
           <span class="tag">Next</span>

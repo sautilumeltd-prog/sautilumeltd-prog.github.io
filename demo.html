@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SautiLume — Your Private Health Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SautiLume — Your Private Health and Education Assistant</title>
+<meta name="description" content="Ask SautiLume a health or education question out loud, in English or Kiswahili, and hear a verified answer. Nothing is stored.">
+<!-- Add to Home Screen: on iPhone and Android the demo opens like an app -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SautiLume">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <style>
   :root{
     --bg:#0d1117; --panel:#161b22; --text:#f0f6fc; --dim:#9da7b3;
@@ -22,7 +32,7 @@
   }
   .logo{font-size:26px; font-weight:800; letter-spacing:.5px;}
   .logo span{color:var(--accent);}
-  main{width:100%; max-width:520px; padding:8px 16px 230px; flex:1;}
+  main{width:100%; max-width:520px; padding:8px 16px calc(230px + env(safe-area-inset-bottom, 0px)); flex:1;}
   .screen{display:none;}
   .screen.active{display:block;}
   h1{font-size:24px; margin:14px 0 10px; font-weight:700;}
@@ -40,7 +50,8 @@
   .big-btn.danger{background:#7f1d1d; border-color:#b91c1c;}
   .big-btn.call{background:#14532d; border-color:#166534; font-size:20px; text-align:left;}
   .mic-wrap{position:fixed; bottom:0; left:0; right:0; display:flex; flex-direction:column; align-items:center;
-    gap:12px; padding:26px 16px 22px; background:linear-gradient(transparent, var(--bg) 26px);}
+    gap:12px; padding:26px max(16px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    background:linear-gradient(transparent, var(--bg) 26px);}
   /* Typing is the way in when a browser has no voice input (Firefox), and an
      option everywhere else. On phones the keyboard's own microphone works here. */
   .ask-form{display:flex; gap:8px; width:100%; max-width:488px;}
@@ -103,7 +114,7 @@
   <!-- ONBOARDING -->
   <section class="screen active" id="scrLang" aria-label="Language selection">
     <h1>Karibu · Welcome</h1>
-    <p class="lead">I am your private health assistant. Everything you share with me is confidential. Choose your language — Chagua lugha yako.</p>
+    <p class="lead">I am your private health and education assistant. Everything you share with me is confidential. Choose your language — Chagua lugha yako.</p>
     <button class="big-btn primary" id="btnEN">English</button>
     <button class="big-btn primary" id="btnSW">Kiswahili</button>
     <div class="privacy" id="privacyNote">
@@ -140,7 +151,7 @@
     </div>
     <label for="hfToken">Hugging Face token (optional — connects the Gemma AI brain)</label>
     <input type="password" id="hfToken" placeholder="hf_...">
-    <p class="note">Without a token, SautiLume answers from its built-in verified health library. With a token, it uses the Gemma AI model. The token stays on this device only.</p>
+    <p class="note">Without a token, SautiLume answers from its built-in verified health and education library. With a token, it uses the Gemma AI model. The token stays on this device only.</p>
     <button class="big-btn primary" id="saveSettings">Save</button>
     <button class="big-btn" id="settingsBack">← Back</button>
   </section>
@@ -184,7 +195,7 @@ let history = [];            // conversation memory — RAM only, wiped on Exit
 /* ---------- UI strings ---------- */
 const T = {
   en: {
-    welcome: "Welcome to SautiLume. I am your private health assistant. Everything you share with me is confidential. No one else can hear our conversation. Press the big circle button and ask me anything about your health.",
+    welcome: "Welcome to SautiLume. I am your private health and education assistant. Everything you share with me is confidential. No one else can hear our conversation. Press the big circle button and ask me anything about your health or your learning.",
     listening: "I am listening...",
     thinking: "Please wait, I am finding the answer...",
     again: "You can ask another question when you are ready.",
@@ -202,7 +213,7 @@ const T = {
     urgent: "Your life matters, and I want you to get help right now. If you have taken pills, poison or anything else to harm yourself, call 999 or 112 now, or ask someone near you to take you to the nearest hospital straight away. Even if you feel fine, go now: some medicines cause harm hours later. Please don't stay alone. You can also call the Kenya Red Cross on 1199, free of charge, day or night.",
     emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. Calls to 999, 1195, 1199 and 116 are free of charge. All calls are confidential.",
     sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free of charge and open day and night. If you are under 18, you can also call the Child Helpline on 116, free of charge, day or night. If you were forced to have sex in the last 3 days, please go to a clinic or hospital as soon as you can. They can give you medicine to prevent HIV and pregnancy. When you feel ready, you can also report what happened at the nearest police station, and the clinic can help you with the forms. Even after 3 days, a clinic or hospital can still help you, and you can still report. I have opened the emergency screen so you can call with one touch.",
-    noSR: "Voice input is not available in this browser. Type your question in the box, or use the microphone button on your keyboard to say it.",
+    noSR: "Voice input is not available in this browser. Type your question in the box, or use the microphone button on your keyboard to say it. On a Windows computer, press the Windows key and H to speak. Chrome, Edge and Safari can listen to you directly.",
     langNoVoice: "This browser cannot understand spoken English. Type your question in the box, or use the microphone button on your keyboard to say it.",
     micBlocked: "The microphone is blocked for this page. Allow the microphone for this site in your browser's settings, then try again. You can also type your question in the box.",
     voiceOff: "Voice input is turned off on this device. On an iPhone or iPad, turn on Dictation in Settings, then General, then Keyboard. You can also type your question in the box.",
@@ -213,11 +224,11 @@ const T = {
     typeLabel: "Type your question",
     typePlaceholder: "Or type your question here",
     askBtn: "Ask",
-    noAnswer: "I am sorry, I do not have a verified answer for that yet. I can help with menstrual periods, mental health, consent, puberty, pregnancy, infections, and where to find help. Try asking in different words, or visit your nearest clinic for more support.",
+    noAnswer: "I am sorry, I do not have a verified answer for that yet. I can help with menstrual periods, mental health, consent, puberty, pregnancy, infections, studying and exams, books in Braille and audio, using a phone or computer, school and careers, and where to find help. Try asking in different words, or ask a teacher or visit your nearest clinic for more support.",
     error: "Sorry, something went wrong. Please try again."
   },
   sw: {
-    welcome: "Karibu SautiLume. Mimi ni msaidizi wako wa siri wa afya. Kila kitu unachoshiriki nami ni siri. Hakuna mtu mwingine anayeweza kusikia mazungumzo yetu. Bonyeza kitufe kikubwa cha duara na uniulize chochote kuhusu afya yako.",
+    welcome: "Karibu SautiLume. Mimi ni msaidizi wako wa siri wa afya na elimu. Kila kitu unachoshiriki nami ni siri. Hakuna mtu mwingine anayeweza kusikia mazungumzo yetu. Bonyeza kitufe kikubwa cha duara na uniulize chochote kuhusu afya yako au masomo yako.",
     listening: "Nasikiliza...",
     thinking: "Tafadhali subiri, natafuta jibu...",
     again: "Unaweza kuuliza swali lingine ukiwa tayari.",
@@ -235,7 +246,7 @@ const T = {
     urgent: "Maisha yako ni muhimu, na nataka upate msaada sasa hivi. Kama umekunywa vidonge, sumu au kitu kingine ili kujidhuru, piga simu 999 au 112 sasa, au mwombe mtu aliye karibu akupeleke hospitali iliyo karibu mara moja. Hata kama unajisikia sawa, nenda sasa: dawa nyingine hudhuru baada ya masaa kadhaa. Tafadhali usibaki peke yako. Unaweza pia kupiga simu Msalaba Mwekundu kwa 1199, ni bure, mchana au usiku.",
     emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu kwa 999, 1195, 1199 na 116 ni bure. Simu zote ni za siri.",
     sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Kama uko chini ya miaka 18, unaweza pia kupiga simu ya msaada kwa watoto, 116, ni bure, mchana na usiku. Kama ulilazimishwa kufanya ngono ndani ya siku 3 zilizopita, tafadhali nenda kliniki au hospitali haraka iwezekanavyo. Wanaweza kukupa dawa za kuzuia Ukimwi na mimba. Ukiwa tayari, unaweza pia kuripoti kilichotokea katika kituo cha polisi kilicho karibu, na kliniki inaweza kukusaidia na fomu. Hata baada ya siku 3, kliniki au hospitali bado inaweza kukusaidia, na bado unaweza kuripoti. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
-    noSR: "Sauti haipatikani kwenye kivinjari hiki. Andika swali lako kwenye kisanduku, au tumia kitufe cha maikrofoni kwenye kibodi yako kulisema.",
+    noSR: "Sauti haipatikani kwenye kivinjari hiki. Andika swali lako kwenye kisanduku, au tumia kitufe cha maikrofoni kwenye kibodi yako kulisema. Kwenye kompyuta ya Windows, bonyeza kitufe cha Windows na H ili kuzungumza. Chrome, Edge na Safari zinaweza kukusikiliza moja kwa moja.",
     langNoVoice: "Kivinjari hiki bado hakiwezi kuelewa Kiswahili kinachozungumzwa. Andika swali lako kwenye kisanduku, au tumia kitufe cha maikrofoni kwenye kibodi yako kulisema.",
     micBlocked: "Maikrofoni imezuiwa kwenye ukurasa huu. Ruhusu maikrofoni kwa tovuti hii kwenye mipangilio ya kivinjari, kisha ujaribu tena. Unaweza pia kuandika swali lako kwenye kisanduku.",
     voiceOff: "Sauti imezimwa kwenye kifaa hiki. Kwenye iPhone au iPad, washa Dictation katika Settings, kisha General, kisha Keyboard. Unaweza pia kuandika swali lako kwenye kisanduku.",
@@ -246,7 +257,7 @@ const T = {
     typeLabel: "Andika swali lako",
     typePlaceholder: "Au andika swali lako hapa",
     askBtn: "Uliza",
-    noAnswer: "Samahani, sina jibu la uhakika kwa swali hilo bado. Naweza kukusaidia kuhusu hedhi, afya ya akili, ridhaa, balehe, mimba, magonjwa ya zinaa, na mahali pa kupata msaada. Jaribu kuuliza kwa maneno mengine, au tembelea kliniki iliyo karibu kwa msaada zaidi.",
+    noAnswer: "Samahani, sina jibu la uhakika kwa swali hilo bado. Naweza kukusaidia kuhusu hedhi, afya ya akili, ridhaa, balehe, mimba, magonjwa ya zinaa, kusoma na mitihani, vitabu vya breli na vya sauti, kutumia simu au kompyuta, shule na kazi za baadaye, na mahali pa kupata msaada. Jaribu kuuliza kwa maneno mengine, au muulize mwalimu au tembelea kliniki iliyo karibu kwa msaada zaidi.",
     error: "Samahani, kuna hitilafu. Tafadhali jaribu tena."
   }
 };
@@ -419,7 +430,28 @@ const KB = [
     sw:"Kugundua kwamba mpenzi wako ana mimba kunaweza kutisha, na ni sawa kuhisi wasiwasi. Uamuzi kuhusu mimba ni wake. Unaweza kumsaidia kwa kumsikiliza, kwenda naye kliniki akitaka, na kuwa mkweli kuhusu hisia zako. Mshauri katika kliniki rafiki kwa vijana anaweza kuzungumza nanyi wawili, au nawe peke yako, kwa siri. Kama uko chini ya miaka 18, unaweza pia kupiga simu ya msaada kwa watoto, 116, ni bure, mchana na usiku." },
   { keys:["eat during pregnancy","eat when pregnant","eat while pregnant","food in pregnancy","pregnancy diet","mjamzito anaweza kula","chakula cha mjamzito","kula nikiwa na mimba","antenatal","kliniki ya wajawazito"],
     en:"During pregnancy, eat a mix of foods every day: ugali or rice, beans, green vegetables like sukuma wiki, fruit, eggs, milk, and fish or meat when you can. Take the iron and folic acid tablets the clinic gives you, drink clean water, and avoid alcohol and smoking. Go for your antenatal clinic visits; they are free of charge at government health centres.",
-    sw:"Wakati wa mimba, kula vyakula mbalimbali kila siku: ugali au wali, maharagwe, mboga za majani kama sukuma wiki, matunda, mayai, maziwa, na samaki au nyama ukiweza. Meza vidonge vya madini ya chuma na foliki ambavyo kliniki inakupa, kunywa maji safi, na epuka pombe na kuvuta sigara. Hudhuria kliniki ya wajawazito; ni bure katika vituo vya afya vya serikali." }
+    sw:"Wakati wa mimba, kula vyakula mbalimbali kila siku: ugali au wali, maharagwe, mboga za majani kama sukuma wiki, matunda, mayai, maziwa, na samaki au nyama ukiweza. Meza vidonge vya madini ya chuma na foliki ambavyo kliniki inakupa, kunywa maji safi, na epuka pombe na kuvuta sigara. Hudhuria kliniki ya wajawazito; ni bure katika vituo vya afya vya serikali." },
+  { keys:["how to study","study tips","study better","study well","study for","help me study","revise","revision","prepare for exam","prepare for my exam","pass my exam","pass exams","good marks","good grades","remember what i read","remember what i learn","jinsi ya kusoma","kusoma vizuri","kujisomea","kudurusu","marudio","kujiandaa kwa mtihani","kujiandaa kwa mitihani","kupita mtihani","kupita mitihani","alama nzuri","kukumbuka ninachosoma"],
+    en:"You can study well without sight. Revise in short sessions of 20 to 30 minutes with a short break in between, and revise a little every day rather than all at once. Ask your teacher for notes in Braille, large print or audio, or ask a classmate to read notes aloud while you record them, then listen again. Say the main points out loud in your own words, and test yourself with questions. Studying with a friend helps, because explaining something to someone else helps you remember it. Sleep well, eat well and drink water, especially before exams. If you need more time or support, tell your teacher early.",
+    sw:"Unaweza kusoma vizuri hata bila kuona. Durusu kwa vipindi vifupi vya dakika 20 hadi 30, upumzike kidogo katikati, na udurusu kidogo kila siku badala ya kusoma yote mara moja. Mwombe mwalimu wako akupe noti kwa breli, maandishi makubwa au sauti, au mwombe mwanafunzi mwenzako akusomee noti kwa sauti huku ukirekodi, kisha usikilize tena. Sema mambo makuu kwa sauti kwa maneno yako mwenyewe, na ujipime kwa maswali. Kusoma na rafiki husaidia, kwa sababu kumweleza mtu mwingine jambo hukusaidia kulikumbuka. Lala vya kutosha, kula vizuri na kunywa maji, hasa kabla ya mitihani. Kama unahitaji muda zaidi au msaada, mwambie mwalimu wako mapema." },
+  { keys:["braille book","books in braille","audio book","audiobook","talking book","large print","accessible book","get books","find books","textbook","set book","library","vitabu vya breli","kitabu cha breli","vitabu vya sauti","kitabu cha sauti","maandishi makubwa","vitabu vya kiada","kitabu cha kiada","kupata vitabu","nitapata vitabu","maktaba"],
+    en:"Your school is the first place to ask: tell your teacher which books you need in Braille, large print or audio. The Kenya Institute for the Blind produces Braille books and has a library of them. Some textbooks also come as accessible digital books that a phone, tablet or computer can read aloud, for example from eKitabu. Your phone's screen reader can read many e-books aloud too. If a book you need is not available, tell your teacher as early as possible, so that it can be requested or transcribed into Braille in time.",
+    sw:"Shuleni ndipo mahali pa kwanza pa kuuliza: mwambie mwalimu wako vitabu unavyohitaji kwa breli, maandishi makubwa au sauti. Kenya Institute for the Blind hutengeneza vitabu vya breli na ina maktaba ya vitabu hivyo. Baadhi ya vitabu vya kiada pia vinapatikana kama vitabu vya kidijitali ambavyo simu, tableti au kompyuta inaweza kukusomea kwa sauti, kwa mfano kutoka eKitabu. Kisoma-skrini cha simu yako pia kinaweza kukusomea vitabu vingi vya kielektroniki. Kama kitabu unachohitaji hakipatikani, mwambie mwalimu wako mapema iwezekanavyo, ili kiombwe au kinakiliwe kwa breli kwa wakati." },
+  { keys:["screen reader","talkback","talk back","voiceover","voice over","nvda","use a phone","use my phone","use a computer","use the computer","learn computer","computer lessons","kisoma skrini","kisoma-skrini","kutumia simu","kutumia kompyuta","kujifunza kompyuta"],
+    en:"A screen reader reads aloud everything on a screen, so you can use a phone or computer without seeing it. On Android phones it is called TalkBack: open Settings, then Accessibility, then TalkBack. On iPhones it is called VoiceOver, also under Settings, then Accessibility. On a Windows computer, NVDA is a screen reader that is free of charge. The gestures and keyboard shortcuts take practice, so ask a teacher, a friend, or your school's ICT teacher to help you start. Practising typing and learning a few new shortcuts each week will make you faster.",
+    sw:"Kisoma-skrini husoma kwa sauti kila kitu kilicho kwenye skrini, ili uweze kutumia simu au kompyuta bila kuona. Kwenye simu za Android kinaitwa TalkBack: fungua Mipangilio, kisha Ufikivu, kisha TalkBack. Kwenye iPhone kinaitwa VoiceOver, pia kwenye Mipangilio, kisha Ufikivu. Kwenye kompyuta ya Windows, NVDA ni kisoma-skrini ambacho ni bure. Ishara na njia za mkato za kibodi huhitaji mazoezi, kwa hivyo mwombe mwalimu, rafiki, au mwalimu wa TEHAMA shuleni akusaidie kuanza. Kufanya mazoezi ya kuandika na kujifunza njia chache mpya za mkato kila wiki kutakufanya uwe mwepesi zaidi." },
+  { keys:["maths","math ","mathematics","hisabati"," science","sayansi","diagram"," graph","michoro","mchoro","grafu","geometry","jiometria","science practical","science experiment","majaribio ya sayansi","calculator","kikokotoo"," stem ","robotics","coding","programming"],
+    en:"You can do well in maths and science without sight. Useful tools include a Perkins brailler or a slate and stylus for working, the Braille maths code, a talking calculator, and tactile diagrams and models you can feel. Raised-line drawing kits let you make and read graphs and shapes. Ask your teacher to describe diagrams in words, and to let you handle real objects and equipment safely during practicals. Saying each step of a sum out loud as you work helps you catch mistakes. Many blind people become scientists, engineers, programmers and teachers.",
+    sw:"Unaweza kufanya vizuri katika hisabati na sayansi bila kuona. Vifaa vinavyosaidia ni pamoja na mashine ya breli ya Perkins au kibao na kalamu ya breli, msimbo wa breli wa hisabati, kikokotoo kinachozungumza, na michoro na modeli unazoweza kugusa. Vifaa vya kuchora kwa mistari iliyoinuka vinakuwezesha kuchora na kusoma grafu na maumbo. Mwombe mwalimu wako akueleze michoro kwa maneno, na akuruhusu kushika vitu na vifaa halisi kwa usalama wakati wa majaribio. Kusema kila hatua ya hesabu kwa sauti unapoifanya hukusaidia kugundua makosa. Watu wengi wasioona huwa wanasayansi, wahandisi, watengenezaji programu na walimu." },
+  { keys:["exam in braille","exams in braille","braille exam","braille paper","large print exam","extra time","more time in exam","knec","kcse","kjsea","kpsea","national exam","mtihani wa breli","mitihani ya breli","karatasi ya breli","muda wa ziada","muda zaidi kwenye mtihani","mtihani wa kitaifa","mitihani ya kitaifa"],
+    en:"In Kenya's national exams, run by the Kenya National Examinations Council, known as KNEC, candidates who are blind or have low vision can get their papers in Braille or large print, and extra time to answer. These arrangements are made through your school when you are registered for the exam, so make sure your teacher and head teacher know exactly what you need, well before registration closes. Practise with the same format during the year, for example Braille past papers, so that the exam feels familiar on the day.",
+    sw:"Katika mitihani ya kitaifa ya Kenya, inayosimamiwa na Baraza la Kitaifa la Mitihani, yaani KNEC, watahiniwa wasioona au wenye uoni hafifu wanaweza kupata karatasi za mtihani kwa breli au maandishi makubwa, pamoja na muda wa ziada wa kujibu. Mipango hii hufanywa kupitia shule yako unaposajiliwa kwa mtihani, kwa hivyo hakikisha mwalimu wako na mwalimu mkuu wanajua hasa unachohitaji, mapema kabla usajili haujafungwa. Fanya mazoezi kwa muundo uleule mwaka mzima, kwa mfano karatasi za zamani za breli, ili uuzoee muundo wa mtihani kabla ya siku yenyewe." },
+  { keys:["right to education","back to school","return to school","dropped out","left school","school fees","bursary","bursaries","scholarship","special school","regular school","haki ya elimu","kurudi shule","niliacha shule","karo","basari","ufadhili","shule maalum"],
+    en:"Every child in Kenya has the right to basic education that is free of charge and compulsory, and learners with disabilities have the right to learn on equal terms, with the support they need. You can learn in a special school, in a special unit, or in a regular school with support. Girls who become pregnant also have the right to continue school, and to go back after giving birth. If school fees or other costs are a problem, ask your head teacher about bursaries, including county bursaries and education support from the National Council for Persons with Disabilities. If you have left school, it is not too late: talk to a teacher you trust or an education officer about going back.",
+    sw:"Kila mtoto nchini Kenya ana haki ya elimu ya msingi ambayo ni bure na ya lazima, na wanafunzi wenye ulemavu wana haki ya kusoma kwa usawa, wakipewa msaada wanaohitaji. Unaweza kusoma katika shule maalum, katika kitengo maalum, au katika shule ya kawaida ukiwa na msaada. Wasichana wanaopata mimba pia wana haki ya kuendelea na shule, na kurudi shuleni baada ya kujifungua. Kama karo au gharama nyingine za shule ni tatizo, muulize mwalimu mkuu kuhusu basari, zikiwemo basari za kaunti na msaada wa elimu kutoka Baraza la Kitaifa la Watu Wenye Ulemavu. Kama uliacha shule, bado haujachelewa: zungumza na mwalimu unayemwamini au afisa wa elimu kuhusu kurudi shuleni." },
+  { keys:["career","careers","what job can","jobs for blind","jobs can blind","when i grow up","which pathway","senior school pathway","choose subjects","subjects to choose","university course","course to study","kazi gani","kazi za baadaye","kazi kwa wasioona","nikiwa mkubwa","njia ya masomo","kuchagua masomo","kozi ya kusoma"],
+    en:"Blind and visually impaired people work in many careers, including teaching, law, counselling, journalism and radio, music, business, IT and programming, and science and research. Think about the subjects you enjoy and do well in. In Senior School you choose a pathway: STEM, Social Sciences, or Arts and Sports Science, so talk to your career guidance teacher before you choose. Ask about the tools, like screen readers, that make each career possible, and try to meet a blind or visually impaired adult who works in a field you like.",
+    sw:"Watu wasioona na wenye uoni hafifu hufanya kazi za aina nyingi, zikiwemo ualimu, sheria, ushauri nasaha, uanahabari na redio, muziki, biashara, TEHAMA na utengenezaji wa programu, na sayansi na utafiti. Fikiria masomo unayoyapenda na unayofanya vizuri. Katika Senior School unachagua njia ya masomo: STEM, Sayansi za Jamii, au Sanaa na Sayansi ya Michezo, kwa hivyo zungumza na mwalimu wa ushauri wa taaluma kabla ya kuchagua. Uliza kuhusu vifaa, kama visoma-skrini, vinavyowezesha kila kazi, na jaribu kukutana na mtu mzima asiyeona anayefanya kazi unayoipenda." }
 ];
 
 /* SGBV trigger words — respond with support, never with questions for details.
@@ -536,8 +568,8 @@ function pickVoice(lang){
    After a line is re-recorded, set its s back to "same". Anything not
    recorded, such as the health answers, uses the device voice.             */
 const RECORDINGS = {
-  en: { welcome:{d:15.9,s:"same"}, listening:{d:2.7,s:"same"}, thinking:{d:3.8,s:"same"}, again:{d:4.2,s:"same"}, noSpeech:{d:5.4,s:"same"}, emgSpoken:{d:29.3,s:"reworded"}, emgOpened:{d:5.6,s:"same"}, sgbv:{d:57.2,s:"older"}, suicide:{d:34.5,s:"reworded"}, urgent:{d:47.5,s:"reworded"}, bleeding:{d:33.1,s:"same"}, pregnancyDanger:{d:47.8,s:"same"}, fgm:{d:62.6,s:"reworded"}, helper:{d:65.2,s:"older"}, noAnswer:{d:31.6,s:"reworded"} },
-  sw: { welcome:{d:26.3,s:"same"}, listening:{d:1.9,s:"same"}, thinking:{d:4.2,s:"same"}, again:{d:5.2,s:"same"}, noSpeech:{d:8.3,s:"same"}, emgSpoken:{d:43.0,s:"same"}, emgOpened:{d:7.3,s:"same"}, sgbv:{d:74.8,s:"older"}, suicide:{d:44.5,s:"reworded"}, urgent:{d:57.6,s:"reworded"}, bleeding:{d:37.4,s:"same"}, pregnancyDanger:{d:47.5,s:"same"}, fgm:{d:54.7,s:"reworded"}, helper:{d:52.6,s:"older"}, noAnswer:{d:28.0,s:"same"} }
+  en: { welcome:{d:15.9,s:"older"}, listening:{d:2.7,s:"same"}, thinking:{d:3.8,s:"same"}, again:{d:4.2,s:"same"}, noSpeech:{d:5.4,s:"same"}, emgSpoken:{d:29.3,s:"reworded"}, emgOpened:{d:5.6,s:"same"}, sgbv:{d:57.2,s:"older"}, suicide:{d:34.5,s:"reworded"}, urgent:{d:47.5,s:"reworded"}, bleeding:{d:33.1,s:"same"}, pregnancyDanger:{d:47.8,s:"same"}, fgm:{d:62.6,s:"reworded"}, helper:{d:65.2,s:"older"}, noAnswer:{d:31.6,s:"older"} },
+  sw: { welcome:{d:26.3,s:"older"}, listening:{d:1.9,s:"same"}, thinking:{d:4.2,s:"same"}, again:{d:5.2,s:"same"}, noSpeech:{d:8.3,s:"same"}, emgSpoken:{d:43.0,s:"same"}, emgOpened:{d:7.3,s:"same"}, sgbv:{d:74.8,s:"older"}, suicide:{d:44.5,s:"reworded"}, urgent:{d:57.6,s:"reworded"}, bleeding:{d:37.4,s:"same"}, pregnancyDanger:{d:47.5,s:"same"}, fgm:{d:54.7,s:"reworded"}, helper:{d:52.6,s:"older"}, noAnswer:{d:28.0,s:"older"} }
 };
 const PLAYER = typeof Audio === "function" ? new Audio() : null;
 const SILENT = "data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
@@ -875,7 +907,7 @@ function deliver(answer){
 }
 
 /* System prompt from Technical Specification v1.0 §7 — sent with every call */
-const SYSTEM_PROMPT = "You are SautiLume, a trusted health assistant for young people in Kenya, aged 10 to 24. You provide accurate, verified health information about: sexual and reproductive health, menstrual hygiene, mental health, consent, and bodily safety. Always respond in the language the user speaks to you in — either English or Swahili. Use simple, clear language. Avoid medical jargon. Your context is Kenya. Use Kenyan units, Kenyan institutions (Ministry of Health, AMREF, UNFPA Kenya), and Kenyan cultural sensitivity. You are non-judgmental, warm, and never shaming. The user may be blind, visually impaired, or have a disability. Never reference visual content. You do not store, share, or reference any personal information the user shares. Every conversation is completely private. If the user describes violence, abuse, or assault, do not ask for details. Express care, tell them it is not their fault, and offer to connect them with the SGBV helpline: 1195. Keep all responses under 150 words. Speak in a conversational tone, as if talking kindly to a young person. Remember what the user has already told you in this conversation and build on it. When it would help the user, end your answer with ONE short, caring follow-up question — for example asking how long they have felt this way, or whether they would like to know about treatments or where to get help. Never ask more than one question at a time. When something costs nothing, always say \"free of charge\" (in Swahili, \"ni bure\"), never just \"free\". Always say \"menstrual period\" or \"menstrual periods\", never just \"period\". When someone describes sexual violence, tell them to go to a clinic or hospital as soon as possible (medicine to prevent HIV and pregnancy works best within 3 days), then that, when they feel ready, they can report what happened at the nearest police station, and the clinic can help with the forms; even after 3 days a clinic or hospital can still help.";
+const SYSTEM_PROMPT = "You are SautiLume, a trusted health and education assistant for young people in Kenya, aged 10 to 24, who are blind or visually impaired. You provide accurate, verified health information about: sexual and reproductive health, menstrual hygiene, mental health, consent, and bodily safety. You also support learning: study and revision skills, exams and exam arrangements for blind learners, accessible books in Braille, large print and audio, screen readers and assistive technology, maths and science without sight, the right to education, and careers. Explain school topics step by step, and when a learner asks for help with schoolwork, give a hint and let them try before giving the full answer. Never claim to replace a teacher. Always respond in the language the user speaks to you in — either English or Swahili. Use simple, clear language. Avoid medical jargon. Your context is Kenya. Use Kenyan units, Kenyan institutions (Ministry of Health, AMREF, UNFPA Kenya), and Kenyan cultural sensitivity. You are non-judgmental, warm, and never shaming. The user may be blind, visually impaired, or have a disability. Never reference visual content. You do not store, share, or reference any personal information the user shares. Every conversation is completely private. If the user describes violence, abuse, or assault, do not ask for details. Express care, tell them it is not their fault, and offer to connect them with the SGBV helpline: 1195. Keep all responses under 150 words. Speak in a conversational tone, as if talking kindly to a young person. Remember what the user has already told you in this conversation and build on it. When it would help the user, end your answer with ONE short, caring follow-up question — for example asking how long they have felt this way, or whether they would like to know about treatments or where to get help. Never ask more than one question at a time. When something costs nothing, always say \"free of charge\" (in Swahili, \"ni bure\"), never just \"free\". Always say \"menstrual period\" or \"menstrual periods\", never just \"period\". When someone describes sexual violence, tell them to go to a clinic or hospital as soon as possible (medicine to prevent HIV and pregnancy works best within 3 days), then that, when they feel ready, they can report what happened at the nearest police station, and the clinic can help with the forms; even after 3 days a clinic or hospital can still help.";
 
 async function askGemma(question){
   const langHint = LANG === "sw"
@@ -998,7 +1030,7 @@ $("saveSettings").onclick = () => {
 /* Environment self-check — tells us why voice may not work */
 (function envCheck(){
   const msgs = [];
-  if (!SR) msgs.push("This browser has no voice input, so type your question in the box, or use the microphone button on your phone's keyboard. · Kivinjari hiki hakina sauti: andika swali lako, au tumia maikrofoni ya kibodi yako.");
+  if (!SR) msgs.push("This browser has no voice input, so type your question in the box, or use the microphone button on your phone's keyboard (on Windows, press the Windows key and H). Chrome, Edge and Safari can listen directly. · Kivinjari hiki hakina sauti: andika swali lako, au tumia maikrofoni ya kibodi yako. Chrome, Edge na Safari zinaweza kukusikiliza moja kwa moja.");
   if (location.hostname.includes("googleusercontent") || location.hostname.includes("drive.google"))
     msgs.push("⚠ You are viewing this inside Google Drive's preview, which blocks the microphone. Please DOWNLOAD the file and open it with Chrome instead.");
   if (msgs.length){
