@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SautiLume | Voice AI for Inclusive Health &amp; Disability Accessibility in Kenya</title>
-<meta name="description" content="SautiLume is an AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified answers about sexual and reproductive health, mental health, and safety, delivered by voice alone, with nothing stored.">
-<meta name="keywords" content="voice AI, AI-powered voice platform, digital health, health AI, disability inclusion, accessible healthcare, assistive technology, blind and visually impaired, inclusive AI, voice assistant for health, AI for good, Kenya, East Africa">
+<title>SautiLume | Voice AI for Inclusive Health &amp; Education for Visually Impaired Young People in Kenya</title>
+<meta name="description" content="SautiLume is an AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified health answers by voice alone, with nothing stored. We are also growing into accessible education, with special needs teachers, across Braille, tactile learning, assistive technology and STEM.">
+<meta name="keywords" content="voice AI, AI-powered voice platform, digital health, health AI, disability inclusion, accessible healthcare, inclusive education, special needs education, Braille, tactile learning, assistive technology, blind and visually impaired, inclusive AI, voice assistant for health, AI for good, Kenya, East Africa">
 <link rel="canonical" href="https://sautilume.com/">
-<meta property="og:title" content="SautiLume | Voice AI for Inclusive Health in Kenya">
-<meta property="og:description" content="An AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified health answers by voice alone, with nothing stored.">
+<meta property="og:title" content="SautiLume | Voice AI for Inclusive Health &amp; Education in Kenya">
+<meta property="og:description" content="An AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified health answers by voice alone, now growing into accessible education.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sautilume.com/">
 <meta property="og:image" content="https://sautilume.com/logo.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SautiLume | Voice AI for Inclusive Health in Kenya">
-<meta name="twitter:description" content="An AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified health answers by voice alone, with nothing stored.">
+<meta name="twitter:title" content="SautiLume | Voice AI for Inclusive Health &amp; Education in Kenya">
+<meta name="twitter:description" content="An AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified health answers by voice alone, now growing into accessible education.">
 <meta name="twitter:image" content="https://sautilume.com/logo.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231B2A5A'/%3E%3Ctext x='50' y='68' font-size='55' font-family='Arial' fill='%232BC5EA' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
 <script type="application/ld+json">
@@ -24,7 +24,7 @@
   "name": "SautiLume",
   "url": "https://sautilume.com/",
   "logo": "https://sautilume.com/logo.png",
-  "description": "SautiLume is an AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified answers to health questions by voice alone.",
+  "description": "SautiLume is an AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified answers to health questions by voice alone. It is growing into accessible education with special needs teachers.",
   "email": "sautilumeltd@gmail.com",
   "address": { "@type": "PostalAddress", "addressLocality": "Nairobi", "addressCountry": "KE" },
   "sameAs": ["https://www.linkedin.com/company/sautilume", "https://twitter.com/SautiLume"]
@@ -40,6 +40,7 @@
     {"@type":"Question","name":"What languages does SautiLume support?","acceptedAnswer":{"@type":"Answer","text":"SautiLume currently works in English and Swahili, with offline voice recognition for both languages in development."}},
     {"@type":"Question","name":"Is SautiLume free of charge?","acceptedAnswer":{"@type":"Answer","text":"Yes. SautiLume is free of charge for all users. Our plan is to sustain the platform through institutional licensing with health, education, and disability-focused partners."}},
     {"@type":"Question","name":"Where is SautiLume being tested?","acceptedAnswer":{"@type":"Answer","text":"SautiLume is being tested continuously, even at this early prototype stage, with visually impaired young people in Kitui, Kiambu, and Nairobi counties."}},
+    {"@type":"Question","name":"Is SautiLume only about health?","acceptedAnswer":{"@type":"Answer","text":"Health is where SautiLume started and remains its first focus. SautiLume is now also growing into accessible education, working with special needs teachers on Braille, tactile and audio learning resources, assistive technology and STEM learning for blind and visually impaired learners. This work is at an early stage and is being built with teachers and learners, not just for them."}},
     {"@type":"Question","name":"Does SautiLume replace a doctor or health facility?","acceptedAnswer":{"@type":"Answer","text":"No. SautiLume gives verified information and, when needed, verified referrals to real public and private health facilities, mental health support, and pharmacies. It never invents a phone number or a diagnosis."}}
   ]
 }
@@ -209,7 +210,7 @@
 
   .founder { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
   .founder-photo {
-    width: 100%; aspect-ratio: 1/1; border-radius: 20px;
+    width: 100%; height: auto; aspect-ratio: 1/1; border-radius: 20px;
     background: linear-gradient(160deg, var(--cyan), var(--navy));
     display: flex; align-items: center; justify-content: center;
     color: #fff; font-weight: 800; font-size: 2.4rem;
@@ -218,6 +219,30 @@
   .founder .role { color: var(--cyan); font-weight: 700; font-size: 0.92rem; margin-bottom: 16px; }
   .founder ul { padding-left: 20px; color: var(--muted); margin: 14px 0 0; }
   .founder ul li { margin-bottom: 6px; }
+
+
+  .edu-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .edu-intro .card.health { border-top: 4px solid var(--cyan); }
+  .edu-intro .card.education { border-top: 4px solid var(--green); }
+  .edu-intro .card h3 { font-size: 1.2rem; }
+  .edu-intro .card p + p { margin-top: 10px; }
+  .edu-note { max-width: 760px; margin: 36px 0 0; color: var(--muted); font-size: 0.98rem; }
+
+  .team-person + .team-person { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--border); }
+  .team-person .founder { margin-top: 0; }
+  .team-person .bio p { color: var(--muted); font-size: 1.02rem; margin: 0 0 14px; }
+  .team-person .bio p.lede { max-width: none; }
+  .founder .chips, .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .chips li {
+    background: var(--bg-soft); border: 1px solid var(--border); color: var(--navy);
+    border-radius: 999px; padding: 6px 14px; font-size: 0.84rem; font-weight: 600;
+  }
+  .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
+  .exp-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 16px; padding: 22px 24px; }
+  .exp-card .when { color: var(--cyan); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .exp-card h4 { margin: 0 0 2px; font-size: 1.02rem; }
+  .exp-card .where { color: var(--navy); font-size: 0.92rem; font-weight: 600; margin-bottom: 10px; }
+  .exp-card p { margin: 0; color: var(--muted); font-size: 0.93rem; }
 
   .faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 780px; margin-top: 32px; }
   .faq-list details {
@@ -346,6 +371,9 @@
     .privacy-grid { grid-template-columns: 1fr; }
     .founder { grid-template-columns: 1fr; }
     .founder-photo { max-width: 160px; }
+    .edu-intro { grid-template-columns: 1fr; }
+    .exp-grid { grid-template-columns: 1fr; }
+    .team-person + .team-person { margin-top: 40px; padding-top: 36px; }
     .contact-band { padding: 64px 0; }
     .contact-grid { grid-template-columns: 1fr; gap: 36px; }
     .contact-band h2 { font-size: 1.8rem; }
@@ -366,10 +394,11 @@
     <nav class="links" id="navLinks" aria-label="Primary">
       <a href="#mission">Mission</a>
       <a href="#focus">Focus</a>
+      <a href="#education">Education</a>
       <a href="#how">How It Works</a>
       <a href="#demo">Demo</a>
       <a href="#privacy">Privacy</a>
-      <a href="#founder">Founder</a>
+      <a href="#team">Team</a>
       <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -385,9 +414,9 @@
   <section class="hero" id="top">
     <div class="wrap">
       <div>
-        <div class="eyebrow">Voice AI for inclusive health</div>
+        <div class="eyebrow">Voice AI for inclusive health and education</div>
         <h1>Health answers, spoken back, for adolescents and young people who are visually impaired.</h1>
-        <p class="sub">SautiLume is an AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified answers about sexual and reproductive health, mental health, menstrual hygiene, and consent, by voice alone, in English or Swahili.</p>
+        <p class="sub">SautiLume is an AI-powered voice platform giving blind and visually impaired young people in Kenya private, verified answers about sexual and reproductive health, mental health, menstrual hygiene, and consent, by voice alone, in English or Swahili. We are also growing into accessible education, working with special needs teachers to bring Braille, tactile and audio learning into the same voice-first approach.</p>
         <div class="cta-row">
           <a class="btn primary" href="demo.html" target="_blank" rel="noopener">Try the Live Demo ↗</a>
           <a class="btn cyan" href="#contact">Partner With Us</a>
@@ -475,6 +504,54 @@
     </div>
   </section>
 
+  <section id="education">
+    <div class="wrap">
+      <div class="eyebrow">Health and education</div>
+      <h2>Two sectors, one barrier: information and learning that were never made for people who cannot see print.</h2>
+      <p class="lede">A young person who is blind or visually impaired meets the same wall in the clinic and in the classroom. SautiLume started with health. We are now building on the same voice-first, privacy-first approach to support accessible learning, together with the teachers who know these learners best.</p>
+      <div class="edu-intro">
+        <div class="card health">
+          <h3>Health</h3>
+          <p>Private, verified answers about sexual and reproductive health, mental health, menstrual hygiene and consent, spoken back in English or Swahili, with real referrals and nothing stored.</p>
+        </div>
+        <div class="card education">
+          <h3>Education</h3>
+          <p>Accessible learning resources and tools, co-designed with special needs educators and tested with learners, so that a blind or visually impaired student can take part in lessons on equal terms.</p>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="icon" aria-hidden="true">📖</div>
+          <h3>Braille literacy and transcription</h3>
+          <p>Supporting Braille reading and writing, and the transcription of learning materials, so that print content reaches learners in a form they can use.</p>
+        </div>
+        <div class="card">
+          <div class="icon" aria-hidden="true">✋</div>
+          <h3>Tactile learning resources</h3>
+          <p>Designing and adapting tactile teaching materials that make mathematics, science and other subjects something a learner can touch, explore and understand.</p>
+        </div>
+        <div class="card">
+          <div class="icon" aria-hidden="true">🎧</div>
+          <h3>Assistive technology and accessible ICT</h3>
+          <p>Introducing learners to assistive technology and accessible digital tools, including voice, so that independence with technology starts early.</p>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="icon" aria-hidden="true">🔬</div>
+          <h3>STEM and robotics</h3>
+          <p>Opening up science, engineering and problem solving to visually impaired learners through hands-on projects, mentoring and competitions.</p>
+        </div>
+        <div class="card">
+          <div class="icon" aria-hidden="true">🧭</div>
+          <h3>Independence and life skills</h3>
+          <p>Building on rehabilitation, communication and orientation and mobility practice, so that learning leads to confidence and independence beyond the classroom.</p>
+        </div>
+      </div>
+      <p class="edu-note">Our education work is at an early stage. We are building it with teachers, learners, schools and families, with the consent of schools and of parents or guardians for any activity involving learners, and we will share what we learn as we go. To lead it, we are proud to be working with <a href="#esther">Esther Bikeri</a>, our Director of Accessibility and Inclusive Education.</p>
+    </div>
+  </section>
+
   <section class="soft" id="how">
     <div class="wrap">
       <div class="eyebrow">How it works</div>
@@ -554,17 +631,56 @@
     </div>
   </section>
 
-  <section id="founder">
+  <section id="team">
     <div class="wrap">
       <div class="eyebrow">Who's behind it</div>
-      <h2>Founded by a public health professional who has spent her career closing this gap.</h2>
-      <div class="founder" style="margin-top:32px;">
-        <img class="founder-photo" src="founder.jpg" alt="Dr. Wanjirũ Kigathi" style="object-fit:cover;">
-        <div>
-          <h3>Dr. Wanjirũ Kigathi</h3>
-          <div class="role">Founder and CEO</div>
-          <p class="lede">She works at the intersection of AI, public health, women's health, disability inclusion, and health systems strengthening. Over the past decade she has contributed to national, regional, and continental health initiatives spanning policy development, health financing, digital transformation, implementation research, and innovation. She draws on experience across government, research, and entrepreneurship to design solutions that are evidence-driven, scalable, and responsive to the needs of underserved communities.</p>
-          <p style="margin-top:18px;"><a class="btn" href="https://www.linkedin.com/in/drwanjirukigathi/" target="_blank" rel="noopener">Connect on LinkedIn ↗</a></p>
+      <h2>Built by a public health founder and a special needs educator who know this gap from the inside.</h2>
+
+      <div class="team-person" id="founder">
+        <div class="founder" style="margin-top:32px;">
+          <img class="founder-photo" src="founder.jpg" alt="Dr. Wanjirũ Kigathi" width="560" height="560" style="object-fit:cover;">
+          <div class="bio">
+            <h3>Dr. Wanjirũ Kigathi</h3>
+            <div class="role">Founder and CEO</div>
+            <p class="lede">She works at the intersection of AI, public health, women's health, disability inclusion, and health systems strengthening. Over the past decade she has contributed to national, regional, and continental health initiatives spanning policy development, health financing, digital transformation, implementation research, and innovation. She draws on experience across government, research, and entrepreneurship to design solutions that are evidence-driven, scalable, and responsive to the needs of underserved communities.</p>
+            <p style="margin-top:18px;"><a class="btn" href="https://www.linkedin.com/in/drwanjirukigathi/" target="_blank" rel="noopener">Connect on LinkedIn ↗</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-person" id="esther">
+        <div class="founder">
+          <img class="founder-photo" src="esther.jpg" alt="Esther Bikeri" width="560" height="560" loading="lazy" style="object-fit:cover;">
+          <div class="bio">
+            <h3>Esther Bikeri</h3>
+            <div class="role">Director of Accessibility and Inclusive Education</div>
+            <p class="lede">Esther is a special needs education teacher who has spent her career making learning possible for blind and visually impaired learners. She holds a Bachelor of Education in Special Needs Education from Mount Kenya University, and she is passionate about inclusive education, assistive technology and STEM, and about creating meaningful opportunities for learners with disabilities.</p>
+            <p>Today she teaches Mathematics and Integrated Science at Kitui Comprehensive School for the Visually Impaired, where she adapts lessons to the needs of each learner and develops accessible learning resources, including tactile teaching materials and Braille-based instructional resources. She introduces her learners to ICT, assistive technology and accessible digital tools, leads STEM and robotics activities, and mentors students on science and engineering projects and in competitions.</p>
+            <p>At SautiLume, Esther leads our accessibility and inclusive education work. She guides how voice, Braille, tactile and audio learning come together, and she brings the voices of learners into every design decision, because nothing about people with disabilities should be built without them.</p>
+            <ul class="chips" aria-label="Areas of expertise">
+              <li>Braille literacy and transcription</li>
+              <li>Orientation and mobility</li>
+              <li>Tactile learning resources</li>
+              <li>Assistive technology and accessible ICT</li>
+              <li>STEM and robotics</li>
+              <li>Rehabilitation and communication skills</li>
+              <li>Inclusive teaching and curriculum adaptation</li>
+            </ul>
+          </div>
+        </div>
+        <div class="exp-grid">
+          <div class="exp-card">
+            <div class="when">2025 to present</div>
+            <h4>Special Needs Teacher</h4>
+            <div class="where">Kitui Comprehensive School for the Visually Impaired</div>
+            <p>Teaches Mathematics and Integrated Science, develops and adapts tactile and Braille-based learning resources, applies inclusive teaching strategies that build participation and independence, and runs ICT, assistive technology and STEM and robotics activities.</p>
+          </div>
+          <div class="exp-card">
+            <div class="when">2023 to 2024</div>
+            <h4>Trainer</h4>
+            <div class="where">Machakos Technical Institute for the Blind</div>
+            <p>Supported adult learners in rehabilitation and communication skills, assisted the Braille, transcription, and orientation and mobility departments, gave guidance and counselling, and took part in the institute's co-curricular activities.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -597,6 +713,10 @@
           <p>SautiLume is being tested continuously, even at this early prototype stage, with visually impaired young people in Kitui, Kiambu, and Nairobi counties.</p>
         </details>
         <details>
+          <summary>Is SautiLume only about health?</summary>
+          <p>Health is where SautiLume started and remains our first focus. We are now also growing into accessible education, working with special needs teachers on Braille, tactile and audio learning resources, assistive technology and STEM learning for blind and visually impaired learners. This work is at an early stage, and we are building it with teachers and learners, not just for them.</p>
+        </details>
+        <details>
           <summary>Does SautiLume replace a doctor or health facility?</summary>
           <p>No. SautiLume gives verified information and, when needed, verified referrals to real public and private health facilities, mental health support, and pharmacies. It never invents a phone number or a diagnosis.</p>
         </details>
@@ -623,6 +743,10 @@
           <p><strong>Offline voice recognition, English and Swahili.</strong> Moving to an offline speech engine so the app works reliably in both languages, regardless of phone model or connectivity.</p>
         </li>
         <li>
+          <span class="tag">Next</span>
+          <p><strong>Accessible education.</strong> Working with special needs teachers to co-design Braille, tactile and audio learning resources and tools, and to test them with learners, always with the consent of schools and of parents or guardians.</p>
+        </li>
+        <li>
           <span class="tag">Pilot</span>
           <p><strong>Kitui County, Kiambu County, and Nairobi County.</strong> Even at this early prototype stage, we're testing continuously with the visually impaired young people SautiLume is built for.</p>
         </li>
@@ -639,7 +763,7 @@
       <div>
         <div class="eyebrow">Partner with us</div>
         <h2 id="contactTitle">Ready to make health information truly accessible?</h2>
-        <p class="lede">We welcome foundations and donors, AI and technology companies, government health agencies, and disability and health organizations who share our mission. Tell us how you'd like to work with SautiLume.</p>
+        <p class="lede">We welcome foundations and donors, AI and technology companies, government health and education agencies, schools, and disability and health organizations who share our mission. Tell us how you'd like to work with SautiLume.</p>
         <ul class="contact-items">
           <li>
             <span class="ci-icon" aria-hidden="true">
@@ -698,14 +822,16 @@
     <div class="foot-grid">
       <div class="foot-brand">
         <img src="logo.png" alt="SautiLume" style="height:36px;width:auto;margin-bottom:10px;">
-        <p>Voice-first health information platform for blind and visually impaired young people in Kenya. Free of charge for users. Nothing stored.</p>
+        <p>Voice-first health information platform, now growing into accessible education, for blind and visually impaired young people in Kenya. Free of charge for users. Nothing stored.</p>
       </div>
       <div class="foot-links">
         <div class="foot-heading">Explore</div>
         <p><a href="#mission">Mission</a></p>
         <p><a href="#focus">Focus</a></p>
+        <p><a href="#education">Education</a></p>
         <p><a href="#how">How It Works</a></p>
         <p><a href="demo.html" target="_blank" rel="noopener">Try the Demo</a></p>
+        <p><a href="#team">Team</a></p>
         <p><a href="#faq">FAQ</a></p>
       </div>
       <div class="foot-contact">
