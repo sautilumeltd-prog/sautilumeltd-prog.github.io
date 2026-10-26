@@ -204,7 +204,13 @@ const T = {
     fromSchool: "This is from School.",
     stillHere: "I'm still here. Ask your question, or say goodbye.",
     goodbye: "Goodbye. Press the big button any time you want to talk again.",
-    youreWelcome: "You're welcome. Ask another question, or say goodbye.",
+    youreWelcome: "You're welcome. Is there anything else you would like to know?",
+    followUp: "What would you like to know more about?",
+    goAhead: "Sure. What would you like to know?",
+    byeThanks: "You're welcome. Any time you have something to ask, just say start conversation, or press the big button.",
+    byeVoice: "Goodbye for now. Any time you have something to ask, just say start conversation, or press the big button.",
+    sayStart: "Say “start conversation” to talk again, or press the big button.",
+    standbyOff: "The microphone is off now. Press the big button when you want to talk again.",
     pressToContinue: "Press the big button to keep talking.",
     micEnd: "TAP TO<br>END",
     listening: "I am listening...",
@@ -250,7 +256,13 @@ const T = {
     fromSchool: "Hili ni kutoka Shule.",
     stillHere: "Bado nipo. Uliza swali lako, au sema kwaheri.",
     goodbye: "Kwaheri. Bonyeza kitufe kikubwa wakati wowote unapotaka kuzungumza tena.",
-    youreWelcome: "Karibu. Uliza swali lingine, au sema kwaheri.",
+    youreWelcome: "Karibu. Kuna kitu kingine ungependa kujua?",
+    followUp: "Ungependa kujua zaidi kuhusu nini?",
+    goAhead: "Sawa. Ungependa kujua nini?",
+    byeThanks: "Karibu. Wakati wowote ukiwa na swali, sema tu anza mazungumzo, au bonyeza kitufe kikubwa.",
+    byeVoice: "Kwaheri kwa sasa. Wakati wowote ukiwa na swali, sema tu anza mazungumzo, au bonyeza kitufe kikubwa.",
+    sayStart: "Sema “anza mazungumzo” kuzungumza tena, au bonyeza kitufe kikubwa.",
+    standbyOff: "Maikrofoni imezimwa sasa. Bonyeza kitufe kikubwa ukitaka kuzungumza tena.",
     pressToContinue: "Bonyeza kitufe kikubwa ili kuendelea kuzungumza.",
     micEnd: "GUSA<br>KUMALIZA",
     listening: "Nasikiliza...",
@@ -995,8 +1007,15 @@ function speakWithVoice(text, finish, busy){
   if (!SYNTH){ finish(); return; }
   try{
     const spoken = sayDigits(text);
-    // Sentences end at . ! or ? followed by a space, so "sautilume.com" stays whole
-    const parts = spoken.replace(/([.!?])\s+/g, "$1\n").split("\n").map(s => s.trim()).filter(Boolean);
+    // Sentences end at . ! or ? followed by a space, so "sautilume.com" stays whole.
+    // They are joined into pieces of up to 200 characters: phones pause before each
+    // piece, and one piece per sentence made answers sound halting. Longer pieces
+    // would risk Chrome's cut-off after about 15 seconds.
+    const parts = [];
+    for (const s of spoken.replace(/([.!?])\s+/g, "$1\n").split("\n").map(s => s.trim()).filter(Boolean)){
+      if (parts.length && parts[parts.length - 1].length + 1 + s.length <= 200) parts[parts.length - 1] += " " + s;
+      else parts.push(s);
+    }
     const v = pickVoice(LANG);
     const lang = LANG;
     let remaining = parts.length, startedAt = 0, failed = false, heardStart = false, over = false;
@@ -1026,7 +1045,7 @@ function speakWithVoice(text, finish, busy){
         const u = new SpeechSynthesisUtterance(part);
         if (v) u.voice = v;
         u.lang = lang === "sw" && !VOICE_FAILED.sw ? "sw-KE" : (v && v.lang ? v.lang : "en-GB");
-        u.rate = 0.85;  // slightly slower for clarity, per spec
+        u.rate = 1;     // normal speed: the owner found the spec's slower 0.85 too slow to listen to
         u.onstart = () => { heardStart = true; };
         u.onend = done;
         u.onerror = e => { const why = e && e.error; if (why && why !== "interrupted" && why !== "canceled") failed = true; done(); };
@@ -1214,8 +1233,11 @@ function useHeard(){
 /* ---------- Conversation: press once, then just talk ----------
    Blind learners should not have to find the button again and again. One
    press starts a spoken back-and-forth: SautiLume talks, a rising chime says
-   "your turn", it listens, answers, and chimes again. "Goodbye", or two
-   silences in a row, ends it with a falling chime. Health or School is
+   "your turn", it listens, answers, and chimes again. Every answer ends with
+   a question, so it goes on until the person says they are done ("goodbye",
+   "I'm done", "thank you, that's it", "end conversation", or "no" to the
+   question), or is silent twice in a row; a falling chime ends it, and then
+   "start conversation" starts it again (see Standby). Health or School is
    chosen by saying it. Every question still goes through the crisis checks
    first; a command is only taken as one when nothing else was said, so
    "I was raped at school" can never be heard as "switch to School".      */
@@ -1235,8 +1257,11 @@ const SECTION_SOUNDALIKES = { help:"health", helps:"health", held:"health", hell
   helth:"health", elf:"health", afia:"health", afiya:"health", aphia:"health", alpha:"health",
   schools:"education", skool:"education", scool:"education", skull:"education", schul:"education", schule:"education",
   shuleni:"education", shulle:"education" };
-const END_RE = /^(?:(?:ok|okay|sawa|asante|thank you|thanks)\s+)?(?:good ?bye|bye|bye bye|stop|that s all|that is all|i m done|im done|i am done|done|finished|end|exit|quit|kwaheri|nimemaliza|basi|inatosha|tutaonana)(?:\s+(?:now|please|for now|forever|sasa|milele|thank you|thanks|asante|asante sana))*$/;   // "goodbye forever" ends it too (I-093)
+const END_RE = /^(?:(?:ok|okay|sawa|asante|sana|thank you|thanks|so much|a lot|no|hapana)\s+)*(?:good ?bye|bye|bye bye|stop|that s all|that is all|that s it|that is it|i m done|im done|i am done|done|i m finished|i am finished|finished|end|exit|quit|nothing else|no more questions|(?:end|stop|close) (?:the |this |our )?(?:conversation|chat)|kwaheri|nimemaliza|tumemaliza|basi|inatosha|tutaonana|(?:maliza|funga|sitisha) mazungumzo)(?:\s+(?:now|please|for now|forever|sasa|milele|thank you|thanks|asante|asante sana|tafadhali))*$/;   // "goodbye forever" ends it too (I-093)
 const THANKS_RE = /^(?:thank you|thanks|thank you so much|thanks a lot|asante|asante sana)$/;
+const THANKED_RE = /\b(?:thank|thanks|asante)\b/;
+// "No" to "What would you like to know more about?" means they are done
+const DONE_RE = /^(?:no|nope|no thanks|no thank you|nothing|not really|not now|i m good|im good|i am good|i m fine|i am fine|i m okay|i am okay|hapana|la|siyo|hapana asante|sina|sina swali|sina swali lingine|hakuna|hakuna kitu|hakuna kingine|niko sawa)$/;
 const REPEAT_RE = /^(?:please\s+)?(?:repeat|repeat that|say that again|say it again|again|rudia|rudia tena|sema tena)(?:\s+(?:please|tafadhali))?$/;
 const YES_RE = /^(?:yes|yeah|yep|yes please|ok|okay|sure|please do|ndiyo|ndio|ndiyo tafadhali|sawa|naam|eeh)$/;
 const NO_RE = /^(?:no|nope|no thanks|no thank you|hapana|la|siyo|hapana asante)$/;
@@ -1254,6 +1279,7 @@ function firstHeard(all, test){
 function converse(text){ addBubble(text, "app"); micState("idle"); setStatus(""); speak(text); }
 function startConversation(withWelcome){
   if (!SR){ sayProblem(T[LANG || "en"].noSR); return; }
+  stopStandby();
   Object.assign(CONV, { active:true, awaiting:null, silent:0, missed:0, needPress:false });
   if (!LANG){                                   // first visit: choose the language by voice
     LANG = "en"; CONV.awaiting = "language"; CONV.langTries = 0;
@@ -1268,18 +1294,87 @@ function nextTurn(){
   startListening(true);
 }
 function silence(){
-  if (++CONV.silent >= 2){ endConversation(T[LANG].goodbye); return; }
+  if (++CONV.silent >= 2){ endConversation(T[LANG].byeVoice, true); return; }
   const keep = CONV.last;
   converse(CONV.awaiting === "language" ? ASK_LANG_AGAIN : CONV.awaiting === "section" ? T[LANG].notCaught : T[LANG].stillHere);
   CONV.last = keep;                             // "repeat" still repeats the last real answer
 }
-function endConversation(msg){
+// standby: keep listening for "start conversation" afterwards (not after a tap on the button)
+function endConversation(msg, standby){
   Object.assign(CONV, { active:false, awaiting:null, needPress:false });
   if (listening) abortListening();
   micState("idle"); setStatus(msg || "");
-  if (msg){ addBubble(msg, "app"); speak(msg, () => chime(CHIME_END)); }
-  else chime(CHIME_END);
+  const after = () => chime(CHIME_END, standby ? startStandby : null);
+  if (msg){ addBubble(msg, "app"); speak(msg, after); }
+  else after();
 }
+// Every answer ends with a question, so the conversation goes on until the person says they are done
+function deliverAnswer(answer){
+  if (!CONV.active){ deliver(answer); return; }
+  CONV.awaiting = "followUp";
+  deliver(/\?\s*$/.test(answer) ? answer : answer + " " + T[LANG].followUp);   // an AI answer may already ask one
+}
+
+/* ---------- Standby: "start conversation" without the button ----------
+   Blind users should not have to find the button to talk again. After a
+   conversation ends by voice or by silence, the microphone keeps listening for
+   "start conversation" for 10 minutes; nothing else is answered, shown or kept.
+   Browsers only open the microphone after a tap on the page, so the very first
+   start still needs the big button, and a tap to end turns the microphone off. */
+const STANDBY_FOR = 10 * 60 * 1000;
+const START_RE = /^(?:(?:ok|okay|hey|hi|hello|please|sawa|tafadhali)\s+)*(?:start|begin|restart|start (?:a |the |our )?(?:conversation|chat)|start (?:talking|again)|anza|anza tena|tuanze|anza mazungumzo|anzisha mazungumzo|tuzungumze|(?:hey |hello |hi )?sauti ?lume)(?:\s+(?:now|again|please|tena|sasa|tafadhali|sauti ?lume))*$/;
+let standbyRec = null, standbyOn = false, standbyTimer = null, quickEnds = 0;
+function startStandby(){
+  if (!SR || CONV.active || !LANG) return;
+  standbyOn = true; quickEnds = 0;
+  clearTimeout(standbyTimer);
+  standbyTimer = setTimeout(() => {
+    if (!standbyOn) return;
+    stopStandby(); micState("idle"); setStatus(T[LANG].standbyOff); speak(T[LANG].standbyOff);
+  }, STANDBY_FOR);
+  micState("idle"); setStatus(T[LANG].sayStart);
+  standbyListen();
+}
+function standbyListen(){
+  if (!standbyOn || CONV.active) return;
+  const r = standbyRec = new SR();
+  r.lang = SR_LANGS[LANG][srLang[LANG]];
+  r.continuous = true;
+  r.interimResults = false;
+  r.maxAlternatives = 5;
+  const openedAt = Date.now();
+  r.onresult = e => {
+    if (standbyRec !== r) return;
+    for (let i = e.resultIndex; i < e.results.length; i++){
+      const res = e.results[i];
+      if (res.isFinal && Array.from(res, a => a.transcript).some(t => START_RE.test(words(t).join(" ")))){
+        startConversation(false); return;
+      }
+    }
+  };
+  r.onerror = e => {
+    if (standbyRec !== r) return;
+    if (e.error !== "no-speech" && e.error !== "aborted") stopStandby();   // blocked, offline or no microphone: the button still works
+  };
+  r.onend = () => {
+    if (standbyRec !== r) return;
+    standbyRec = null;
+    if (!standbyOn || CONV.active) return;
+    // Phones close the microphone after a few seconds of quiet: reopen it. One
+    // that keeps closing at once cannot listen here, so stop trying.
+    quickEnds = Date.now() - openedAt < 1500 ? quickEnds + 1 : 0;
+    if (quickEnds >= 3){ stopStandby(); return; }
+    setTimeout(standbyListen, 300);
+  };
+  try{ r.start(); }catch(e){ stopStandby(); }
+}
+function stopStandby(){
+  standbyOn = false;
+  clearTimeout(standbyTimer);
+  if (standbyRec){ const old = standbyRec; standbyRec = null; try{ old.abort(); }catch(e){} }
+}
+// A hidden page cannot listen; the button starts the next conversation
+document.addEventListener("visibilitychange", () => { if (document.hidden) stopStandby(); });
 /* At the language question, a crisis said in a few words ("Nataka kujiua",
    "kill myself") must not be answered with "Say English…" (I-088). It goes
    straight to the crisis checks, in the language it was said in.          */
@@ -1320,8 +1415,9 @@ function handleUtterance(text, alts){
     if (++CONV.langTries >= 3){ endConversation(ASK_LANG_AGAIN); return; }
     converse(ASK_LANG_AGAIN); return;
   }
-  if (END_RE.test(said)){ addBubble(text, "user"); endConversation(T[LANG].goodbye); return; }
-  if (THANKS_RE.test(said)){ addBubble(text, "user"); converse(T[LANG].youreWelcome); return; }
+  const bye = () => { addBubble(text, "user"); endConversation(THANKED_RE.test(said) ? T[LANG].byeThanks : T[LANG].byeVoice, true); };
+  if (END_RE.test(said)){ bye(); return; }
+  if (THANKS_RE.test(said)){ addBubble(text, "user"); CONV.awaiting = "followUp"; converse(T[LANG].youreWelcome); return; }
   if (REPEAT_RE.test(said) && CONV.last){ addBubble(text, "user"); converse(CONV.last); return; }
   const loose = CONV.awaiting === "section";
   const sec = sectionCommand(ws, loose) || firstHeard(others, t => sectionCommand(words(t), loose));
@@ -1336,6 +1432,12 @@ function handleUtterance(text, alts){
     const reply = yesNo(text) || firstHeard(others, yesNo);
     if (reply === "yes"){ addBubble(text, "user"); SECTION = to; handleQuestion(q, true); return; }
     if (reply === "no"){ addBubble(text, "user"); converse(SECTION === "health" ? T[LANG].stayHealth : T[LANG].staySchool); return; }
+  }
+  if (CONV.awaiting === "followUp"){
+    CONV.awaiting = null;
+    const reply = firstHeard([text].concat(others), t => { const s = words(t).join(" "); return DONE_RE.test(s) ? "done" : YES_RE.test(s) ? "yes" : null; });
+    if (reply === "done"){ bye(); return; }
+    if (reply === "yes"){ addBubble(text, "user"); converse(T[LANG].goAhead); return; }
   }
   handleQuestion(text);   // a real question: crisis checks first, then the library
 }
@@ -1456,7 +1558,7 @@ async function handleQuestion(text, shown){
   if (HF_TOKEN){
     try{
       const answer = await askGemma(text);
-      if (answer){ counted("ai"); deliver(answer); return; }
+      if (answer){ counted("ai"); deliverAnswer(answer); return; }
     }catch(e){ /* fall through to library */ }
   }
 
@@ -1480,10 +1582,10 @@ async function handleQuestion(text, shown){
     if (!SECTION){                                // no section chosen yet: the question chooses it
       SECTION = sec; CONV.awaiting = null;
       counted("library", best.keys[0].trim());
-      deliver((sec === "health" ? T[LANG].fromHealth : T[LANG].fromSchool) + " " + best[LANG]); return;
+      deliverAnswer((sec === "health" ? T[LANG].fromHealth : T[LANG].fromSchool) + " " + best[LANG]); return;
     }
   }
-  if (best){ counted("library", best.keys[0].trim()); deliver(best[LANG]); }
+  if (best){ counted("library", best.keys[0].trim()); deliverAnswer(best[LANG]); }
   else if (CONV.active && !SECTION && words(text).length <= 3){
     // A word or two that is not health or school. Asking again and again kept the
     // owner in a loop for minutes, so after two tries the question chooses instead.
@@ -1552,7 +1654,7 @@ function micState(state){
   else if (state === "thinking"){ b.classList.add("thinking"); b.innerHTML = "..."; b.setAttribute("aria-label","Finding your answer, please wait."); }
   else if (!SR){ b.innerHTML = L.micIdle; b.setAttribute("aria-label","This browser cannot listen. Press to hear which browsers can."); }
   else if (CONV.active){ b.innerHTML = L.micEnd; b.setAttribute("aria-label","Conversation on. Tap to end it."); }
-  else { b.innerHTML = L.micIdle; b.setAttribute("aria-label","Press once to start talking"); }
+  else { b.innerHTML = L.micIdle; b.setAttribute("aria-label", standbyOn ? "Press once to start talking, or say start conversation." : "Press once to start talking"); }
 }
 function addBubble(text, who){
   const d = document.createElement("div");
@@ -1568,6 +1670,7 @@ function quickExit(){
   SECTION = null;
   stopSpeaking();
   abortListening();               // anything half-heard is thrown away, not answered
+  stopStandby();                  // and the microphone stops listening for "start conversation"
   $("chat").innerHTML = "";       // conversation gone from screen
   history = [];                   // and gone from memory — nothing survives Exit
   sessionCounted = false;         // choosing a language again starts a new conversation
