@@ -195,6 +195,7 @@ const T = {
     sectionHealth: "Health. What would you like to ask?",
     sectionSchool: "School. What would you like to ask?",
     notCaught: "I didn't catch that. Say health, or say school.",
+    justAsk: "Let's begin. Ask your question about your health or about school, in your own words.",
     moveToHealth: "That sounds like a health question. Shall I move you to Health? Say yes or no.",
     moveToSchool: "That sounds like a school question. Shall I move you to School? Say yes or no.",
     stayHealth: "Okay, we will stay in Health. Ask your question.",
@@ -240,6 +241,7 @@ const T = {
     sectionHealth: "Afya. Ungependa kuuliza nini?",
     sectionSchool: "Shule. Ungependa kuuliza nini?",
     notCaught: "Sikusikia vizuri. Sema afya, au sema shule.",
+    justAsk: "Tuanze. Uliza swali lako kuhusu afya yako au kuhusu shule, kwa maneno yako mwenyewe.",
     moveToHealth: "Hilo linaonekana kuwa swali la afya. Nikuhamishe kwenye Afya? Sema ndiyo au hapana.",
     moveToSchool: "Hilo linaonekana kuwa swali la shule. Nikuhamishe kwenye Shule? Sema ndiyo au hapana.",
     stayHealth: "Sawa, tutabaki kwenye Afya. Uliza swali lako.",
@@ -889,14 +891,18 @@ const PLAYER = typeof Audio === "function" ? new Audio() : null;
 const SILENT = "data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
 
 /* iPhones and iPads only let a page talk or play sound after a tap has started
-   it once. Returning users skip the language buttons, so their first tap on the
-   big button or on Ask unlocks both with a silent sound.                     */
+   it once, and each sound player needs its own tap. Returning users skip the
+   language buttons, so their first tap on the big button unlocks the voice,
+   the recordings and the chime with a silent sound. Without the chime's own
+   unlock, iPhones stayed silent where the "your turn" chime should be.      */
 let speechUnlocked = false;
 function unlockSpeech(){
   if (speechUnlocked) return;
   speechUnlocked = true;
   try{ if (SYNTH){ const u = new SpeechSynthesisUtterance(" "); u.volume = 0; SYNTH.speak(u); } }catch(e){}
-  try{ if (PLAYER){ PLAYER.src = SILENT; const p = PLAYER.play(); if (p && p.catch) p.catch(() => {}); } }catch(e){}
+  for (const player of [PLAYER, CHIME]){
+    try{ if (player){ player.src = SILENT; const p = player.play(); if (p && p.catch) p.catch(() => {}); } }catch(e){}
+  }
 }
 
 /* Phone numbers must be heard digit by digit so a blind user can dial them:
@@ -1052,18 +1058,19 @@ function speakWithVoice(text, finish, busy){
    the conversation ends. Played through an audio element, not Web Audio, because an
    iPhone's silent switch mutes Web Audio.                                  */
 function makeChime(freqs){
-  const rate = 22050, note = 0.11, gap = 0.025, step = note + gap;
-  const n = Math.round(rate * step * freqs.length), bytes = new Uint8Array(44 + n * 2), w = new DataView(bytes.buffer);
+  // A short silent lead-in, so Bluetooth earphones that wake up late don't swallow the first note
+  const rate = 22050, lead = 0.08, note = 0.15, gap = 0.03, step = note + gap;
+  const n = Math.round(rate * (lead + step * freqs.length)), bytes = new Uint8Array(44 + n * 2), w = new DataView(bytes.buffer);
   const tag = (o, t) => { for (let i = 0; i < t.length; i++) bytes[o + i] = t.charCodeAt(i); };
   tag(0, "RIFF"); w.setUint32(4, 36 + n * 2, true); tag(8, "WAVEfmt "); w.setUint32(16, 16, true);
   w.setUint16(20, 1, true); w.setUint16(22, 1, true); w.setUint32(24, rate, true); w.setUint32(28, rate * 2, true);
   w.setUint16(32, 2, true); w.setUint16(34, 16, true); tag(36, "data"); w.setUint32(40, n * 2, true);
   for (let i = 0; i < n; i++){
-    const t = i / rate, k = Math.floor(t / step), tt = t - k * step;
+    const t = i / rate - lead, k = Math.floor(t / step), tt = t - k * step;
     let x = 0;
-    if (k < freqs.length && tt < note){
+    if (t >= 0 && k < freqs.length && tt < note){
       const env = Math.min(1, tt / 0.008) * Math.min(1, (note - tt) / 0.05);   // soft edges, no clicks
-      x = Math.sin(2 * Math.PI * freqs[k] * tt) * env * 0.6;
+      x = Math.sin(2 * Math.PI * freqs[k] * tt) * env * 0.8;
     }
     w.setInt16(44 + i * 2, Math.round(x * 32767), true);
   }
@@ -1073,9 +1080,16 @@ function makeChime(freqs){
 }
 const CHIME = typeof Audio === "function" ? new Audio() : null;
 const CHIME_START = makeChime([660, 990]), CHIME_END = makeChime([990, 784, 587]);
-function chime(src){
-  if (!CHIME) return;
-  try{ CHIME.src = src; const p = CHIME.play(); if (p && p.catch) p.catch(() => {}); }catch(e){}
+/* then() runs once the chime has finished. Opening the microphone takes over the
+   phone's sound, so opening it while the chime was still playing cut the chime
+   off; a chime that is blocked or never reports its end still moves on.     */
+function chime(src, then){
+  let done = !then;
+  const go = () => { if (done) return; done = true; setTimeout(then, 150); };
+  if (CHIME){
+    try{ CHIME.onended = go; CHIME.src = src; const p = CHIME.play(); if (p && p.catch) p.catch(go); }catch(e){ go(); }
+  } else go();
+  if (then) setTimeout(go, 1200);
 }
 
 /* ---------- Speech recognition (STT) ----------
@@ -1088,11 +1102,16 @@ function chime(src){
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const SR_LANGS = { en: ["en-KE","en-GB","en-US"], sw: ["sw-KE","sw-TZ","sw"] };
 const srLang = { en: 0, sw: 0 };
-let rec = null, listening = false, heard = "", handled = false, autoRetry = false;
+let rec = null, listening = false, heard = "", heardAlts = [], handled = false, autoRetry = false;
+/* Phones stop listening after only a few seconds of quiet, which said "I didn't
+   catch that" before people had started talking. The microphone now reopens
+   quietly, with no new chime, until this long has passed since the chime.   */
+const WAIT_FOR_SPEECH = 12000;
+let waitingSince = 0, reopened = 0;
 
 function sayProblem(msg){ setStatus(msg); speak(msg); }   // errors must be HEARD, not just seen — users are blind
 
-function startListening(auto){
+function startListening(auto, again){
   if (!SR){ sayProblem(T[LANG].noSR); return; }
   if (listening){ stopListening(); return; }
   stopSpeaking();                                  // never listen while talking
@@ -1100,22 +1119,33 @@ function startListening(auto){
   const r = rec = new SR();
   r.lang = SR_LANGS[LANG][srLang[LANG]];
   r.interimResults = false;
-  r.maxAlternatives = 1;
-  heard = ""; handled = false;
+  r.maxAlternatives = 5;                           // the phone's other guesses: "help" first, "health" second
+  heard = ""; heardAlts = []; handled = false;
+  if (!again){ waitingSince = 0; reopened = 0; }
   listening = true;
   micState("listening");
   setStatus(T[LANG].listening);
-  if (navigator.vibrate) navigator.vibrate(80);   // haptic: recording started
+  if (navigator.vibrate && !again) navigator.vibrate(80);   // haptic: recording started
 
+  // Still quiet, but not for long: listen again for the same turn
+  const keepWaiting = () => !!waitingSince && Date.now() - waitingSince < WAIT_FOR_SPEECH && reopened < 4;
+  const listenAgain = () => {
+    if (rec !== r) return;
+    reopened++; listening = false;
+    startListening(auto, true);
+  };
   // Safari may report partial results first; act on the final one
   r.onresult = e => {
     if (rec !== r) return;
     const last = e.results[e.results.length - 1];
     heard = last[0].transcript;
+    heardAlts = Array.from(last, a => a.transcript);
     if (last.isFinal) useHeard();
   };
   r.onerror = e => {
     if (rec !== r) return;
+    // Reopen once this microphone has closed (a phone can refuse a second one while the first is open)
+    if ((e.error === "no-speech" || e.error === "aborted") && keepWaiting()){ r.again = true; setTimeout(listenAgain, 800); return; }
     listening = false; handled = true; micState("idle");
     count("voice_error", { lang: LANG, error: e.error });
     const retried = autoRetry; autoRetry = false;
@@ -1145,11 +1175,13 @@ function startListening(auto){
   r.onend = () => {
     if (rec !== r) return;
     if (heard && !handled){ useHeard(); return; }
+    if (r.again){ listenAgain(); return; }
     if (!listening) return;   // stopped on purpose, or an error has already been spoken
-    listening = false; handled = true; micState("idle");
     // It stopped without hearing anything and without saying why. Closing at
     // once means this browser probably cannot listen in this language yet.
     const atOnce = !opened && Date.now() - startedAt < 1500;
+    if (!atOnce && keepWaiting()){ listenAgain(); return; }
+    listening = false; handled = true; micState("idle");
     count("voice_error", { lang: LANG, error: atOnce ? "ended-at-once" : "ended-silently" });
     if (atOnce && srLang[LANG] < SR_LANGS[LANG].length - 1){ srLang[LANG]++; autoRetry = true; startListening(); return; }
     autoRetry = false;
@@ -1160,6 +1192,7 @@ function startListening(auto){
     if (rec !== r) return;                 // Exit before the microphone opened
     if (!listening){ setStatus(""); return; }   // pressed again before it opened
     startedAt = Date.now();
+    if (!waitingSince) waitingSince = startedAt;
     try{ r.start(); }
     catch(e){
       listening = false; handled = true; micState("idle");
@@ -1168,14 +1201,14 @@ function startListening(auto){
     }
   };
   // The chime first, then the microphone, so the chime is not taken for speech
-  if (autoRetry) open();
-  else { chime(CHIME_START); setTimeout(open, 350); }
+  if (autoRetry || again) open();
+  else chime(CHIME_START, open);
 }
 function useHeard(){
   if (handled) return;
   handled = true; listening = false; autoRetry = false;
   if (navigator.vibrate) navigator.vibrate([50,50,50]); // haptic: recording ended
-  if (CONV.active) handleUtterance(heard);
+  if (CONV.active) handleUtterance(heard, heardAlts);
   else handleQuestion(heard);
 }
 /* ---------- Conversation: press once, then just talk ----------
@@ -1186,7 +1219,7 @@ function useHeard(){
    chosen by saying it. Every question still goes through the crisis checks
    first; a command is only taken as one when nothing else was said, so
    "I was raped at school" can never be heard as "switch to School".      */
-const CONV = { active:false, awaiting:null, moveTo:null, pending:"", silent:0, langTries:0, needPress:false, last:"" };
+const CONV = { active:false, awaiting:null, moveTo:null, pending:"", silent:0, missed:0, langTries:0, needPress:false, last:"" };
 let SECTION = null;   // "health" or "education", chosen by voice; wiped by Exit
 const ASK_LANG = "Welcome to SautiLume. Karibu SautiLume. Say English, or sema Kiswahili.";
 const ASK_LANG_AGAIN = "Say English, or sema Kiswahili.";
@@ -1195,20 +1228,33 @@ const FILLER = new Set(("please ok okay sawa i id want would like to ask about m
   "tafadhali nataka ningependa kuuliza kuhusu yangu kwenye kwa badilisha nipeleke twende hapo ni").split(" "));
 const SECTION_WORDS = { health:"health", afya:"health", school:"education", education:"education", learning:"education",
   shule:"education", masomo:"education", elimu:"education" };
+/* What phones hear instead (the owner's "health" came back as "help" every
+   time). Only taken right after "Say health, or say school", and only when
+   nothing else was said, so "help me study" is still a question.           */
+const SECTION_SOUNDALIKES = { help:"health", helps:"health", held:"health", hell:"health", healthy:"health", wealth:"health",
+  helth:"health", elf:"health", afia:"health", afiya:"health", aphia:"health", alpha:"health",
+  schools:"education", skool:"education", scool:"education", skull:"education", schul:"education", schule:"education",
+  shuleni:"education", shulle:"education" };
 const END_RE = /^(?:(?:ok|okay|sawa|asante|thank you|thanks)\s+)?(?:good ?bye|bye|bye bye|stop|that s all|that is all|i m done|im done|i am done|done|finished|end|exit|quit|kwaheri|nimemaliza|basi|inatosha|tutaonana)(?:\s+(?:now|please|for now|forever|sasa|milele|thank you|thanks|asante|asante sana))*$/;   // "goodbye forever" ends it too (I-093)
 const THANKS_RE = /^(?:thank you|thanks|thank you so much|thanks a lot|asante|asante sana)$/;
 const REPEAT_RE = /^(?:please\s+)?(?:repeat|repeat that|say that again|say it again|again|rudia|rudia tena|sema tena)(?:\s+(?:please|tafadhali))?$/;
 const YES_RE = /^(?:yes|yeah|yep|yes please|ok|okay|sure|please do|ndiyo|ndio|ndiyo tafadhali|sawa|naam|eeh)$/;
 const NO_RE = /^(?:no|nope|no thanks|no thank you|hapana|la|siyo|hapana asante)$/;
-function sectionCommand(ws){
-  const found = ws.filter(w => SECTION_WORDS[w]);
+function sectionCommand(ws, loose){
+  const name = w => SECTION_WORDS[w] || (loose && SECTION_SOUNDALIKES[w]);
+  const found = ws.filter(name);
   if (found.length !== 1 || ws.length > 7) return null;
-  return ws.every(w => SECTION_WORDS[w] || FILLER.has(w)) ? SECTION_WORDS[found[0]] : null;
+  return ws.every(w => name(w) || FILLER.has(w)) ? name(found[0]) : null;
+}
+// The phone's best guess first, then its other guesses: the first that gives an answer wins
+function firstHeard(all, test){
+  for (const t of all){ const found = test(t); if (found) return found; }
+  return null;
 }
 function converse(text){ addBubble(text, "app"); micState("idle"); setStatus(""); speak(text); }
 function startConversation(withWelcome){
   if (!SR){ sayProblem(T[LANG || "en"].noSR); return; }
-  Object.assign(CONV, { active:true, awaiting:null, silent:0, needPress:false });
+  Object.assign(CONV, { active:true, awaiting:null, silent:0, missed:0, needPress:false });
   if (!LANG){                                   // first visit: choose the language by voice
     LANG = "en"; CONV.awaiting = "language"; CONV.langTries = 0;
     show("scrMain"); converse(ASK_LANG); return;
@@ -1254,13 +1300,19 @@ function crisisSaid(text){
     || has(OVERDOSE) || (has(OVERDOSE_AMOUNT) && has(OVERDOSE_DRUGS)) || (has(OVERDOSE_HEAVY) && (has(OVERDOSE_ANY_MEDICINE) || has(OVERDOSE_DRUGS)))
     || ((has(BLEEDING) || has(PREGNANCY_DANGER)) && has(PREGNANCY_STATE));
 }
-function handleUtterance(text){
+function handleUtterance(text, alts){
   CONV.silent = 0;
   const ws = words(text), said = ws.join(" ");
+  // The phone's other guesses count for the short replies it asked for, never over a crisis
+  const others = crisisSaid(text) ? [] : (alts || []).filter(a => a && a !== text);
   if (CONV.awaiting === "language"){
-    const sw = ws.some(w => /swahili|swahil/.test(w)), en = ws.some(w => /^(english|inglish|engl|kiingereza)/.test(w));
-    if (sw !== en){
-      addBubble(text, "user"); setLang(sw ? "sw" : "en", false);
+    const langOf = t => {
+      const w = words(t), sw = w.some(w => /swahili|swahil/.test(w)), en = w.some(w => /^(english|inglish|engl|kiingereza)/.test(w));
+      return sw === en ? null : sw ? "sw" : "en";
+    };
+    const chosen = langOf(text) || (ws.length > 3 ? null : firstHeard(others, langOf));
+    if (chosen){
+      addBubble(text, "user"); setLang(chosen, false);
       CONV.awaiting = "section"; converse(T[LANG].welcome + " " + T[LANG].askSection); return;
     }
     if (ws.length > 3 || crisisSaid(text)){ CONV.awaiting = null; setLang(saidInSwahili(ws) ? "sw" : "en", false); handleQuestion(text); return; }  // went straight to a question, or a crisis in a few words (I-088)
@@ -1271,16 +1323,19 @@ function handleUtterance(text){
   if (END_RE.test(said)){ addBubble(text, "user"); endConversation(T[LANG].goodbye); return; }
   if (THANKS_RE.test(said)){ addBubble(text, "user"); converse(T[LANG].youreWelcome); return; }
   if (REPEAT_RE.test(said) && CONV.last){ addBubble(text, "user"); converse(CONV.last); return; }
-  const sec = sectionCommand(ws);
+  const loose = CONV.awaiting === "section";
+  const sec = sectionCommand(ws, loose) || firstHeard(others, t => sectionCommand(words(t), loose));
   if (sec){
-    addBubble(text, "user"); CONV.awaiting = null; SECTION = sec;
+    addBubble(text, "user"); CONV.awaiting = null; CONV.missed = 0; SECTION = sec;
     converse(sec === "health" ? T[LANG].sectionHealth : T[LANG].sectionSchool); return;
   }
   if (CONV.awaiting === "confirmMove"){
     const q = CONV.pending, to = CONV.moveTo;
     CONV.awaiting = null;
-    if (YES_RE.test(said)){ addBubble(text, "user"); SECTION = to; handleQuestion(q, true); return; }
-    if (NO_RE.test(said)){ addBubble(text, "user"); converse(SECTION === "health" ? T[LANG].stayHealth : T[LANG].staySchool); return; }
+    const yesNo = t => { const s = words(t).join(" "); return YES_RE.test(s) ? "yes" : NO_RE.test(s) ? "no" : null; };
+    const reply = yesNo(text) || firstHeard(others, yesNo);
+    if (reply === "yes"){ addBubble(text, "user"); SECTION = to; handleQuestion(q, true); return; }
+    if (reply === "no"){ addBubble(text, "user"); converse(SECTION === "health" ? T[LANG].stayHealth : T[LANG].staySchool); return; }
   }
   handleQuestion(text);   // a real question: crisis checks first, then the library
 }
@@ -1429,7 +1484,12 @@ async function handleQuestion(text, shown){
     }
   }
   if (best){ counted("library", best.keys[0].trim()); deliver(best[LANG]); }
-  else if (CONV.active && !SECTION){ CONV.awaiting = "section"; deliver(T[LANG].notCaught); }
+  else if (CONV.active && !SECTION && words(text).length <= 3){
+    // A word or two that is not health or school. Asking again and again kept the
+    // owner in a loop for minutes, so after two tries the question chooses instead.
+    if (++CONV.missed >= 2){ CONV.awaiting = null; deliver(T[LANG].justAsk); }
+    else { CONV.awaiting = "section"; deliver(T[LANG].notCaught); }
+  }
   else {
     counted("no_answer");
     deliver(T[LANG].noAnswer);
