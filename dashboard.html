@@ -95,6 +95,7 @@
 
   <main id="app" hidden>
     <p id="appMsg" class="msg" hidden></p>
+    <p id="creatorNote" class="note" hidden>Creator mode is on in this browser: copying, printing and screenshots are allowed on every SautiLume page here. Signing out turns the protection back on.</p>
     <div class="filters">
       <div class="seg" role="group" aria-label="Time range" id="range">
         <button data-days="7">7 days</button>
@@ -222,9 +223,19 @@ $("signIn").onclick = () => {
   });
 };
 $("signOut").onclick = () => auth.signOut();
+
+/* Creator mode: protect.js blocks copying, printing and screenshots on the
+   public pages. Signed in here as the owner, this browser is exempt;
+   signed out, or signed in as anyone else, it is protected again. */
+function setCreator(on){
+  try { on ? localStorage.setItem("sl_creator", "1") : localStorage.removeItem("sl_creator"); } catch (e) {}
+  $("creatorNote").hidden = !on;
+}
+
 auth.onAuthStateChanged(user => {
   const ok = !!user;
   $("signinCard").hidden = ok; $("app").hidden = !ok; $("who").hidden = !ok;
+  setCreator(ok && user.email === OWNER);
   if (!ok) return;
   $("whoEmail").textContent = user.email;
   if (user.email !== OWNER) showMsg($("appMsg"), "You're signed in as " + user.email + ". Only " + OWNER + " can read the numbers.");
