@@ -229,6 +229,7 @@ const T = {
     urgent: "Your life matters, and I want you to get help right now. If you have taken pills, poison or anything else to harm yourself, call 999 or 112 now, or ask someone near you to take you to the nearest hospital straight away. Even if you feel fine, go now: some medicines cause harm hours later. Please don't stay alone. You can also call the Kenya Red Cross on 1199, free of charge, day or night.",
     emgSpoken: "Emergency help. I can connect you to a counsellor or support service. Choose who to call. Calls to 999, 1195, 1199 and 116 are free of charge. All calls are confidential.",
     sgbv: "I hear you. You are not alone, and what is happening to you is not your fault. Would you like to talk to someone who can help right now? The GBV helpline is 1 1 9 5. It is free of charge and open day and night. If you are under 18, you can also call the Child Helpline on 116, free of charge, day or night. If you were forced to have sex in the last 3 days, please go to a clinic or hospital as soon as you can. They can give you medicine to prevent HIV and pregnancy. When you feel ready, you can also report what happened at the nearest police station, and the clinic can help you with the forms. Even after 3 days, a clinic or hospital can still help you, and you can still report. I have opened the emergency screen so you can call with one touch.",
+    photoThreat: "If someone is threatening to share your photos, do not send more, keep the messages as evidence, and you can report this to the police if you choose.",
     noSR: "This browser cannot listen to your voice yet. Please open sautilume.com in Chrome, Microsoft Edge, Safari or Samsung Internet, then press the big button and ask your question.",
     langNoVoice: "This browser cannot understand spoken English yet. Please open sautilume.com in Chrome or Microsoft Edge, then press the big button and ask again.",
     micBlocked: "The microphone is blocked for this page. Allow the microphone for this site in your browser's settings, then press the big button again.",
@@ -279,6 +280,7 @@ const T = {
     urgent: "Maisha yako ni muhimu, na nataka upate msaada sasa hivi. Kama umekunywa vidonge, sumu au kitu kingine ili kujidhuru, piga simu 999 au 112 sasa, au mwombe mtu aliye karibu akupeleke hospitali iliyo karibu mara moja. Hata kama unajisikia sawa, nenda sasa: dawa nyingine hudhuru baada ya masaa kadhaa. Tafadhali usibaki peke yako. Unaweza pia kupiga simu Msalaba Mwekundu kwa 1199, ni bure, mchana au usiku.",
     emgSpoken: "Msaada wa dharura. Naweza kukuunganisha na mshauri au huduma ya msaada. Chagua nani wa kupiga simu. Simu kwa 999, 1195, 1199 na 116 ni bure. Simu zote ni za siri.",
     sgbv: "Nakusikia. Hauko peke yako, na kinachokupata si kosa lako. Ungependa kuzungumza na mtu anayeweza kukusaidia sasa hivi? Nambari ya msaada ni 1 1 9 5. Ni bure, mchana na usiku. Kama uko chini ya miaka 18, unaweza pia kupiga simu ya msaada kwa watoto, 116, ni bure, mchana na usiku. Kama ulilazimishwa kufanya ngono ndani ya siku 3 zilizopita, tafadhali nenda kliniki au hospitali haraka iwezekanavyo. Wanaweza kukupa dawa za kuzuia Ukimwi na mimba. Ukiwa tayari, unaweza pia kuripoti kilichotokea katika kituo cha polisi kilicho karibu, na kliniki inaweza kukusaidia na fomu. Hata baada ya siku 3, kliniki au hospitali bado inaweza kukusaidia, na bado unaweza kuripoti. Nimefungua skrini ya dharura ili upige simu kwa mguso mmoja.",
+    photoThreat: "Kama mtu anatishia kusambaza picha zako, usimtumie picha zaidi, hifadhi jumbe zake kama ushahidi, na unaweza kuripoti kwa polisi ukipenda.",
     noSR: "Kivinjari hiki bado hakiwezi kusikiliza sauti yako. Tafadhali fungua sautilume.com kwenye Chrome, Microsoft Edge, Safari au Samsung Internet, kisha bonyeza kitufe kikubwa na uulize swali lako.",
     langNoVoice: "Kivinjari hiki bado hakiwezi kuelewa Kiswahili kinachozungumzwa. Tafadhali fungua sautilume.com kwenye Chrome au Microsoft Edge, kwenye simu ya Android au kompyuta, kisha bonyeza kitufe kikubwa na uulize tena.",
     micBlocked: "Maikrofoni imezuiwa kwenye ukurasa huu. Ruhusu maikrofoni kwa tovuti hii kwenye mipangilio ya kivinjari, kisha bonyeza kitufe kikubwa tena.",
@@ -821,6 +823,8 @@ const HELPER = ["how can i help her","how can i help him","how can i help them",
 const FGM = [" fgm","female circumcision","female genital","cut me down there","keketa","keketwa","ukeketaji","tohara ya wasichana","tohara ya kike","i must be cut","i will be cut","want me to be cut","want to cut me","going to cut me","sister was cut","sister has been cut","daughter was cut","daughter has been cut","cousin was cut","girls were cut","sister was circumcised","daughter was circumcised","she was circumcised"];
 const NOT_SELF_HARM = ["tired of living with my parents","tired of living with my family","tired of living with my mum","tired of living with my mom","tired of living with my dad","tired of living with my mother","tired of living with my father","nimechoka kuishi na wazazi","nimechoka kuishi na mama","nimechoka kuishi na baba","nimechoka kuishi na familia","want to live with my parents","want to live with my family","want to live with my mum","want to live with my mom","want to live with my dad","want to live with my mother","want to live with my father","want to live with my uncle","want to live with my aunt","want to live with my grandmother","want to live with my grandma","want to live with my stepmother","want to live with my stepfather","want to live with my relatives","want to live with them","want to live with him","want to live with her","want to live alone","want to live at home","sitaki kuishi na wazazi","sitaki kuishi na mama","sitaki kuishi na baba","sitaki kuishi na familia","sitaki kuishi na mjomba","sitaki kuishi na shangazi","sitaki kuishi na bibi","sitaki kuishi na babu","sitaki kuishi na ndugu","sitaki kuishi naye","sitaki kuishi nao","sitaki kuishi peke yangu","sitaki kuishi nyumbani","sitaki kuishi huko","sitaki kuishi mjini","sitaki kuishi kijijini","jichoma sindano","kumaliza kila kitu kabla","kumaliza kila kitu kwa wakati","kumaliza kila kitu shuleni","kumaliza kila kitu darasani","nimalize kila kitu kabla"];
 const NOT_SGBV = ["drug abuse","drugs abuse","substance abuse","alcohol abuse","it hits me","it really hits me","this hits me","that hits me","it beats me","that beats me","it hits us","give me food that i like","give me food i like","give me the food i like","nipiga picha","tupiga picha","mpiga picha"];
+// A person's own photos or videos (PP, approved 2026-11-07): with the violence reply, one more sentence
+const OWN_PHOTO = ["my naked","my nude","my photo","my pic","my video","my private photo","my private pic","my private video","photos of me","photo of me","pictures of me","picture of me","videos of me","video of me","photos i sent","photo i sent","pictures i sent","picture i sent","nudes i sent","videos i sent","video i sent","picha zangu","picha yangu","video zangu","video yangu","picha nilizomtumia","picha za uchi nilizomtumia","video nilizomtumia"];
 
 /* Self-harm and suicide — also a crisis. These always get the verified answer
    with a verified helpline number, never "no answer" and never an AI guess.
@@ -1429,10 +1433,13 @@ async function handleQuestion(text, shown){
   }
   if (sgbvWords){
     counted("crisis_violence");
-    const msg = T[LANG].sgbv;
+    // Threats to share someone's photos (PP, approved 2026-11-07): one more sentence, before the call-screen line.
+    // A phone with no voice for the language plays the recorded reply without it, as with the newer police advice.
+    const photo = OWN_PHOTO.some(w => plain.includes(w));
+    const msg = photo ? T[LANG].sgbv.replace(T[LANG].emgOpened, T[LANG].photoThreat + " " + T[LANG].emgOpened) : T[LANG].sgbv;
     addBubble(msg, "app");
     micState("idle"); setStatus("");
-    speak(msg, () => show("scrEmg", true));
+    speak(photo && !hasVoiceFor(LANG) ? T[LANG].sgbv : msg, () => show("scrEmg", true));
     return;
   }
 
